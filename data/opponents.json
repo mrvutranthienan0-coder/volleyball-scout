@@ -1,0 +1,375 @@
+{
+ "generated": "2026-09-26",
+ "label": "Nguồn: bình luận viên, cần kiểm",
+ "method": "Nhận xét lối chơi rút từ phụ đề tự động của 3 video tường thuật trên YouTube, chỉ giữ đoạn bình luận viên nói về chiến thuật; tên riêng trong phụ đề hay sai chính tả. Danh sách cầu thủ lấy từ báo/Wikipedia. Không có số liệu thống kê chính thức nào ở đây.",
+ "from": [
+  "research/yt_playstyle/2026-09-26_lpbank-ninh-binh-digest.md",
+  "research/2026-09-26_ai-video-player-data.md",
+  "research/players-vn.json"
+ ],
+ "videos": {
+  "pqS2zMfSQcw": {
+   "title": "LPBank Ninh Bình vs VTV Bình Điền Long An — VĐQG 2026",
+   "date": "2026-04-14"
+  },
+  "ajx5Z28iFQo": {
+   "title": "HCĐG Lào Cai vs LPBank Ninh Bình — VĐQG 2026",
+   "date": "2026-04-10"
+  },
+  "pJZfaqOuYao": {
+   "title": "VTV Bình Điền Long An vs LPBank Ninh Bình — Chung kết VĐQG 2025",
+   "date": "2025-10-17"
+  }
+ },
+ "league": {
+  "name": "VĐQG bóng chuyền nữ 2026",
+  "order": "theo thứ hạng mùa 2025",
+  "source": "https://vi.wikipedia.org/wiki/Gi%E1%BA%A3i_b%C3%B3ng_chuy%E1%BB%81n_v%C3%B4_%C4%91%E1%BB%8Bch_qu%E1%BB%91c_gia_Vi%E1%BB%87t_Nam_2026",
+  "teams": [
+   {
+    "name": "VTV Bình Điền Long An",
+    "id": "vtv-binh-dien-long-an"
+   },
+   {
+    "name": "LPBank Ninh Bình",
+    "id": "lpbank-ninh-binh"
+   },
+   {
+    "name": "Binh chủng Thông tin - BĐ19",
+    "id": "binh-chung-thong-tin"
+   },
+   {
+    "name": "Ngân hàng Công Thương (VietinBank)"
+   },
+   {
+    "name": "HCĐG Lào Cai",
+    "id": "hcdg-lao-cai"
+   },
+   {
+    "name": "XMLS Thanh Hóa"
+   },
+   {
+    "name": "Geleximco Hưng Yên",
+    "id": "geleximco-hung-yen"
+   },
+   {
+    "name": "Hà Nội Tasco Auto",
+    "id": "ha-noi-tasco-auto"
+   }
+  ]
+ },
+ "teams": [
+  {
+   "id": "vtv-binh-dien-long-an",
+   "name": "VTV Bình Điền Long An",
+   "coach": "Nguyễn Thị Ngọc Hoa",
+   "summary": "Vô địch quốc gia 2024, 2025. Đội duy nhất đăng ký 2 ngoại binh mùa 2026.",
+   "confidence": "MEDIUM",
+   "players": [
+    {
+     "name": "Võ Thị Kim Thoa",
+     "pos": "Chuyền hai",
+     "num": 14,
+     "note": "đội trưởng"
+    },
+    {
+     "name": "Trần Thị Thanh Thúy",
+     "pos": "Chủ công",
+     "note": "cao 1,93 m; thi đấu cho CLB Nhật, chỉ về bổ sung khi rảnh lịch"
+    },
+    {
+     "name": "Lê Như Anh",
+     "pos": "Phụ công"
+    },
+    {
+     "name": "Nguyễn Thị Trà My",
+     "pos": "Đối chuyền"
+    },
+    {
+     "name": "Lianet García Anglada",
+     "pos": "Chủ công",
+     "note": "ngoại binh Cuba, gia nhập 03/2026"
+    },
+    {
+     "name": "Regla Martinez Ortiz",
+     "note": "ngoại binh Cuba thứ hai"
+    }
+   ],
+   "tendencies": [
+    {
+     "skill": "Phát bóng",
+     "text": "Phát bóng nhắm vào hai libero của Ninh Bình; bình luận viên cho rằng đây là chủ ý của HLV từ đầu trận.",
+     "v": "pqS2zMfSQcw",
+     "t": 2760
+    },
+    {
+     "skill": "Phát bóng",
+     "text": "García có chuỗi 3 ace liên tiếp bằng phát bóng tấn công.",
+     "v": "pqS2zMfSQcw",
+     "t": 1380
+    },
+    {
+     "skill": "Tấn công",
+     "text": "Phụ công (phụ đề: \"Lữ Thị Phương\") đánh nhanh ở vị trí số 3, phối hợp với chuyền hai Kim Thoa; hiệu quả suốt trận.",
+     "v": "pqS2zMfSQcw",
+     "t": 570
+    },
+    {
+     "skill": "Tấn công",
+     "text": "Trà My nhận chuyền sau đầu, xử lý bằng bỏ nhỏ / đánh chạm tay chắn nhiều hơn đập mạnh.",
+     "v": "pqS2zMfSQcw",
+     "t": 2640
+    },
+    {
+     "skill": "Chắn bóng",
+     "text": "Bình luận viên nhận xét chắn bóng là điểm yếu lớn nhất của chuyền hai Kim Thoa.",
+     "v": "pqS2zMfSQcw",
+     "t": 4860
+    },
+    {
+     "skill": "Đỡ bước 1",
+     "text": "Có lỗi bước 1 của chủ công (phụ đề: \"Lan Vi\"); bình luận viên nói đây là cầu thủ HLV lo nhất trong đội hình.",
+     "v": "pqS2zMfSQcw",
+     "t": 3120
+    },
+    {
+     "skill": "Thay người",
+     "text": "Thay cặp đối chuyền + chuyền hai giữa set: Trà My rời sân, cầu thủ phụ đề ghi \"4T\" vào đánh đối chuyền.",
+     "v": "pqS2zMfSQcw",
+     "t": 1200
+    },
+    {
+     "skill": "Thay người",
+     "text": "Cùng kiểu thay cặp Trà My + chuyền hai dự bị thay Kim Thanh, Kim Thoa ở chung kết 2025.",
+     "v": "pJZfaqOuYao",
+     "t": 3930
+    },
+    {
+     "skill": "Thể lực",
+     "text": "Thanh Thúy vào sân theo từng thời điểm vì thể lực chưa hồi phục sau hành trình dài.",
+     "v": "pqS2zMfSQcw",
+     "t": 3030
+    }
+   ],
+   "sources": [
+    "https://vi.wikipedia.org/wiki/C%C3%A2u_l%E1%BA%A1c_b%E1%BB%99_b%C3%B3ng_chuy%E1%BB%81n_VTV_B%C3%ACnh_%C4%90i%E1%BB%81n_Long_An",
+    "https://thanhnien.vn/clb-vtv-binh-dien-long-an-vao-chung-ket-cup-bong-chuyen-vtv9-binh-dien-2026-185260521210705002.htm"
+   ]
+  },
+  {
+   "id": "hcdg-lao-cai",
+   "name": "HCĐG Lào Cai",
+   "coach": "",
+   "summary": "Chưa có danh sách cầu thủ từ báo/Wikipedia. Tên dưới đây lấy từ phụ đề tự động, cần kiểm.",
+   "confidence": "LOW",
+   "players": [],
+   "tendencies": [
+    {
+     "skill": "Tấn công",
+     "text": "Dồn nhiều bóng cho phụ công (phụ đề: \"Lý Thị Luyến\") từ đầu trận.",
+     "v": "ajx5Z28iFQo",
+     "t": 990
+    },
+    {
+     "skill": "Tấn công",
+     "text": "Bình luận viên: hiếm thấy đội phụ thuộc phụ công như vậy — điểm kết thúc chủ yếu đến từ phụ công, không phải chủ công/đối chuyền.",
+     "v": "ajx5Z28iFQo",
+     "t": 3090
+    },
+    {
+     "skill": "Chắn bóng",
+     "text": "Chắn bóng mạnh hơn khi có phụ công cao (phụ đề: \"Lý Thị Luyến\").",
+     "v": "ajx5Z28iFQo",
+     "t": 1380
+    },
+    {
+     "skill": "Chắn bóng",
+     "text": "Hàng trên khép chắn nhanh, dẫn đầu là cầu thủ phụ đề ghi \"Bích Thủy\".",
+     "v": "ajx5Z28iFQo",
+     "t": 3570
+    },
+    {
+     "skill": "Điều chỉnh",
+     "text": "Cuối trận đội đổi cách đánh, bớt dồn bóng cho phụ công (bình luận viên nói về đội của HLV phụ đề ghi \"Hữu Hà\").",
+     "v": "ajx5Z28iFQo",
+     "t": 4440
+    }
+   ],
+   "sources": []
+  },
+  {
+   "id": "binh-chung-thong-tin",
+   "name": "Binh chủng Thông tin - BĐ19",
+   "coach": "Phạm Văn Long",
+   "summary": "Hạng 4 giai đoạn 1, hạng 5 Cúp VTV9-Bình Điền 2026. Ngoại binh giai đoạn 2 (Erika Pritchard) là tin chưa chính thức.",
+   "confidence": "MEDIUM",
+   "players": [
+    {
+     "name": "Nguyễn Thị Phương",
+     "pos": "Chủ công"
+    },
+    {
+     "name": "Phạm Thị Nguyệt Anh",
+     "pos": "Chủ công"
+    },
+    {
+     "name": "Phạm Quỳnh Hương",
+     "pos": "Chủ công"
+    },
+    {
+     "name": "Nguyễn Huỳnh Phương Thùy",
+     "pos": "Chủ công"
+    },
+    {
+     "name": "Hoàng Thị Kiều Trinh",
+     "pos": "Đối chuyền"
+    },
+    {
+     "name": "Lâm Oanh",
+     "pos": "Chuyền hai"
+    }
+   ],
+   "tendencies": [
+    {
+     "skill": "Mùa 2025",
+     "text": "Bán kết 2025: ngoại binh của đội (phụ đề: \"Voron Cova\") bị bình luận viên cho là điểm yếu — nhiều lỗi bước 1, tấn công kém hiệu quả.",
+     "v": "pJZfaqOuYao",
+     "t": 540
+    }
+   ],
+   "sources": [
+    "https://webthethao.vn/bai-viet/binh-chung-thong-tin-chieu-mo-ngoai-binh-erika-pritchard-my-vdqg-2026-ART-207597"
+   ]
+  },
+  {
+   "id": "ha-noi-tasco-auto",
+   "name": "Hà Nội Tasco Auto",
+   "coach": "Nguyễn Tuấn Kiệt",
+   "summary": "Tân binh mùa 2026; thắng cả 7 trận vòng 1, vô địch Cúp Hùng Vương 2026, hạng 3 Cúp VTV9-Bình Điền 2026. Chưa có video phân tích lối chơi.",
+   "confidence": "MEDIUM",
+   "players": [
+    {
+     "name": "Vi Thị Yến Nhi",
+     "note": "đội trưởng"
+    },
+    {
+     "name": "Vi Thị Như Quỳnh",
+     "pos": "Chủ công",
+     "note": "tuyển thủ quốc gia"
+    },
+    {
+     "name": "Lưu Thị Diệu Linh",
+     "pos": "Đối chuyền"
+    },
+    {
+     "name": "Nguyễn Khánh Đang",
+     "pos": "Libero",
+     "note": "chuyển từ VTV Bình Điền Long An"
+    },
+    {
+     "name": "Lê Thanh Thúy",
+     "note": "tuyển thủ quốc gia"
+    },
+    {
+     "name": "Bùi Thị Ánh Thảo",
+     "note": "tuyển thủ quốc gia"
+    }
+   ],
+   "tendencies": [],
+   "sources": [
+    "https://tuoitre.vn/ha-noi-tasco-auto-tang-cuong-2-noi-binh-khung-cho-cup-hung-vuong-20260420091933539.htm",
+    "https://webthethao.vn/bong-chuyen-viet-nam/ha-noi-tasco-auto-chot-doi-hinh-14-vdv-du-cup-bong-chuyen-hung-vuong-2026-aTDGFjiRR.htm"
+   ]
+  },
+  {
+   "id": "geleximco-hung-yen",
+   "name": "Geleximco Hưng Yên",
+   "coach": "Trần Văn Giáp",
+   "summary": "Đội duy nhất không có ngoại binh mùa 2026, đội trẻ nhất giải; thua cả 4 trận mở màn 0–3. Chưa có video phân tích lối chơi.",
+   "confidence": "MEDIUM",
+   "players": [
+    {
+     "name": "Đỗ Lại Yến Nhi",
+     "note": "20 tuổi"
+    }
+   ],
+   "tendencies": [],
+   "sources": [
+    "https://tuoitre.vn/bong-chuyen-nu-hung-yen-giau-truyen-thong-nhung-sao-lai-toan-thua-20260416125728694.htm"
+   ]
+  },
+  {
+   "id": "lpbank-ninh-binh",
+   "name": "LPBank Ninh Bình (đội nhà — góc nhìn bình luận viên)",
+   "coach": "Thái Thanh Tùng",
+   "summary": "Á quân VĐQG 2025. Những nhận xét dưới đây là cách bình luận viên nhìn đội; đối thủ có thể đọc được đúng những điều này.",
+   "confidence": "MEDIUM",
+   "players": [],
+   "tendencies": [
+    {
+     "skill": "Đỡ bước 1",
+     "text": "Hai libero Thanh Diệu và Thu Hiền liên tục gặp khó trước phát bóng tấn công của Long An.",
+     "v": "pqS2zMfSQcw",
+     "t": 2130
+    },
+    {
+     "skill": "Tấn công",
+     "text": "Tấn công phụ thuộc nhiều vào một chủ công (phụ đề ghi áo số 35 — không có trong danh sách, cần kiểm).",
+     "v": "pqS2zMfSQcw",
+     "t": 1050
+    },
+    {
+     "skill": "Tấn công",
+     "text": "Dồn nhiều bóng cho Nguyễn Thị Uyên (phụ đề: \"Huyên/Huyền\"); bình luận viên nói đội chưa đổi cách tấn công.",
+     "v": "ajx5Z28iFQo",
+     "t": 4230
+    },
+    {
+     "skill": "Tấn công",
+     "text": "Ngoại binh Trung Quốc (phụ đề: \"Wang Ju / Quang Ju\") chưa được khai thác triệt để.",
+     "v": "ajx5Z28iFQo",
+     "t": 3600
+    },
+    {
+     "skill": "Tấn công",
+     "text": "Ngoại binh Trung Quốc chơi tốt những trận đầu nhưng hiệu suất giảm dần.",
+     "v": "pqS2zMfSQcw",
+     "t": 4710
+    },
+    {
+     "skill": "Chuyền hai",
+     "text": "Chuyền hai Nguyễn Thị Thủy đưa bóng liên tục cho Nguyễn Thị Uyên.",
+     "v": "pqS2zMfSQcw",
+     "t": 3840
+    },
+    {
+     "skill": "Chắn bóng",
+     "text": "Chắn đôi Lưu Thị Huệ + Nguyễn Thị Thủy ghi điểm chắn.",
+     "v": "pqS2zMfSQcw",
+     "t": 3870
+    },
+    {
+     "skill": "Mùa 2025",
+     "text": "Chung kết 2025: lên điểm phụ thuộc nhiều vào ngoại binh (phụ đề: \"Pascova\"); khi cô xuống hàng sau, sức tấn công yếu đi rõ.",
+     "v": "pJZfaqOuYao",
+     "t": 1080
+    },
+    {
+     "skill": "Mùa 2025",
+     "text": "Đinh Thị Thúy đóng góp chủ yếu ở bám chắn và phòng thủ hàng sau.",
+     "v": "pJZfaqOuYao",
+     "t": 1800
+    },
+    {
+     "skill": "Mùa 2025",
+     "text": "Set 2 chung kết 2025: bước 1 lỗi khá nhiều.",
+     "v": "pJZfaqOuYao",
+     "t": 3540
+    }
+   ],
+   "sources": [
+    "https://vi.wikipedia.org/wiki/C%C3%A2u_l%E1%BA%A1c_b%E1%BB%99_b%C3%B3ng_chuy%E1%BB%81n_Ninh_B%C3%ACnh_Doveco"
+   ]
+  }
+ ]
+}

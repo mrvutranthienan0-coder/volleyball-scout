@@ -6,6 +6,7 @@ const K = {
   idx: 'vbs.index',
   cur: 'vbs.current',
   m: (id) => 'vbs.match.' + id,
+  v: (id) => 'vbs.video.' + id,
 };
 
 export let lastError = null;
@@ -40,10 +41,12 @@ export function defaultTeam() {
   return { name: 'Đội nhà', players };
 }
 
+// null = chưa có đội (lần đầu mở app) hoặc dữ liệu hỏng → app nạp danh sách có sẵn.
 export function loadTeam() {
   const t = get(K.team, null);
   const okP = (p) => p && typeof p.id === 'string' && Number.isFinite(p.num);
-  return t && Array.isArray(t.players) && t.players.every(okP) ? { name: String(t.name || 'Đội nhà'), players: t.players } : defaultTeam();
+  return t && Array.isArray(t.players) && t.players.every(okP)
+    ? { name: String(t.name || 'Đội nhà'), players: t.players, preset: typeof t.preset === 'string' ? t.preset : '' } : null;
 }
 export function saveTeam(t) {
   lastError = set(K.team, t);
@@ -79,6 +82,7 @@ export function saveMatch(m, R) {
 }
 export function deleteMatch(id) {
   del(K.m(id));
+  del(K.v(id));
   set(K.idx, listMatches().filter((x) => x.id !== id));
   if (currentId() === id) setCurrent(null);
 }
@@ -87,3 +91,10 @@ export const currentId = () => {
   return validId(v) ? v : null;
 };
 export const setCurrent = (id) => (id ? set(K.cur, id) : del(K.cur));
+
+// Mốc khớp video của từng trận: { offset: giây, yt: link YouTube }. Không ảnh hưởng dữ liệu trận.
+export function loadVideoSync(id) {
+  const v = validId(id) ? get(K.v(id), null) : null;
+  return { offset: v && Number.isFinite(v.offset) ? v.offset : null, yt: v && typeof v.yt === 'string' ? v.yt : '' };
+}
+export const saveVideoSync = (id, v) => { if (validId(id)) set(K.v(id), v); };

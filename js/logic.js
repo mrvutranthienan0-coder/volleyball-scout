@@ -12,6 +12,21 @@ export const POSITIONS = [
 ];
 export const POS_SHORT = { S: 'CH', OP: 'ĐC', OH: 'CC', MB: 'PC', L: 'L', '': '' };
 
+// Đội hình xuất phát đề xuất theo hệ 5-1: chuyền hai P1, chủ công P2/P5, phụ công P3/P6, đối chuyền P4; libero riêng.
+// Lấy theo thứ tự danh sách; thiếu vị trí nào thì lấp bằng VĐV chưa dùng (ưu tiên người không phải libero).
+export function suggestLineup(players) {
+  const used = new Set();
+  const take = (ok) => {
+    const p = players.find((x) => !used.has(x.id) && ok(x));
+    if (p) used.add(p.id);
+    return p ? p.id : null;
+  };
+  const libero = take((x) => x.pos === 'L');
+  const lineup = ['S', 'OH', 'MB', 'OP', 'OH', 'MB'].map((pos) => take((x) => x.pos === pos));
+  for (let i = 0; i < 6; i++) lineup[i] ||= take((x) => x.pos !== 'L') || take(() => true);
+  return { lineup, libero };
+}
+
 // who: 'pick' = hỏi cầu thủ, 'server' = tự lấy người đang phát, 'none' = không hỏi.
 // need: 'us' = chỉ khi ta phát, 'them' = chỉ khi đối thủ phát.
 export const HOWS = [

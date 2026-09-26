@@ -13,10 +13,14 @@ Dữ liệu chỉ nằm trên máy đó — không gửi đi đâu.
 
 ## 2. Trước trận
 
-1. **Đội của tôi**: sửa số áo, tên (không bắt buộc), vị trí. Tự lưu. Nên khai báo đúng **Chuyền hai** và **Libero**:
-   xoay vòng P1–P6 được tính theo vị trí của chuyền hai.
-2. **Trận mới**: loại trận (đấu tập / chính thức), đối thủ, ngày, thể thức (5 set thắng 3 hoặc 3 set thắng 2),
-   đội hình xuất phát P1–P6 (sơ đồ có lưới ở trên), libero, đội phát bóng trước → **Bắt đầu ghi**.
+1. **Đội của tôi**: lần đầu mở, app đã có sẵn **13 VĐV LPBank Ninh Bình** (số áo, tên, vị trí, chiều cao) lấy từ nguồn công khai —
+   nhãn vàng "Nguồn công khai · HLV kiểm lại". Dấu **?** = hai nguồn ghi khác nhau (vd vị trí của số 11, ngoại binh số 26).
+   Bấm vào VĐV để sửa hoặc xoá; bấm **Lưu** nghĩa là HLV đã kiểm, dấu ? biến mất. **+ Thêm VĐV** ở góc trên.
+   Xoay vòng P1–P6 tính theo vị trí của **chuyền hai**, nên khai đúng Chuyền hai và Libero.
+2. **Trận mới**: loại trận, **đối thủ** (chọn trong 7 đội VĐQG nữ 2026 hoặc "Đội khác…" rồi gõ tên; chọn đội có hồ sơ sẽ hiện HLV,
+   cầu thủ có nguồn và nút **Xem hồ sơ đối thủ**), ngày, thể thức, đội hình, đội phát trước → **Bắt đầu ghi**.
+   Đội hình được **đề xuất sẵn theo hệ 5-1**: chuyền hai P1, chủ công P2/P5, phụ công P3/P6, đối chuyền P4, libero riêng.
+   Muốn đổi: chạm một ô rồi chạm ô khác để đổi chỗ, hoặc chạm ô rồi chạm VĐV ở hàng dự bị để thay.
 
 Set thường tới 25, set quyết định tới 15, phải hơn 2 điểm. App tự kết thúc set/trận.
 
@@ -66,7 +70,18 @@ Bấm **Hội ý ta** (tự trừ lượt, còn 2/set) hoặc **Màn HLV**. Ch�
 - **Xuất CSV**: mỗi pha một dòng, mở bằng Excel/Google Sheets.
 - **Xuất JSON**: bản sao lưu đầy đủ của trận. Trang chủ có **Sao lưu toàn bộ** (đội + mọi trận) và **Nhập dữ liệu (JSON)**.
 
-## 6. Mẹo
+## 6. Hỏi AI, xem lại video, hồ sơ đối thủ
+
+- **Hỏi AI** (Màn HLV góc trên, hoặc Tổng kết): app soạn sẵn một câu hỏi tiếng Việt kèm số liệu set/cả trận (chọn ở ô Phạm vi).
+  Bấm **Sao chép** → **Mở ChatGPT / Gemini / Claude** → dán vào ô chat. App không gửi gì đi; AI chỉ để tham khảo, đối chiếu lại với Màn HLV.
+- **Xem lại video** (trang chủ hoặc Tổng kết): chọn trận → **Chọn video trên máy** (không tải lên đâu, xem được khi mất mạng)
+  hoặc dán link YouTube (cần mạng) → nhập **Pha đầu tiên bắt đầu ở phút:giây** (với video trên máy: tua tới pha đầu rồi bấm
+  **Lấy lúc đang phát**) → **Đặt mốc**. Bấm một pha để tua tới đó (sớm 5 giây). Lọc theo ghi/mất điểm, VĐV, xoay vòng.
+  Chỉ khớp khi trận được ghi trực tiếp tại sân; lệch thì đặt lại mốc.
+- **Hồ sơ đối thủ** (trang chủ): tóm tắt từng đội — HLV, cầu thủ có nguồn báo, nhận xét lối chơi của **bình luận viên**
+  kèm link YouTube đúng phút. Đây là ý kiến bình luận viên, **cần kiểm** bằng video/quan sát thật.
+
+## 7. Mẹo
 
 - Đặt máy chế độ **không làm phiền**, độ sáng cao. App giữ màn hình sáng khi đang ở màn ghi.
 - Ghi **ngay khi trọng tài thổi còi**, chạm 1 trước; cầu thủ chọn sau. Không chắc → "Không rõ", sửa sau trong **Các pha**.

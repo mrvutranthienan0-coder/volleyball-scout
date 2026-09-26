@@ -1,9 +1,10 @@
 // Service worker: lưu toàn bộ file app vào bộ nhớ đệm để chạy offline.
 // Khi sửa code: tăng VERSION để máy người dùng tải bản mới.
-const VERSION = 'vbs-v1';
+const VERSION = 'vbs-v2';
 const ASSETS = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css',
-  'js/app.js', 'js/logic.js', 'js/store.js', 'js/export.js',
+  'js/app.js', 'js/logic.js', 'js/store.js', 'js/export.js', 'js/ai.js', 'js/video.js',
+  'data/roster-lpbank.json', 'data/opponents.json',
   'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
 ];
 

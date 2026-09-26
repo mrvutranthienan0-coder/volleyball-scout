@@ -1,0 +1,130 @@
+{
+ "team": "LPBank Ninh Bình",
+ "label": "Nguồn công khai · HLV kiểm lại",
+ "generated": "2026-09-26",
+ "coach": "Thái Thanh Tùng",
+ "confidence": "MEDIUM — số áo/vị trí/chiều cao lấy từ Wikipedia tiếng Việt, có thể lệch danh sách đăng ký chính thức VFV.",
+ "from": "research/players-vn.json",
+ "sources": [
+  "https://vi.wikipedia.org/wiki/C%C3%A2u_l%E1%BA%A1c_b%E1%BB%99_b%C3%B3ng_chuy%E1%BB%81n_Ninh_B%C3%ACnh_Doveco (truy cập 2026-09-26)",
+  "https://thethaovietnamplus.vn/giai-doan-1-giai-bong-chuyen-vo-dich-quoc-gia-cac-cau-lac-bo-2026-ngoai-binh-trung-quoc-ra-nhap-lpb-ninh-binh-a50941.html",
+  "https://vietnamnet.vn/bich-tuyen-duoc-len-chuc-tai-xuat-bong-chuyen-viet-nam-2496879.html"
+ ],
+ "notInList": "Danh sách đăng ký vòng 1 VĐQG 2026 còn có Nguyễn Thị Thanh Mai, Phạm Thị Hồng Nhung (không có số áo trên Wikipedia) — chưa đưa vào.",
+ "players": [
+  {
+   "id": "lp1",
+   "num": 1,
+   "name": "Bùi Thu Hà",
+   "pos": "OH",
+   "h": 1.67,
+   "src": "vi.wikipedia.org/wiki/CLB_bóng_chuyền_Ninh_Bình_Doveco"
+  },
+  {
+   "id": "lp2",
+   "num": 2,
+   "name": "Lê Bách Hợp",
+   "pos": "S",
+   "h": 1.73,
+   "src": "vi.wikipedia.org/wiki/CLB_bóng_chuyền_Ninh_Bình_Doveco"
+  },
+  {
+   "id": "lp3",
+   "num": 3,
+   "name": "Nguyễn Thị Thanh Diệu",
+   "pos": "L",
+   "h": 1.56,
+   "src": "vi.wikipedia.org/wiki/CLB_bóng_chuyền_Ninh_Bình_Doveco"
+  },
+  {
+   "id": "lp5",
+   "num": 5,
+   "name": "Nguyễn Thị Thủy",
+   "pos": "S",
+   "h": 1.77,
+   "src": "vi.wikipedia.org/wiki/CLB_bóng_chuyền_Ninh_Bình_Doveco"
+  },
+  {
+   "id": "lp6",
+   "num": 6,
+   "name": "Bùi Thị Huyền",
+   "pos": "OP",
+   "h": 1.71,
+   "src": "vi.wikipedia.org/wiki/CLB_bóng_chuyền_Ninh_Bình_Doveco"
+  },
+  {
+   "id": "lp11",
+   "num": 11,
+   "name": "Nguyễn Thị Uyên",
+   "pos": "OH",
+   "h": 1.82,
+   "unv": [
+    "pos"
+   ],
+   "note": "Nguồn ghi 2 vai (chủ công / đối chuyền); app tạm đặt Chủ công.",
+   "role": "Đội trưởng (captain)",
+   "src": "vi.wikipedia.org/wiki/CLB_bóng_chuyền_Ninh_Bình_Doveco; thethaovanhoa.vn (bầu đội trưởng, 2026)"
+  },
+  {
+   "id": "lp12",
+   "num": 12,
+   "name": "Phạm Thị Như Quỳnh",
+   "pos": "MB",
+   "h": 1.75,
+   "src": "vi.wikipedia.org/wiki/CLB_bóng_chuyền_Ninh_Bình_Doveco"
+  },
+  {
+   "id": "lp16",
+   "num": 16,
+   "name": "Đinh Thị Thúy",
+   "pos": "OH",
+   "h": 1.75,
+   "src": "vi.wikipedia.org/wiki/CLB_bóng_chuyền_Ninh_Bình_Doveco"
+  },
+  {
+   "id": "lp17",
+   "num": 17,
+   "name": "Bùi Thị Bích Nga",
+   "pos": "OH",
+   "h": 1.75,
+   "src": "vi.wikipedia.org/wiki/CLB_bóng_chuyền_Ninh_Bình_Doveco"
+  },
+  {
+   "id": "lp18",
+   "num": 18,
+   "name": "Lưu Thị Huệ",
+   "pos": "MB",
+   "h": 1.85,
+   "role": "Tuyển thủ quốc gia",
+   "src": "vi.wikipedia.org/wiki/CLB_bóng_chuyền_Ninh_Bình_Doveco"
+  },
+  {
+   "id": "lp19",
+   "num": 19,
+   "name": "Hà Thị Thu Hiền",
+   "pos": "L",
+   "h": 1.7,
+   "src": "vi.wikipedia.org/wiki/CLB_bóng_chuyền_Ninh_Bình_Doveco"
+  },
+  {
+   "id": "lp20",
+   "num": 20,
+   "name": "Trịnh Thị Hồng Nhung",
+   "pos": "MB",
+   "h": 1.8,
+   "src": "vi.wikipedia.org/wiki/CLB_bóng_chuyền_Ninh_Bình_Doveco"
+  },
+  {
+   "id": "lp26",
+   "num": 26,
+   "name": "Kuttika Kaewpin",
+   "pos": "OH",
+   "h": 1.7,
+   "unv": [
+    "name"
+   ],
+   "note": "Ngoại binh chưa chốt: báo 05/2026 nêu Wang Yizhu (Trung Quốc) thay vì Kuttika Kaewpin.",
+   "src": "vi.wikipedia.org/wiki/CLB_bóng_chuyền_Ninh_Bình_Doveco"
+  }
+ ]
+}
