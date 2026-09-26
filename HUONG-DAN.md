@@ -68,7 +68,7 @@ Bấm **Hội ý ta** (tự trừ lượt, còn 2/set) hoặc **Màn HLV**. Ch�
 - **In / PDF**: bản in gọn.
 - **Chia sẻ**: văn bản tóm tắt để gửi Zalo (mở bảng chia sẻ của máy; máy không hỗ trợ thì tự sao chép để dán).
 - **Xuất CSV**: mỗi pha một dòng, mở bằng Excel/Google Sheets.
-- **Xuất JSON**: bản sao lưu đầy đủ của trận. Trang chủ có **Sao lưu toàn bộ** (đội + mọi trận) và **Nhập dữ liệu (JSON)**.
+- **Xuất JSON**: bản sao lưu đầy đủ của trận. Trang chủ có **Sao lưu toàn bộ** (đội + mọi trận) và **Nhập file JSON**.
 
 ## 6. Hỏi AI, xem lại video, hồ sơ đối thủ
 

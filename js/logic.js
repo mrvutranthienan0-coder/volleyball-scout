@@ -230,20 +230,20 @@ export function insights(m, st, isCurrentSet) {
 
   const w = st.worst;
   if (w && w.n >= 4 && w.diff <= -2) {
-    add(10 + (w.lost - w.won) * 2, `Xoay vòng ${w.k} đang thua điểm: thắng ${w.won}/${w.n} pha (${w.diff}), side-out ${pct(w.soW, w.soN)}.`);
+    add(10 + (w.lost - w.won) * 2, `Xoay vòng ${w.k} đang thua điểm: thắng ${w.won}/${w.n} pha (${w.diff}); khi đối thủ phát, ta giành ${pct(w.soW, w.soN)}.`);
   }
   if (isCurrentSet && st.run.side === 'them' && st.run.len >= 3) {
     add(10 + st.run.len * 2, `Đối thủ đang có chuỗi ${st.run.len} điểm liên tiếp.`);
   }
   const r = st.recv;
   if (r.n >= 5 && r.sum / r.n < 1.8) {
-    add(8 + Math.round((1.8 - r.sum / r.n) * 10), `Đỡ bước 1 cả đội trung bình ${dec(r.sum / r.n)}/3 (${r.n} lần), side-out ${pct(st.soW, st.soN)}.`);
+    add(8 + Math.round((1.8 - r.sum / r.n) * 10), `Đỡ bước 1 cả đội trung bình ${dec(r.sum / r.n)}/3 (${r.n} lần); khi đối thủ phát, ta giành ${pct(st.soW, st.soN)}.`);
   }
   let weak = null;
   for (const p of st.passers) if (p.n >= 4 && p.avg < 1.5 && (!weak || p.avg < weak.avg)) weak = p;
   if (weak) add(7 + Math.round((1.5 - weak.avg) * 10), `${name(weak.pid)} đỡ bước 1 trung bình ${dec(weak.avg)}/3 (${weak.n} lần).`);
   if (st.se >= 3 && st.se > st.ace * 2) {
-    add(6 + st.se - st.ace, `Phát bóng: ${st.se} lỗi / ${st.ace} ace trong ${st.bpN} lượt ta phát.`);
+    add(6 + st.se - st.ace, `Phát bóng: ${st.se} lần hỏng, ${st.ace} lần ăn điểm trực tiếp trong ${st.bpN} lượt ta phát.`);
   }
   let bad = null;
   for (const p of st.players) {

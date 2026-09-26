@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bàn chiến thuật · Scout Bóng Chuyền</title>
+<meta name="description" content="Bàn chiến thuật: xếp đội hình theo xoay vòng, vẽ đường chạy, lưu phương án, trình chiếu cho đội khi hội ý.">
+<meta name="theme-color" content="#F3F1EC">
+<!-- Trang xem thử độc lập. Dùng font + token của app (css/app.css), giao diện riêng ở css/tactics.css. -->
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/tactics.css">
+<style>
+  html, body.tx-page { background: #F3F1EC; min-height: 100vh; padding: 0; }
+</style>
+</head>
+<body class="tx-page">
+<main id="tactics"></main>
+<noscript>Cần bật JavaScript để dùng Bàn chiến thuật.</noscript>
+<script type="module">
+  import { mountTactics } from './js/tactics.js';
+  window.__tactics = await mountTactics(document.getElementById('tactics'));
+  // Mở từ báo cáo đối thủ: tactics.html?plan=<id> → nạp đúng phương án vừa lưu.
+  const planId = new URLSearchParams(location.search).get('plan');
+  if (planId) window.__tactics.loadPlan(planId);
+</script>
+</body>
+</html>

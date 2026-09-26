@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Báo cáo đối thủ · Scout Bóng Chuyền</title>
+<meta name="description" content="Báo cáo scout đối thủ: XMLS Thanh Hóa trước trận 14/10/2026 — phong độ, nhân sự, lối chơi kèm bằng chứng video, phương án đề xuất.">
+<meta name="theme-color" content="#F3F1EC">
+<!-- Trang xem thử độc lập. Font từ css/app.css, giao diện riêng ở css/scout-report.css (phong cách C · Khối mềm). -->
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/scout-report.css">
+<style>
+  html, body.sr-page { background: #F3F1EC; min-height: 100vh; margin: 0; padding: 0; }
+</style>
+</head>
+<body class="sr-page">
+<div id="scout-report"></div>
+<noscript>Cần bật JavaScript để xem báo cáo scout.</noscript>
+<script type="module">
+  import { mountScoutReport } from './js/scout-report.js';
+  const q = new URLSearchParams(location.search);
+  const now = q.get('now') ? new Date(q.get('now')) : undefined; // chỉ để kiểm thử: ?now=2026-09-26T09:00:00Z
+  window.__scout = await mountScoutReport(document.getElementById('scout-report'), { url: q.get('data') || 'data/scout/xmls-thanh-hoa.json' /* mountScoutReport chỉ nhận data/scout/*.json */, now });
+</script>
+</body>
+</html>

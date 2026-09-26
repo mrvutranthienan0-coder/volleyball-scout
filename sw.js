@@ -1,10 +1,12 @@
 // Service worker: lưu toàn bộ file app vào bộ nhớ đệm để chạy offline.
 // Khi sửa code: tăng VERSION để máy người dùng tải bản mới.
-const VERSION = 'vbs-v3';
+const VERSION = 'vbs-v6';
 const ASSETS = [
-  './', 'index.html', 'manifest.webmanifest', 'css/app.css',
+  './', 'index.html', 'manifest.webmanifest', 'css/app.css', 'css/scout-report.css', 'css/tactics.css',
   'js/app.js', 'js/logic.js', 'js/store.js', 'js/export.js', 'js/ai.js', 'js/video.js',
-  'data/roster-lpbank.json', 'data/opponents.json',
+  'js/ai-live.js', 'js/tactics.js', 'js/scout-report.js',
+  'data/roster-lpbank.json', 'data/opponents.json', 'data/scout/xmls-thanh-hoa.json',
+  'fonts/bvp-400-latin-ext.woff2', 'fonts/bvp-400-latin.woff2', 'fonts/bvp-400-vietnamese.woff2', 'fonts/bvp-600-latin-ext.woff2', 'fonts/bvp-600-latin.woff2', 'fonts/bvp-600-vietnamese.woff2', 'fonts/bvp-700-latin-ext.woff2', 'fonts/bvp-700-latin.woff2', 'fonts/bvp-700-vietnamese.woff2',
   'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
 ];
 
