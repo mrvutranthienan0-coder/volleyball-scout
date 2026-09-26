@@ -1,0 +1,89 @@
+// Lưu trữ cục bộ (localStorage). Mọi thao tác đều bọc try/catch:
+// nếu trình duyệt chặn lưu (chế độ ẩn danh, đầy bộ nhớ) app vẫn chạy và báo cho người dùng.
+
+const K = {
+  team: 'vbs.team',
+  idx: 'vbs.index',
+  cur: 'vbs.current',
+  m: (id) => 'vbs.match.' + id,
+};
+
+export let lastError = null;
+
+function get(key, fallback) {
+  try {
+    const v = localStorage.getItem(key);
+    return v == null ? fallback : JSON.parse(v);
+  } catch (e) {
+    lastError = e;
+    return fallback;
+  }
+}
+// Trả về lỗi (hoặc null). lastError chỉ được xoá khi CẢ lượt lưu thành công.
+function set(key, val) {
+  try {
+    localStorage.setItem(key, JSON.stringify(val));
+    return null;
+  } catch (e) {
+    return e;
+  }
+}
+function del(key) {
+  try { localStorage.removeItem(key); } catch (e) { lastError = e; }
+}
+
+export const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+export function defaultTeam() {
+  const players = [];
+  for (let i = 1; i <= 14; i++) players.push({ id: 'p' + i, num: i, name: '', pos: '' });
+  return { name: 'Đội nhà', players };
+}
+
+export function loadTeam() {
+  const t = get(K.team, null);
+  const okP = (p) => p && typeof p.id === 'string' && Number.isFinite(p.num);
+  return t && Array.isArray(t.players) && t.players.every(okP) ? { name: String(t.name || 'Đội nhà'), players: t.players } : defaultTeam();
+}
+export function saveTeam(t) {
+  lastError = set(K.team, t);
+  return !lastError;
+}
+
+function summary(m, R) {
+  return {
+    id: m.id, opp: m.opponent, date: m.date, type: m.type, status: m.status,
+    sets: R ? R.sets.map((s) => [s.us, s.them]) : [], winsUs: R ? R.winsUs : 0, winsThem: R ? R.winsThem : 0,
+  };
+}
+
+export const validId = (id) => typeof id === 'string' && /^[A-Za-z0-9_-]{1,40}$/.test(id);
+export const isMatch = (m) => !!m && validId(m.id) && Array.isArray(m.events) && Array.isArray(m.players);
+
+export function listMatches() {
+  const v = get(K.idx, []);
+  return Array.isArray(v) ? v.filter((x) => x && validId(x.id)) : [];
+}
+export function loadMatch(id) {
+  if (!validId(id)) return null;
+  const m = get(K.m(id), null);
+  return isMatch(m) ? m : null;
+}
+export function saveMatch(m, R) {
+  const e1 = set(K.m(m.id), m);
+  const idx = listMatches().filter((x) => x.id !== m.id);
+  idx.unshift(summary(m, R));
+  const e2 = set(K.idx, idx);
+  lastError = e1 || e2 || null;
+  return !lastError;
+}
+export function deleteMatch(id) {
+  del(K.m(id));
+  set(K.idx, listMatches().filter((x) => x.id !== id));
+  if (currentId() === id) setCurrent(null);
+}
+export const currentId = () => {
+  const v = get(K.cur, null);
+  return validId(v) ? v : null;
+};
+export const setCurrent = (id) => (id ? set(K.cur, id) : del(K.cur));
