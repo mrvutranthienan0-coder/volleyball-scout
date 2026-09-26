@@ -29,12 +29,16 @@ export function parseImport(text) {
   if (d && d.app === 'scout-bong-chuyen') {
     const matches = d.matches || (d.match ? [d.match] : []);
     matches.forEach(check);
+    if (d.team && !(Array.isArray(d.team.players) && d.team.players.every(okPlayer))) throw new Error('Danh sách đội trong file không hợp lệ.');
     return { team: d.team || null, matches };
   }
   throw new Error('File không phải dữ liệu của Scout Bóng Chuyền.');
 }
+// VĐV hợp lệ: id chỉ gồm chữ/số/-/_ và số áo là số — hai trường này được chèn thẳng vào HTML.
+const okPlayer = (p) => !!p && typeof p.id === 'string' && /^[A-Za-z0-9_-]{1,40}$/.test(p.id) && Number.isFinite(p.num);
 function check(m) {
-  if (!m || typeof m.id !== 'string' || !/^[A-Za-z0-9_-]{1,40}$/.test(m.id) || !Array.isArray(m.events) || !Array.isArray(m.players)) {
+  if (!m || typeof m.id !== 'string' || !/^[A-Za-z0-9_-]{1,40}$/.test(m.id) || !Array.isArray(m.events) || !Array.isArray(m.players)
+    || !m.players.every(okPlayer) || !m.events.every((e) => e && typeof e.t === 'string')) {
     throw new Error('Dữ liệu trận không hợp lệ.');
   }
   m.date = String(m.date ?? '');

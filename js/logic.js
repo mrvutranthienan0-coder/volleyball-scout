@@ -24,6 +24,9 @@ export function suggestLineup(players) {
   const libero = take((x) => x.pos === 'L');
   const lineup = ['S', 'OH', 'MB', 'OP', 'OH', 'MB'].map((pos) => take((x) => x.pos === pos));
   for (let i = 0; i < 6; i++) lineup[i] ||= take((x) => x.pos !== 'L') || take(() => true);
+  // Không đủ 6 người trên sân mà đã giữ riêng libero → cho libero vào sân thay vì để trống ô.
+  const gap = lineup.indexOf(null);
+  if (gap >= 0 && libero) return { lineup: lineup.map((x, i) => (i === gap ? libero : x)), libero: null };
   return { lineup, libero };
 }
 

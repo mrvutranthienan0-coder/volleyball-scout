@@ -9,10 +9,11 @@ export const AI_SITES = [
   ['Claude', 'https://claude.ai/new'],
 ];
 
-const r2 = (x) => Math.round(x * 100) / 100;
+const r2 = (x) => +x.toFixed(2); // cùng cách làm tròn với màn HLV (L.dec)
+const cut = (s, n = 60) => String(s || '').slice(0, n); // tên tự nhập có thể rất dài → giữ prompt < AI_MAX
 const who = (m, pid) => {
   const p = playerById(m, pid);
-  return p ? `#${p.num}${p.name ? ' ' + p.name : ''}${p.pos ? ' (' + POS_SHORT[p.pos] + ')' : ''}` : '?';
+  return p ? `#${p.num}${p.name ? ' ' + cut(p.name, 40) : ''}${p.pos ? ' (' + POS_SHORT[p.pos] + ')' : ''}` : '?';
 };
 
 // setN = null → cả trận.
@@ -22,7 +23,7 @@ export function aiData(m, setN) {
   const s = st.src;
   const cur = setN ? R.sets[setN - 1] : null;
   return {
-    doi: m.teamName, doiThu: m.opponent || 'Đối thủ', ngay: m.date, loai: m.type === 'practice' ? 'đấu tập' : 'chính thức',
+    doi: cut(m.teamName), doiThu: cut(m.opponent) || 'Đối thủ', ngay: m.date, loai: m.type === 'practice' ? 'đấu tập' : 'chính thức',
     phamVi: setN ? `set ${setN}` : 'cả trận',
     setThang: [R.winsUs, R.winsThem], cacSet: setScores(R), tiSo: cur ? [cur.us, cur.them] : undefined,
     pha: st.n, thang: st.won, thua: st.lost,

@@ -174,7 +174,7 @@ function playerSheet() {
         <label class="field">Số áo<input name="num" type="number" inputmode="numeric" min="0" max="99" required value="${v.num}" data-testid="pf-num"></label>
         <label class="field">Chiều cao (m)<input name="h" type="text" inputmode="decimal" placeholder="1,75" value="${Number.isFinite(v.h) && v.h > 0 ? L.dec(v.h, 2) : ''}" data-testid="pf-h"></label>
       </div>
-      <label class="field">Tên<input name="name" type="text" value="${esc(v.name)}" placeholder="Họ tên" data-testid="pf-name"></label>
+      <label class="field">Tên<input name="name" type="text" maxlength="40" value="${esc(v.name)}" placeholder="Họ tên" data-testid="pf-name"></label>
       <div class="field">Vị trí ${radio('pos', v.pos || '', L.POSITIONS.map(([k]) => [k, POS_NAME[k]]))}</div>
       <p class="err" id="pfErr" role="alert"></p>
       <div class="row2"><button class="btn primary" type="submit" data-testid="pf-ok">Lưu</button><button class="btn" type="button" data-act="closeSheet">Huỷ</button></div>
@@ -203,7 +203,8 @@ function saveTeam() {
     for (const p of team.players) {
       const q = P(p.id);
       if (q) Object.assign(q, p);
-      else match.players.push({ ...p });
+      // VĐV mới vào dự bị — trừ khi trùng số áo với người đã có trong trận (vd sau khi nạp lại danh sách giữa trận).
+      else if (!match.players.some((x) => x.num === p.num)) match.players.push({ ...p });
     }
     match.teamName = team.name;
     R = L.replay(match);
@@ -260,7 +261,8 @@ function luTap(d) {
 function readLineup(form) {
   const lineup = [1, 2, 3, 4, 5, 6].map((z) => form.elements['p' + z].value);
   const libero = form.elements.libero.value || null;
-  if (!lineup.every(Boolean) || new Set(lineup).size !== 6) return { err: 'Đội hình P1–P6 phải là 6 VĐV khác nhau.' };
+  if (!lineup.every(Boolean)) return { err: 'Còn ô trống trong P1–P6: cần đủ 6 VĐV (thêm VĐV ở "Đội của tôi").' };
+  if (new Set(lineup).size !== 6) return { err: 'Đội hình P1–P6 phải là 6 VĐV khác nhau.' };
   if (libero && lineup.includes(libero)) return { err: 'Libero không được nằm trong 6 VĐV xuất phát.' };
   return { lineup, libero };
 }
@@ -292,7 +294,7 @@ function viewSetup() {
       <div class="field">Loại trận ${radio('type', 'official', [['practice', 'Đấu tập'], ['official', 'Chính thức']])}</div>
       ${lg.length ? `<label class="field">Đối thủ<select name="oppPick" data-testid="opp-pick"><option value="">— Chọn đối thủ —</option>
         ${lg.map((t) => `<option value="${esc(t.name)}">${esc(t.name)}</option>`).join('')}<option value="__other">Đội khác…</option></select></label>` : ''}
-      <label class="field" id="oppOther" ${lg.length ? 'hidden' : ''}>${lg.length ? 'Tên đội khác' : 'Đối thủ'}<input name="opp" type="text" placeholder="Tên đội bạn" data-testid="opp"></label>
+      <label class="field" id="oppOther" ${lg.length ? 'hidden' : ''}>${lg.length ? 'Tên đội khác' : 'Đối thủ'}<input name="opp" type="text" maxlength="60" placeholder="Tên đội bạn" data-testid="opp"></label>
       <div id="oppInfo" data-testid="opp-info"></div>
       <label class="field">Ngày<input name="date" type="date" value="${today}"></label>
       <div class="field">Thể thức ${radio('bestOf', '5', [['5', '5 set (thắng 3)'], ['3', '3 set (thắng 2)']])}</div>
@@ -524,11 +526,11 @@ function renderSheet() {
   } else if (s === 'player') {
     inner = playerSheet();
   } else if (s === 'teamName') {
-    inner = `<h3>Tên đội</h3><form id="teamNameForm" class="form"><label class="field">Tên đội<input name="name" type="text" required value="${esc(team.name)}" data-testid="tn-input"></label>
+    inner = `<h3>Tên đội</h3><form id="teamNameForm" class="form"><label class="field">Tên đội<input name="name" type="text" maxlength="60" required value="${esc(team.name)}" data-testid="tn-input"></label>
       <div class="row2"><button class="btn primary" type="submit" data-testid="tn-ok">Lưu</button><button class="btn" type="button" data-act="closeSheet">Huỷ</button></div></form>`;
   } else if (s === 'opp') {
     const b = briefById(ui.oppId);
-    inner = (b ? teamBrief(b, true) : '<p>Không tìm thấy hồ sơ.</p>') + '<button class="btn wide" data-act="closeSheet">Đóng</button>';
+    inner = (b ? `<p class="srcnote" data-testid="opp-sheet-label"><b>${esc(DATA.opp.label)}</b></p>` + teamBrief(b, true) : '<p>Không tìm thấy hồ sơ.</p>') + '<button class="btn wide" data-act="closeSheet">Đóng</button>';
   } else if (s === 'text') {
     inner = `<h3>Văn bản tổng kết</h3><p class="hint">Chọn tất cả rồi sao chép vào Zalo.</p><textarea readonly rows="12">${esc(ui.text)}</textarea><button class="btn" data-act="closeSheet">Đóng</button>`;
   }
@@ -561,7 +563,7 @@ function viewRallies() {
     </button>`).join('');
   const ign = R.ignored.map((i) => {
     const ev = match.events[i];
-    return `<button class="rrow ign" data-act="${ev.t === 'r' ? 'edit' : 'delIgnored'}" data-i="${i}">Bị bỏ qua: ${ev.t === 'r' ? L.HOW[ev.how].label : ev.t} — bấm để ${ev.t === 'r' ? 'sửa/xoá' : 'xoá'}</button>`;
+    return `<button class="rrow ign" data-act="${ev.t === 'r' ? 'edit' : 'delIgnored'}" data-i="${i}">Bị bỏ qua: ${ev.t === 'r' ? L.HOW[ev.how].label : esc(ev.t)} — bấm để ${ev.t === 'r' ? 'sửa/xoá' : 'xoá'}</button>`;
   }).join('');
   return `
   <header class="top"><button class="back" data-act="nav" data-to="#/live">‹</button><h1>Các pha (${R.rallies.length})</h1></header>
@@ -692,17 +694,18 @@ function teamBrief(t, open) {
   const ps = t.players.map((p) => `<li>${p.num != null ? `<b>#${p.num}</b> ` : ''}${esc(p.name)}${p.pos ? ` — ${esc(p.pos)}` : ''}${p.note ? ` <small>(${esc(p.note)})</small>` : ''}</li>`).join('');
   const td = t.tendencies.map((x) => {
     const v = vids[x.v] || {};
-    const url = `https://www.youtube.com/watch?v=${encodeURIComponent(x.v)}&t=${x.t}s`;
+    const url = `https://www.youtube.com/watch?v=${encodeURIComponent(x.v)}&t=${Math.max(0, parseInt(x.t, 10) || 0)}s`;
     return `<li><span class="tag">${esc(x.skill)}</span> ${esc(x.text)}
       <a class="yt" href="${url}" title="${esc(v.title || '')}" target="_blank" rel="noopener noreferrer" data-testid="opp-link">▶ ${V.fmtTime(x.t)} · video ${v.date ? X.fmtDate(v.date) : esc(x.v)}</a></li>`;
   }).join('');
   const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return u; } };
+  const srcs = t.sources.filter((u) => /^https?:\/\//i.test(u)); // chỉ link web — chặn javascript:/data:
   return `<details class="card oppteam" data-testid="opp-team" data-id="${esc(t.id)}" ${open ? 'open' : ''}>
     <summary><b>${esc(t.name)}</b><small>${t.coach ? 'HLV ' + esc(t.coach) + ' · ' : ''}${t.tendencies.length} nhận xét · độ tin cậy ${esc(t.confidence)}</small></summary>
     <p>${esc(t.summary)}</p>
     <h3>Cầu thủ có nguồn</h3>${ps ? `<ul class="opl">${ps}</ul>` : '<p class="hint">Chưa có danh sách cầu thủ từ báo/Wikipedia.</p>'}
     <h3>Xu hướng theo bình luận viên</h3>${td ? `<ul class="otd">${td}</ul>` : '<p class="hint">Chưa có video phân tích lối chơi.</p>'}
-    ${t.sources.length ? `<p class="hint">Nguồn: ${t.sources.map((u) => `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(host(u))}</a>`).join(', ')}</p>` : ''}
+    ${srcs.length ? `<p class="hint">Nguồn: ${srcs.map((u) => `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(host(u))}</a>`).join(', ')}</p>` : ''}
   </details>`;
 }
 function viewOpp(id) {
@@ -742,7 +745,7 @@ function viewVideo(id) {
     </div>
     <div id="vplayer"></div>
     <form id="syncForm" class="syncform">
-      <label class="field">Pha đầu tiên bắt đầu ở (phút:giây)<input name="off" type="text" inputmode="numeric" placeholder="12:34" value="${vid.off != null ? V.fmtTime(vid.off) : ''}" data-testid="v-off"></label>
+      <label class="field">Pha đầu tiên bắt đầu ở (phút:giây)<input name="off" type="text" inputmode="numeric" placeholder="12:34 · âm nếu quay muộn: -0:30" value="${vid.off != null ? V.fmtTime(vid.off) : ''}" data-testid="v-off"></label>
       <div class="row2"><button class="btn primary" type="submit" data-testid="v-off-ok">Đặt mốc</button><button class="btn" type="button" data-act="vNow" data-testid="v-now">Lấy lúc đang phát</button></div>
     </form>
     <p class="hint">Bấm một pha để tua tới đó (sớm ${V.LEAD} giây). Giờ mỗi pha lấy từ lúc scout bấm ghi, nên chỉ khớp khi trận được ghi trực tiếp.</p>
@@ -822,7 +825,13 @@ function vSeek(i) {
   vRedrawList();
 }
 function vFilter(k, v) {
-  if (k === 'match') { vid.now = null; return go('#/video/' + v); }
+  if (k === 'match') {
+    // Trận khác = video khác: gỡ video/YouTube đang mở và bộ lọc VĐV của trận cũ.
+    if (vid.url) URL.revokeObjectURL(vid.url);
+    Object.assign(vid, { now: null, kind: null, url: null, yt: null, f: { res: '', p: '', rot: '' } });
+    if (vid.el) vid.el.innerHTML = '';
+    return go('#/video/' + v);
+  }
   vid.f[k] = v;
   vRedrawList();
 }
@@ -1029,6 +1038,11 @@ document.addEventListener('visibilitychange', () => wake(document.body.dataset.r
 
 // ---------- khởi động ----------
 [DATA.roster, DATA.opp] = await Promise.all([loadJSON('data/roster-lpbank.json'), loadJSON('data/opponents.json')]);
+// Hồ sơ đối thủ do nghiên cứu cập nhật tay: thiếu trường nào thì coi là rỗng, không để cả màn trắng.
+if (DATA.opp) {
+  DATA.opp.teams = (Array.isArray(DATA.opp.teams) ? DATA.opp.teams : []).filter((t) => t && t.name)
+    .map((t) => ({ ...t, players: t.players || [], tendencies: t.tendencies || [], sources: t.sources || [] }));
+}
 team = store.loadTeam();
 if (!team) { team = presetTeam() || store.defaultTeam(); store.saveTeam(team); } // lần đầu mở: nạp sẵn đội
 try {
