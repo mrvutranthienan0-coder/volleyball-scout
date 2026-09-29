@@ -20,9 +20,9 @@ export const OPTIONS = [
   { k: 'cmp', q: 'So sánh 2 phương án', sub: '2 xoay vòng hoặc 2 VĐV cùng vị trí', icon: 'target' },
 ];
 const BUILD = { rot: A.artRot, recv: A.artRecv, scor: A.artScor, opp: A.artOpp, runs: A.artRuns };
-const TAB = { rot: 'Xoay vòng', recv: 'Đỡ bước 1', scor: 'Ghi điểm / lỗi', opp: 'Đối thủ', runs: 'Chuỗi', cmp: 'So sánh', player: 'VĐV', overview: 'Tổng quan' };
+const TAB = { rot: 'Xoay vòng', recv: 'Đỡ bước 1', scor: 'Ghi điểm / lỗi', opp: 'Đối thủ', runs: 'Chuỗi', cmp: 'So sánh', player: 'VĐV', overview: 'Tổng quan', notOurs: 'Không có số liệu' };
 
-const S = { lastOpt: 0, lastK: '', aiFail: '', el: null, open: false, getMatch: null, id: null, setDefault: null, scope: 'set', arts: new Map(), seq: 0, build: null, onToast: null, lastFocus: null };
+const S = { lastOpt: 0, lastK: '', el: null, open: false, getMatch: null, id: null, setDefault: null, scope: 'set', arts: new Map(), seq: 0, build: null, onToast: null, lastFocus: null };
 const arts = () => { if (!S.arts.has(S.id)) S.arts.set(S.id, []); return S.arts.get(S.id); };
 const curSet = () => { const m = S.getMatch(); if (!m) return null; const R = replay(m); return S.setDefault || (R.cur ? R.cur.n : R.sets.length || null); };
 const setN = () => (S.scope === 'set' ? curSet() : null);
@@ -92,10 +92,20 @@ function render() {
       <div class="as-thread" data-testid="as-thread">${list.map(itemHtml).join('')}${S.build ? buildHtml() : ''}</div>
     </div>
     <form class="as-ask" data-testid="as-ask" autocomplete="off"><label class="vh" for="as-q">Hỏi thêm</label><input id="as-q" name="q" placeholder="Hỏi thêm… vd: số 12 đang thế nào?" maxlength="500"><button type="submit" class="pill-btn dark" data-testid="as-send">Hỏi</button></form>
-    <p class="as-foot" data-testid="as-foot">${!conf ? 'Số liệu tự tính trên máy. Nối máy chủ AI trong Cài đặt để có thêm nhận xét.' : S.aiFail ? `Máy chủ AI không phản hồi (${esc(S.aiFail)}) — đang dùng số liệu trên máy.` : 'Đã nối máy chủ AI: có thêm nhận xét của AI dưới mỗi thẻ.'}</p>
+    <p class="as-foot" data-testid="as-foot">${footText(conf)}</p>
   </aside>`;
 }
 
+// Chân bảng: trạng thái THẬT của lần gọi máy chủ AI gần nhất — chưa gọi thì không nói "đã nối".
+function footText(conf) {
+  if (!conf) return 'Số liệu tự tính trên máy. Nối máy chủ AI trong Cài đặt để có thêm nhận xét.';
+  if (arts().some((a) => a.ai && a.ai.state === 'wait')) return 'Đang hỏi máy chủ AI… Số trên thẻ đã tính xong trên máy.';
+  const L = AIL.lastCall();
+  const hm = (t) => new Date(t).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+  if (!L) return 'Đã cài máy chủ AI, chưa gọi lần nào — số trên thẻ tự tính trên máy; hỏi một câu để thử kết nối.';
+  if (!L.ok) return `Máy chủ AI không phản hồi lần gọi lúc ${hm(L.at)} (${esc(L.msg)}) — đang dùng số liệu trên máy.`;
+  return `Đã nối máy chủ AI (trả lời lúc ${hm(L.at)}): có thêm nhận xét của AI dưới mỗi thẻ.`;
+}
 function itemHtml(a) {
   const ai = a.ai;
   const aiHtml = !ai ? '' : ai.state === 'wait' ? '<p class="as-ai-wait" data-testid="as-ai-wait"><i class="dots" aria-hidden="true"></i>AI đang suy nghĩ…</p>'
@@ -110,6 +120,7 @@ function itemHtml(a) {
       <p class="as-ans" data-testid="as-answer">${esc(a.answer)}</p>
       <div class="as-chart">${artChart(a.chart)}</div>
       ${tbl}
+      ${a.link ? `<p><a class="pill-btn" href="${esc(a.link.href)}" data-testid="as-link">${esc(a.link.text)}</a></p>` : ''}
       ${metaLine(a.nText, a.cert, a.note || '')}
       <div class="as-acts"><button type="button" class="pill-btn" data-as="copy" data-id="${a.id}" data-testid="as-copy">Sao chép</button><button type="button" class="pill-btn" data-as="del" data-id="${a.id}" data-testid="as-del">Xoá</button></div>
     </section>
@@ -158,7 +169,7 @@ function add(art, q) {
   S.build = null;
   render();
   scrollTo('#as-a-' + a.id);
-  if (AIL.isConfigured()) askAI(a);
+  if (AIL.isConfigured() && a.kind !== 'notOurs') askAI(a);
   return a;
 }
 async function askAI(a) {
@@ -168,7 +179,6 @@ async function askAI(a) {
   let r;
   try { r = await AIL.askAIForMatch(a.aiQ || a.q, m, a.setN); } catch { r = { ok: false, error: { message: '' } }; }
   if (!arts().includes(a)) return; // thẻ đã bị xoá / đổi trận trong lúc chờ
-  S.aiFail = r && r.ok && r.answer ? '' : String((r && r.error && r.error.message) || 'lỗi lạ').replace(/\s*—\s*ghi tay\s*$/, '');
   a.ai = r && r.ok && r.answer
     ? { state: 'ok', answer: r.answer, plan: r.plan, unverified: r.unverified_numbers }
     : { state: 'fail', msg: String((r && r.error && r.error.message) || '').replace(/\s*—\s*ghi tay\s*$/, '') };
@@ -198,11 +208,12 @@ function rerenderKeepScroll() {
 }
 function runOption(k, q) {
   // Bấm đúp / bấm liền 2 lần cùng một lựa chọn → chỉ tạo 1 thẻ.
-  if (S.lastK === k && Date.now() - S.lastOpt < 800) return;
-  S.lastK = k; S.lastOpt = Date.now();
+  // Chỉ chặn lần bấm lặp NGAY sau đó (không có thao tác nào khác xen giữa); "So sánh" mở lại khung chọn thì không tạo thẻ nên không cần chặn.
   const m = S.getMatch();
   if (!m) return;
-  if (k === 'cmp') { startBuild(); return; }
+  if (k === 'cmp') { S.lastK = ''; startBuild(); return; }
+  if (S.lastK === k && Date.now() - S.lastOpt < 800) return;
+  S.lastK = k; S.lastOpt = Date.now();
   const R = replay(m), sn = setN();
   const art = BUILD[k](m, R, sn);
   add({ ...art, setN: sn }, q || OPTIONS.find((o) => o.k === k).q);
@@ -235,6 +246,7 @@ function onClick(e) {
   const b = e.target.closest('[data-as]');
   if (!b || b.disabled) return;
   const act = b.dataset.as;
+  if (act !== 'opt') S.lastK = ''; // thao tác khác xen giữa → lần bấm lựa chọn sau là câu hỏi mới thật
   if (act === 'close') closeAssistant();
   else if (act === 'scope') { S.scope = b.dataset.v; render(); }
   else if (act === 'opt') runOption(b.dataset.k);
@@ -283,6 +295,7 @@ function onSubmit(e) {
   if (it.k === 'cmp') art = A.artCmp(m, R, sn, it.o);
   else if (it.k === 'player') art = A.artPlayer(m, R, sn, it.pid);
   else if (it.k === 'overview') art = A.artOverview(m, R, sn, true);
+  else if (it.k === 'notOurs') art = A.artNotOurs(m, R, sn, it.num);
   else art = BUILD[it.k](m, R, sn);
   add({ ...art, setN: sn }, q);
 }

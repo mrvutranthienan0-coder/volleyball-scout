@@ -15,7 +15,7 @@
 .tch .gl { stroke: var(--line-2); stroke-width: 1; }
 .tch .zl { stroke: var(--ink-4); stroke-width: 1; }
 .tch .ml { stroke: var(--ink-4); stroke-width: 1; stroke-dasharray: 3 3; }
-.tch text { font-family: var(--font); font-size: 10px; fill: var(--muted); }
+.tch text { font-family: var(--font); font-size: 11px; fill: var(--muted); }
 .tch .yt { text-anchor: end; }
 .tch .xt.e { text-anchor: end; }
 .tch .xt.m { text-anchor: middle; }
@@ -57,7 +57,7 @@
 .seq { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; }
 .seq .sq { width: 12px; height: 12px; border-radius: 3px; }
 .seq .sq.w { background: var(--mint-d); } .seq .sq.l { background: var(--peach-d); }
-.seq .sb { font-style: normal; font-size: 11px; font-weight: 700; color: var(--muted); margin: 0 3px; }
+.seq .sb { font-style: normal; font-size: 12px; font-weight: 700; color: var(--muted); margin: 0 3px; }
 
 /* ---------- Kết luận hiện tại ---------- */
 .nowc { display: grid; gap: 10px; }
@@ -76,7 +76,7 @@
 .rs-g { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; background: var(--soft); border-radius: 16px; padding: 6px; }
 .rs-c { background: var(--tile); border-radius: 12px; padding: 6px 6px 2px; min-width: 0; }
 .rs-h { display: flex; align-items: baseline; gap: 6px; font-size: 13px; }
-.rs-h small { margin-left: auto; color: var(--muted); font-size: 11px; }
+.rs-h small { margin-left: auto; color: var(--muted); font-size: 12px; }
 .rs-c .tch text { display: none; }
 .rs-c .hint { margin: 6px 0; font-size: 12px; }
 
@@ -151,7 +151,7 @@
 .as-build .chips-f { margin-left: -8px; }
 .as-ask { flex: none; display: flex; gap: 6px; align-items: center; padding: 8px 8px 0 12px; background: var(--tile); border-top: 1px solid var(--line); }
 .as-ask input { flex: 1; min-width: 0; min-height: 48px; border: 0; border-radius: var(--r-pill); padding: 0 16px; background: var(--soft); font-size: 15px; }
-.as-foot { flex: none; margin: 0; padding: 2px 16px calc(8px + var(--safe-b)); background: var(--tile); font-size: 11.5px; color: var(--muted); }
+.as-foot { flex: none; margin: 0; padding: 2px 16px calc(8px + var(--safe-b)); background: var(--tile); font-size: 12px; color: var(--muted); }
 
 /* điện thoại / máy tính bảng dọc: bảng trượt gần kín màn */
 @media (max-width: 1023px) {

@@ -23,10 +23,12 @@ async function loadJSON(path) {
   try { const r = await fetch(path); return r.ok ? await r.json() : null; } catch { return null; }
 }
 
+let curErr = ''; // trận đang ghi có dữ liệu hỏng → màn ghi / hội ý / các pha báo lỗi thay vì im lặng về trang chủ
 function loadCurrent() {
   const id = store.currentId();
+  curErr = '';
   match = id ? store.loadMatch(id) : null;
-  R = match ? L.replay(match) : null;
+  try { R = match ? L.replay(match) : null; } catch (e) { match = null; R = null; curErr = (e && e.message) || 'lỗi lạ'; throw e; }
 }
 
 // ---------- ghi dữ liệu ----------
@@ -124,6 +126,7 @@ function render() {
   if (route === 'team' && arg) ui.selPid = safeDecode(arg);
   let html;
   try {
+  if (curErr && !match && store.currentId() && (route === 'live' || route === 'coach' || route === 'rallies')) throw new Error(curErr);
   if (route === 'team') html = viewTeam();
   else if (route === 'setup') html = viewSetup();
   else if (route === 'live' && match) html = viewLive();
@@ -145,7 +148,12 @@ function render() {
   const warn = store.lastError
     ? `<div class="banner" role="alert">Không lưu được vào máy (${esc(store.lastError.name)}). Hãy xuất JSON ngay để tránh mất dữ liệu.</div>` : '';
   app.innerHTML = shell(route || 'home', warn, html);
-  if (route === 'team' && arg && ui.scrollTop) { window.scrollTo(0, 0); ui.scrollTop = false; }
+  if (route === 'team' && arg && ui.scrollTop) {
+    // Điện thoại: danh sách đội nằm trên, hồ sơ ở dưới → chạm một người thì cuộn tới hồ sơ người đó.
+    const pf = window.matchMedia('(max-width: 700px)').matches && $('[data-testid=profile]');
+    if (pf) pf.scrollIntoView({ block: 'start' }); else window.scrollTo(0, 0);
+    ui.scrollTop = false;
+  }
   if (route === 'video') mountPlayer();
   mountModule(route, arg);
   if (route === 'opp') import('./player-panel.js').then((m) => m.mountOppPlayers(app, DATA.opp)).catch(() => {}); // thẻ cầu thủ có ảnh + hồ sơ bên cạnh
@@ -250,6 +258,7 @@ function viewHome() {
       <div class="mvs"><b>${esc(nm.home || team.name)}</b><i>gặp</i><b>${esc(nm.opponent)}</b></div>
       <div class="count" data-testid="home-countdown">${esc(countdownText(nm.start))}</div>
       <p>${esc(vnWhen(nm.start))}<br>${esc(nm.venue || '')}</p>
+      <div class="acts"><button class="pill-btn dark" data-act="nav" data-to="#/scout" data-testid="home-cta">Đọc báo cáo đối thủ</button><button class="pill-btn" data-act="nav" data-to="${live ? '#/live' : '#/setup'}">Ghi trận</button></div>
     </section>`;
   } else {
     first = `<section class="t tile-sky match-tile"><div class="lab">Trận tới</div><div class="count">Chưa có lịch</div><p>Thêm báo cáo đối thủ vào <b>data/scout/</b> để thấy đếm ngược tới trận.</p></section>`;
@@ -356,14 +365,10 @@ async function mountModule(route, arg) {
       const tx = await import('./tactics.js');
       if (MOD !== mine) return;
       node.innerHTML = '';
-      mine.api = await tx.mountTactics(node);
+      // Phương án có sẵn trong báo cáo đi kèm app = chỉ đọc; link chia sẻ trên máy mới vẫn mở được, sửa rồi Lưu = bản riêng.
+      mine.api = await tx.mountTactics(node, DATA.scout ? { builtins: tx.builtinPlansOf(DATA.scout) } : {});
       if (MOD !== mine) { mine.api.destroy(); return; }
-      if (arg) {
-        // Link chia sẻ trên máy mới: phương án có sẵn trong báo cáo đi kèm app (chỉ đọc; sửa trên bàn = bản lưu riêng trên máy).
-        const id = safeDecode(arg);
-        const B = DATA.scout && Array.isArray(DATA.scout.plans) ? DATA.scout.plans.find((x) => x && x.plan && x.plan.id === id) : null;
-        if (!mine.api.loadPlan(id) && !(B && mine.api.loadPlan({ ...B.plan, source: 'ai' }))) toast('Không tìm thấy phương án này trên máy.');
-      }
+      if (arg && !mine.api.loadPlan(safeDecode(arg))) toast('Không tìm thấy phương án này trên máy.');
     } else {
       const sr = await import('./scout-report.js');
       if (MOD !== mine) return;
@@ -573,25 +578,34 @@ function playerNotes(p, a, agg) {
   const per = (v) => L.dec(v / m);
   const vals = (f) => team.players.map((q) => agg.per[q.id]).filter(Boolean).map(f);
   const rankOf = (f) => 1 + vals(f).filter((v) => v > f(a)).length;
-  // Điểm mạnh nhất: kỹ năng xếp hạng cao nhất trong đội (có số liệu thật, > 0).
+  // Cùng cổng lời khuyên với Hội ý (L.N_MIN + L.clearGap): "nên…" chỉ khi đủ mẫu VÀ chênh với phần còn lại của đội vượt sai số.
+  const others = Object.values(agg.per).filter((x) => x !== a);
+  const sum = (f) => others.reduce((s2, x) => s2 + f(x), 0);
+  const rcvOf = (x) => Object.values(x.rot).reduce((s2, r) => [s2[0] + ((r.rcv || {}).bad || 0), s2[1] + ((r.rcv || {}).good || 0)], [0, 0]);
+  const gate = (v, n, rv, rn, dir) => n >= L.N_MIN && rn >= L.N_MIN && (dir > 0 ? v / n > rv / rn : v / n < rv / rn) && L.clearGap(v, n, rv, rn).clear;
+  const unsure = (n) => (n < L.N_MIN ? `Mới ${n} lần — chưa đủ chắc để khuyên.` : 'Chênh với cả đội còn trong sai số — chưa đủ chắc để khuyên.');
+  // Điểm mạnh nhất: kỹ năng xếp hạng cao nhất trong đội (có số liệu thật, > 0). Chỉ kể số; lời khuyên kèm theo phải qua cổng.
   const cand = [
-    ['b', a.b, rankOf((x) => x.b), `Chắn bóng${rankOf((x) => x.b) === 1 ? ' tốt nhất đội' : ''}: ${a.b} điểm chắn sau ${a.m} trận.`, `Khoảng ${per(a.b)} điểm chắn mỗi trận. Giữ ở giữa lưới khi đối thủ đánh nhanh.`],
+    ['b', a.b, rankOf((x) => x.b), `Chắn bóng${rankOf((x) => x.b) === 1 ? ' tốt nhất đội' : ''}: ${a.b} điểm chắn sau ${a.m} trận.`, `Khoảng ${per(a.b)} điểm chắn mỗi trận.`],
     ['k', a.k, rankOf((x) => x.k), `Tấn công ghi ${a.k} điểm${rankOf((x) => x.k) === 1 ? ' — nhiều nhất đội' : ''}.`, `Khoảng ${per(a.k)} điểm tấn công mỗi trận.`],
-    ['ace', a.ace, rankOf((x) => x.ace), `Phát bóng ăn điểm trực tiếp ${a.ace} lần.`, `Khoảng ${per(a.ace)} lần mỗi trận. Để phát khi cần gỡ điểm.`],
-    ['rcv', a.rn >= 3 ? a.rsum / a.rn : 0, rankOf((x) => (x.rn >= 3 ? x.rsum / x.rn : 0)), `Đỡ bước 1 chắc: trung bình ${a.rn ? L.dec(a.rsum / a.rn) : '–'} trên thang 3.`, `Sau ${a.rn} lần đỡ. Có thể giao đỡ vùng rộng hơn.`],
+    ['ace', a.ace, rankOf((x) => x.ace), `Phát bóng ăn điểm trực tiếp ${a.ace} lần.`, `Khoảng ${per(a.ace)} lần mỗi trận.`],
+    ['rcv', a.rn >= 3 ? a.rsum / a.rn : 0, rankOf((x) => (x.rn >= 3 ? x.rsum / x.rn : 0)), `Đỡ bước 1 chắc: trung bình ${a.rn ? L.dec(a.rsum / a.rn) : '–'} trên thang 3.`, `Sau ${a.rn} lần đỡ.`],
   ].filter((x) => x[1] > 0).sort((x, y) => x[2] - y[2] || y[1] - x[1]);
   const best = cand[0] ? { k: 'Điểm mạnh nhất', title: cand[0][3], text: cand[0][4] } : { k: 'Điểm mạnh nhất', title: 'Chưa thấy điểm nổi bật.', text: 'Cần thêm trận có chọn người ghi điểm.' };
   const e = a.ae + a.bd, att = a.k + e;
+  const rAtt = sum((x) => x.k + x.ae + x.bd), rK = sum((x) => x.k);
+  const hot = gate(a.k, att, rK, rAtt, 1);
   const atk = att >= 3
-    ? { k: a.k / att >= 0.5 ? 'Nên chuyền nhiều' : 'Tấn công', tone: a.k / att >= 0.5 ? 'mint' : 'sky', title: `Tấn công thành điểm ${a.k}/${att} lần.`, text: a.k / att >= 0.5 ? `${Math.round((a.k / att) * 100)}% — cứ 2 lần chuyền cho người này thì ít nhất 1 lần thành điểm.` : `${Math.round((a.k / att) * 100)}% — dưới một nửa, chỉ chuyền khi bóng đẹp.` }
+    ? { k: hot ? 'Nên chuyền nhiều' : 'Tấn công', tone: hot ? 'mint' : 'sky', title: `Tấn công thành điểm ${a.k}/${att} lần.`, text: hot ? `${Math.round((a.k / att) * 100)}% — cao rõ so với cả đội (${rK}/${rAtt}).` : `${Math.round((a.k / att) * 100)}%. ${unsure(att)}` }
     : { k: 'Tấn công', tone: 'sky', title: `Mới có ${att} lần tấn công kết thúc pha.`, text: 'Chưa đủ để nói có nên chuyền nhiều hay không.' };
-  // Cần để ý: tỉ lệ hỏng cao nhất trong các việc đã làm đủ nhiều lần.
-  const rc = Object.values(a.rot).reduce((s2, r) => [s2[0] + ((r.rcv || {}).bad || 0), s2[1] + ((r.rcv || {}).good || 0)], [0, 0]);
-  const bad = rc[0], rcN = rc[0] + rc[1];
+  // Cần để ý: tỉ lệ hỏng cao nhất trong các việc đã làm đủ nhiều lần; lời khuyên chỉ khi kém rõ so với cả đội.
+  const [bad, good] = rcvOf(a), rcN = bad + good;
+  const rR = others.map(rcvOf).reduce((s2, x) => [s2[0] + x[0], s2[1] + x[1]], [0, 0]);
+  const rSv = sum((x) => x.sv), rSe = sum((x) => x.se);
   const risks = [
-    a.sv >= 5 && a.se ? [a.se / a.sv, `Phát bóng hỏng ${a.se}/${a.sv} lần.`, `Cứ khoảng ${Math.round(a.sv / a.se)} lần phát thì hỏng 1. Nên phát an toàn khi đang dẫn sát.`] : null,
+    a.sv >= 5 && a.se ? [a.se / a.sv, `Phát bóng hỏng ${a.se}/${a.sv} lần.`, gate(a.se, a.sv, rSe, rSv, 1) ? `Hỏng nhiều rõ so với cả đội (${rSe}/${rSv}). Nên phát an toàn khi đang dẫn sát.` : unsure(a.sv)] : null,
     att >= 3 && e ? [e / att, `Tấn công hỏng ${e}/${att} lần.`, `Đánh ra ngoài hoặc lưới ${a.ae} lần, bị chắn ${a.bd} lần.`] : null,
-    rcN >= 3 && bad > 0 ? [bad / rcN, `Đỡ bước 1 hỏng hoặc kém ${bad}/${rcN} lần.`, 'Kém = bóng đỡ không cho chuyền hai chuyền đẹp. Cho libero ôm rộng hơn.'] : null,
+    rcN >= 3 && bad > 0 ? [bad / rcN, `Đỡ bước 1 hỏng hoặc kém ${bad}/${rcN} lần.`, gate(bad, rcN, rR[0], rR[0] + rR[1], 1) ? `Kém = bóng đỡ không cho chuyền hai chuyền đẹp; nhiều rõ so với cả đội (${rR[0]}/${rR[0] + rR[1]}). Cho libero ôm rộng hơn.` : `Kém = bóng đỡ không cho chuyền hai chuyền đẹp. ${unsure(rcN)}`] : null,
   ].filter(Boolean).sort((x, y) => y[0] - x[0]);
   const risk = risks[0] ? { k: 'Cần để ý', title: risks[0][1], text: risks[0][2] } : { k: 'Cần để ý', title: 'Chưa thấy lỗi lặp lại.', text: 'Số liệu hiện tại chưa có việc nào hỏng nhiều.' };
   return [{ tone: 'lav', icon: 'award', ...best }, { icon: 'target', ...atk }, { tone: 'peach', icon: 'info-circle', ...risk }];
@@ -696,13 +710,13 @@ function viewTeam() {
     ${sel ? playerProfile(sel, agg) : ''}
     <section class="t roster">
       <div class="teamhead">
-        <button class="teamname" data-act="openSheet" data-s="teamName" data-testid="team-name"><span class="tbadge">${esc(initials(team.name))}</span><span><b>${esc(team.name)}</b><small>${team.players.length} cầu thủ · chọn một người để xem ở trên</small></span></button>
+        <button class="teamname" data-act="openSheet" data-s="teamName" data-testid="team-name"><span class="tbadge">${esc(initials(team.name))}</span><span><b>${esc(team.name)}</b><small>${team.players.length} cầu thủ · chọn một người để xem hồ sơ</small></span></button>
         ${team.preset ? `<span class="srcbadge" data-testid="src-badge">${esc(team.preset)}</span>` : ''}
         <button class="pill-btn dark" data-act="editPlayer" data-pid="" data-testid="add-player">${ic('plus')}Thêm cầu thủ</button>
       </div>
       ${unvN ? `<p class="hint">Dấu <span class="q">?</span> = hai nguồn công khai ghi khác nhau (${unvN} VĐV). Chọn người đó rồi bấm <b>Sửa hồ sơ</b> để xem và sửa.</p>` : ''}
       ${groups || '<p class="empty">Chưa có VĐV nào.</p>'}
-      <p class="hint">Chọn một người để xem ở trên; <b>Sửa hồ sơ</b> để đổi số áo, tên, vị trí, chiều cao, ảnh.</p>
+      <p class="hint">Chọn một người để xem hồ sơ; <b>Sửa hồ sơ</b> để đổi số áo, tên, vị trí, chiều cao, ảnh.</p>
       ${DATA.roster ? '<button class="btn" data-act="presetLP" data-testid="preset-lp">Nạp lại danh sách LPBank Ninh Bình (nguồn công khai)</button>' : ''}
     </section>
   </main>`;
@@ -1321,7 +1335,7 @@ function coachCards(st, setN) {
   } else {
     const w = sg.rot.worst;
     const f = AN.rotFact(sg.rot);
-    if (w && f) out.push({ tone: 'peach', k: 'Đang yếu ở', n: w.lost, d: w.n, title: `Xoay vòng ${w.k}: mất ${w.lost}/${w.n} pha`, text: `${w.k} đang thua nhiều nhất nhưng ${w.n < AN.N_MIN ? `mới ${w.n} pha` : 'chênh với các vòng khác còn trong sai số'} — chưa đủ chắc để kết luận.`, tip: f });
+    if (w && f) out.push({ tone: 'peach', k: 'Đang yếu ở', n: w.lost, d: w.n, title: `Xoay vòng ${w.k}: mất ${w.lost}/${w.n} pha`, text: sg.rot.act.length === 1 ? `Mới có số ở ${w.k}, các vòng khác chưa có pha nào để so — chưa đủ chắc để kết luận.` : `${w.k} đang thua nhiều nhất nhưng ${w.n < AN.N_MIN ? `mới ${w.n} pha` : 'chênh với các vòng khác còn trong sai số'} — chưa đủ chắc để kết luận.`, tip: f });
   }
   // Đang mạnh ở: cách ghi điểm nhiều nhất (sự việc); "giữ trên sân" chỉ khi người đó qua cổng.
   const topSrc = WIN_SRC.filter(([k]) => s[k] > 0).sort((a, b) => s[b[0]] - s[a[0]])[0];

@@ -32,6 +32,7 @@ export function parseImport(text) {
     const matches = d.matches || (d.match ? [d.match] : []);
     matches.forEach(check);
     if (d.team && !(Array.isArray(d.team.players) && d.team.players.every(okPlayer))) throw new Error('Danh sách đội trong file không hợp lệ.');
+    if (d.team) { d.team.name = String(d.team.name ?? '').slice(0, 60); d.team.players.forEach((p) => { if (p.name != null) p.name = String(p.name).slice(0, 40); }); } // cùng giới hạn với ô nhập
     const plans = Array.isArray(d.plans) ? d.plans.filter((p) => p && typeof p === 'object') : []; // tactics.normalizePlan lọc tiếp khi lưu
     return { team: d.team || null, matches, plans };
   }
@@ -48,6 +49,7 @@ function check(m) {
   m.opponent = String(m.opponent ?? '').slice(0, 60); // cùng giới hạn với ô nhập
   if (m.teamName != null) m.teamName = String(m.teamName).slice(0, 60);
   m.bestOf = m.bestOf === 3 ? 3 : 5;
+  m.players.forEach((p) => { if (p.name != null) p.name = String(p.name).slice(0, 40); });
   const ids = new Set(m.players.map((p) => p.id));
   for (const e of m.events) {
     if (e.t === 'start') {

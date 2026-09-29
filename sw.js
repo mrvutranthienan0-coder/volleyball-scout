@@ -1,6 +1,6 @@
 // Service worker: lưu toàn bộ file app vào bộ nhớ đệm để chạy offline.
 // Khi sửa code: tăng VERSION để máy người dùng tải bản mới.
-const VERSION = 'vbs-v10';
+const VERSION = 'vbs-v11';
 const ASSETS = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css', 'css/scout-report.css', 'css/tactics.css', 'css/assist.css', 'css/player-panel.css',
   'js/app.js', 'js/logic.js', 'js/store.js', 'js/export.js', 'js/ai.js', 'js/video.js',
@@ -24,15 +24,26 @@ self.addEventListener('activate', (e) => {
 });
 
 // Lấy từ bộ nhớ đệm trước (nhanh, chạy được khi mất mạng), đồng thời cập nhật ngầm khi có mạng.
+// Chỉ trang app (gốc phạm vi SW, index.html) dùng chung ô 'index.html'; trang khác (tactics.html, …) lưu đúng URL của nó.
+// guide/ (trang hướng dẫn, cần CDN ngoài) không đi qua SW. Không bao giờ ghi phản hồi vào ô khác với yêu cầu của nó.
+const SCOPE = new URL(self.registration ? self.registration.scope : './', location.href).pathname;
 self.addEventListener('fetch', (e) => {
   const req = e.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+  const url = new URL(req.url);
+  if (req.method !== 'GET' || url.origin !== location.origin || !url.pathname.startsWith(SCOPE)) return;
+  const rel = url.pathname.slice(SCOPE.length);
+  if (rel === 'guide' || rel.startsWith('guide/')) return;
+  const appPage = req.mode === 'navigate' && (rel === '' || rel === 'index.html');
   e.respondWith(
     caches.open(VERSION).then(async (cache) => {
-      const key = req.mode === 'navigate' ? 'index.html' : req;
+      const key = appPage ? 'index.html' : req;
       const hit = await cache.match(key, { ignoreSearch: true });
       const net = fetch(req)
-        .then((res) => { if (res.ok) cache.put(key, res.clone()); return res; })
+        .then((res) => {
+          // Chỉ lưu khi phản hồi đúng là của yêu cầu (không lưu trang bị chuyển hướng sang chỗ khác vào ô này).
+          if (res.ok && !res.redirected && (!appPage || new URL(res.url).pathname.startsWith(SCOPE))) cache.put(key, res.clone());
+          return res;
+        })
         .catch(() => null);
       if (hit) { e.waitUntil(net); return hit; }
       return (await net) || new Response('Offline', { status: 503 });

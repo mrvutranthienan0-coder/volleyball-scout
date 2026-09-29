@@ -26,7 +26,15 @@ export const isConfigured = () => { const c = getConfig(); return !!(c.url && c.
 
 // ---------- Gọi máy chủ ----------
 const err = (code, message, extra = {}) => ({ ok: false, error: { code, message, ...extra } });
+// Kết quả lần gọi máy chủ gần nhất (mọi màn dùng chung) — chân bảng Trợ lý hiện đúng trạng thái thật, không đoán.
+let LAST = null; // { ok, at: ms, msg }
+export const lastCall = () => LAST;
 async function call(path, body) {
+  const r = await call0(path, body);
+  if (!(r && r.error && r.error.code === 'not_configured')) LAST = { ok: !!(r && r.ok), at: Date.now(), msg: r && r.ok ? '' : String((r && r.error && r.error.message) || 'lỗi lạ').replace(/\s*—\s*ghi tay\s*$/, '') };
+  return r;
+}
+async function call0(path, body) {
   const cfg = getConfig();
   if (!cfg.url || !cfg.code) return err('not_configured', 'Chưa cài máy chủ AI — ghi tay');
   if (typeof navigator !== 'undefined' && navigator.onLine === false) return err('offline', OFFLINE_MSG, { offline: true });

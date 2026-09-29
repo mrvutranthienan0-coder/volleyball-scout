@@ -151,6 +151,16 @@ export function savePlan(plan) {
 export function deletePlan(id) {
   return lsSet(KEY.plans, loadPlans().filter((x) => x.id !== id));
 }
+// Phương án có sẵn đi kèm app (báo cáo đối thủ, data/scout/*.json): CHỈ ĐỌC, không ghi vào máy.
+// Link chia sẻ #/tactics/<id> / tactics.html?plan=<id> mở được trên máy mới; sửa rồi Lưu = bản riêng (id mới).
+export const BUILTIN_URL = 'data/scout/xmls-thanh-hoa.json';
+export function builtinPlansOf(report) {
+  const list = report && Array.isArray(report.plans) ? report.plans : [];
+  return list.map((x) => x && x.plan && normalizePlan({ ...x.plan, source: 'ai' })).filter(Boolean);
+}
+export async function loadBuiltinPlans(url = BUILTIN_URL) {
+  try { const r = await fetch(url); return r.ok ? builtinPlansOf(await r.json()) : []; } catch { return []; }
+}
 
 // ─── Đội + đội hình ────────────────────────────────────────────────────────────────────────
 // Đội: localStorage (đội HLV đã sửa) → nếu chưa có thì danh sách LPBank đi kèm app.
@@ -192,6 +202,8 @@ export function zoneOf(p) {
 // → { loadPlan(planOrId), getBoard(), setPresent(bool), destroy() }
 export async function mountTactics(el, opts = {}) {
   const team = opts.team || await resolveTeam(opts.rosterUrl);
+  const BUILTIN = Array.isArray(opts.builtins) ? opts.builtins.map(normalizePlan).filter(Boolean) : await loadBuiltinPlans(opts.builtinUrl);
+  const builtinOf = (id) => BUILTIN.find((x) => x.id === id) || null;
   const lu = resolveLineup(team, opts);
   const people = {};
   for (const p of [...lu.extra, ...team.players]) if (p && typeof p.id === 'string') people[p.id] ||= p;
@@ -477,7 +489,7 @@ export async function mountTactics(el, opts = {}) {
       const dim = foc.size && !foc.has(pid);
       const pp = P(pid);
       o.push(`<g class="tx-pl${foc.has(pid) ? ' is-focus' : ''}${ui.drag && ui.drag.id === pid && ui.drag.moved ? ' is-drag' : ''}" data-pid="${esc(pid)}" data-slot="${slots[pid] || ''}" data-role="${rl}" data-x="${r2(p.x)}" data-y="${r2(p.y)}"${rl === 'L' ? ' data-libero="1"' : ''} data-testid="tx-pl-${esc(pp.num)}" transform="translate(${r2(p.x)} ${r2(p.y)})" opacity="${dim ? 0.35 : 1}" role="button" aria-label="${esc(label(pid))}, ${ROLE_NAME[rl]}">`
-        + `<circle r="1" fill="transparent"/>`
+        + `<circle r="1.1" fill="transparent"/>`
         + (foc.has(pid) ? '<circle r=".82" fill="none" stroke="#6A55D8" stroke-width=".14"/>' : '')
         + `<circle r=".6" fill="${COLORS[rl]}" stroke="#fff" stroke-width=".09"/>`
         + `<text y=".19" font-size=".54" text-anchor="middle" fill="#fff" font-weight="700">${esc(pp.num)}</text>`
@@ -600,9 +612,10 @@ export async function mountTactics(el, opts = {}) {
   }
   function renderPlans() {
     const plans = loadPlans();
+    const ro = board.id && !plans.some((p) => p.id === board.id) && !!builtinOf(board.id);
     const date = (s) => { const d = new Date(s); return `${d.getDate()}/${d.getMonth() + 1}`; };
     const row = (p, builtin) => `<li class="tx-plan${board.id === p.id ? ' is-on' : ''}" data-testid="tx-plan-item">
-      <button class="tx-planbtn" data-act="plan-load:${esc(p.id)}"><b>${esc(p.name)}</b><span class="tx-muted">${esc(PHASE[p.phase].label)} · P${p.rotation}${builtin ? ' · mẫu' : ' · ' + date(p.createdAt)}</span></button>
+      <button class="tx-planbtn" data-act="plan-load:${esc(p.id)}"><b>${esc(p.name)}</b><span class="tx-muted">${esc(PHASE[p.phase].label)} · P${p.rotation}${builtin ? (p.source === 'ai' ? ' · chỉ đọc' : ' · mẫu') : ' · ' + date(p.createdAt)}</span></button>
       ${p.source === 'ai' ? '<span class="tx-src">AI</span>' : ''}
       ${builtin ? '' : `<button class="tx-btn tx-sm${ui.delArm === p.id ? ' tx-warn' : ''}" data-act="plan-del:${esc(p.id)}" aria-label="Xoá phương án ${esc(p.name)}">${ui.delArm === p.id ? 'Chạm lần nữa để xoá' : 'Xoá'}</button>`}</li>`;
     ref.plans.innerHTML = `<div class="tx-k">Phương án</div>
@@ -615,8 +628,9 @@ export async function mountTactics(el, opts = {}) {
         ${board.id && plans.some((p) => p.id === board.id) ? '<button class="tx-btn" data-act="plan-save-new" data-testid="tx-plan-save-new">Lưu thành bản mới</button>' : ''}
         <button class="tx-btn" data-act="plan-new" data-testid="tx-plan-new">Bảng mới</button>
       </div>
+      ${ro ? '<p class="tx-muted tx-ro" data-testid="tx-readonly">Phương án có sẵn trong báo cáo đối thủ — chỉ đọc. Sửa rồi bấm Lưu sẽ thành bản riêng trên máy này.</p>' : ''}
       <ul class="tx-plans" data-testid="tx-plan-list">${plans.length ? plans.map((p) => row(p, false)).join('') : '<li class="tx-muted tx-empty">Chưa lưu phương án nào.</li>'}</ul>
-      <div class="tx-lab">Mẫu có sẵn</div><ul class="tx-plans">${row(SAMPLE, true)}</ul>`;
+      <div class="tx-lab">Mẫu có sẵn</div><ul class="tx-plans">${row(SAMPLE, true)}${BUILTIN.filter((b) => !plans.some((p) => p.id === b.id)).map((b) => row(b, true).replace('data-testid="tx-plan-item"', 'data-testid="tx-plan-builtin"')).join('')}</ul>`;
   }
   function render() {
     cancelAnimationFrame(raf);
@@ -728,7 +742,7 @@ export async function mountTactics(el, opts = {}) {
     ui.drawStep = Math.max(1, stepCount()); stopSim();
   }
   function loadPlan(pl) {
-    const p = typeof pl === 'string' ? (pl === SAMPLE.id ? SAMPLE : loadPlans().find((x) => x.id === pl)) : normalizePlan(pl);
+    const p = typeof pl === 'string' ? (pl === SAMPLE.id ? SAMPLE : loadPlans().find((x) => x.id === pl) || builtinOf(pl)) : normalizePlan(pl);
     if (!p) return false;
     snap();
     const b = clone(p);

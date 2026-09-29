@@ -694,6 +694,11 @@ export async function mountScoutReport(el, opts = {}) {
     }
   };
   render();
+  // Thanh đáy cố định (≥701px) không được che khối cuối trang: chừa đúng chiều cao thật của thanh (chữ xuống 2 dòng vẫn đủ).
+  const fitBar = () => { const b = el.querySelector('.sr-today'); if (b) el.style.setProperty('--sr-bar-h', Math.ceil(b.getBoundingClientRect().height) + 'px'); };
+  const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(fitBar) : null;
+  const watchBar = () => { fitBar(); const b = el.querySelector('.sr-today'); if (ro && b) { ro.disconnect(); ro.observe(b); } };
+  watchBar();
   // Panel bên cạnh: hồ sơ cầu thủ, clip, nguồn. Vẽ lại riêng khối clip/nguồn khi đổi bộ lọc (không vẽ lại cả báo cáo).
   const PL = () => thPlayers(data, players).all;
   const CM = () => clipModel(data, PL());
@@ -800,8 +805,8 @@ export async function mountScoutReport(el, opts = {}) {
   }
   el.addEventListener('click', onClick);
   return {
-    data, get boards() { return model; }, render,
+    data, get boards() { return model; }, render() { render(); watchBar(); },
     openPlayer,
-    destroy() { el.removeEventListener('click', onClick); el.removeEventListener('click', onPanelClick); el.removeEventListener('change', onLibChange); document.removeEventListener('click', onPanelPlan); closePanel(); el.querySelectorAll('dialog').forEach((d) => d.open && d.close()); el.innerHTML = ''; },
+    destroy() { if (ro) ro.disconnect(); el.style.removeProperty('--sr-bar-h'); el.removeEventListener('click', onClick); el.removeEventListener('click', onPanelClick); el.removeEventListener('change', onLibChange); document.removeEventListener('click', onPanelPlan); closePanel(); el.querySelectorAll('dialog').forEach((d) => d.open && d.close()); el.innerHTML = ''; },
   };
 }

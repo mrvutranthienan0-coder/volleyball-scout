@@ -78,6 +78,8 @@ function finishSet(S, m, c, winner) {
 }
 
 // Tính lại toàn bộ trạng thái trận từ m.events.
+// Điểm đỡ bước 1 chỉ nhận số nguyên 0–3; giá trị lạ (vd file nhập rc:5) coi như chưa chấm, không đưa vào số liệu.
+export const okRc = (x) => Number.isInteger(x) && x >= 0 && x <= 3;
 export function replay(m) {
   const S = { sets: [], cur: null, over: false, winner: null, winsUs: 0, winsThem: 0, rallies: [], ignored: [], forced: [] };
   m.events.forEach((ev, i) => {
@@ -98,6 +100,8 @@ export function replay(m) {
         finishSet(S, m, c, c.us === c.them ? null : c.us > c.them ? 'us' : 'them');
       }
       if (S.over) return S.ignored.push(i);
+      // Đội hình hỏng (vd file cũ lineup: []) → báo lỗi rõ để màn hiện trạng thái lỗi, không tính ra xoay vòng "P0".
+      if (!Array.isArray(ev.lineup) || ev.lineup.length !== 6 || ev.lineup.some((x) => typeof x !== 'string' || !x)) throw new Error(`Đội hình xuất phát set ${S.sets.length + 1} không hợp lệ (cần đúng 6 VĐV).`);
       const order = ev.lineup.slice();
       const setter = order.find((pid) => (playerById(m, pid) || {}).pos === 'S');
       S.cur = {
@@ -115,7 +119,7 @@ export function replay(m) {
       const rec = {
         i, set: c.n, no: ++c.count, usB: c.us, themB: c.them, serve: c.serve,
         rot: 'P' + (c.order.indexOf(c.ref) + 1), server: c.serve === 'us' ? c.order[0] : null,
-        win: h.win, how: ev.how, p: ev.p ?? null, rc: ev.how === 'rer' ? 0 : ev.rc ?? null,
+        win: h.win, how: ev.how, p: ev.p ?? null, rc: ev.how === 'rer' ? 0 : okRc(ev.rc) ? ev.rc : null,
         rp: ev.rp ?? (ev.how === 'rer' ? ev.p ?? null : null),
       };
       if (h.win) {
@@ -168,6 +172,51 @@ export function currentRun(rallies) {
 export const pct = (a, b) => (b ? Math.round((a / b) * 100) + '%' : '–');
 export const dec = (x, d = 1) => x.toFixed(d).replace('.', ',');
 
+// ---------- Cổng lời khuyên DÙNG CHUNG cho mọi màn (Hội ý, Kết luận hiện tại, Các pha, Trợ lý, Số liệu nói gì) ----------
+// Chỉ coi là "kém rõ" khi mẫu ≥ N_MIN VÀ chênh lệch với phần còn lại vượt sai số. analysis.js dùng lại đúng các hàm này.
+export const N_MIN = 8;
+// Hai tỉ lệ a/n1 và b/n2 khác nhau thật hay chỉ do mẫu nhỏ (kiểm định z hai tỉ lệ, |z| ≥ 1,64).
+export function clearGap(a, n1, b, n2) {
+  if (n1 < N_MIN || n2 < N_MIN) return { clear: false, small: true };
+  const p = (a + b) / (n1 + n2);
+  const se = Math.sqrt(p * (1 - p) * (1 / n1 + 1 / n2));
+  const z = se ? (a / n1 - b / n2) / se : 0;
+  return { clear: Math.abs(z) >= 1.64, small: false, z };
+}
+// Hai dãy điểm (vd điểm đỡ 0–3) khác nhau thật hay không (kiểm định t Welch gần đúng, |t| ≥ 1,64).
+export function meanGap(a, b) {
+  if (a.length < N_MIN || b.length < N_MIN) return { clear: false, small: true };
+  const mean = (x) => x.reduce((s, v) => s + v, 0) / x.length;
+  const vr = (x, mu) => x.reduce((s, v) => s + (v - mu) ** 2, 0) / Math.max(1, x.length - 1);
+  const ma = mean(a), mb = mean(b);
+  const se = Math.sqrt(vr(a, ma) / a.length + vr(b, mb) / b.length);
+  const t = se ? (ma - mb) / se : 0;
+  return { clear: Math.abs(t) >= 1.64, small: false, t };
+}
+// Xoay vòng: low = tỉ lệ thắng thấp nhất (mọi n); flag = vòng kém rõ (qua cổng). Cùng thứ tự xếp ở mọi màn.
+export function rotGate(rotList, won, n) {
+  const act = rotList.filter((x) => x.n);
+  const rate = (x) => x.won / x.n;
+  const bad = (x, y) => rate(x) - rate(y) || y.lost - x.lost;
+  const pass = (x) => { const rw = won - x.won, rn = n - x.n; return x.n >= N_MIN && rn > 0 && rate(x) < rw / rn && clearGap(x.won, x.n, rw, rn).clear; };
+  return { act, low: act.slice().sort(bad)[0] || null, flag: act.filter(pass).sort(bad)[0] || null };
+}
+// Người tấn công kém rõ: ghi / lần kết thúc pha thấp rõ so với phần còn lại của đội. p cần { k, ae, bd }.
+export function atkFlagOf(list) {
+  const act = list.filter((p) => p.k + p.ae + p.bd > 0);
+  const tk = act.reduce((s, p) => s + p.k, 0), ta = act.reduce((s, p) => s + p.k + p.ae + p.bd, 0);
+  const eff = (p) => (p.k - p.ae - p.bd) / (p.k + p.ae + p.bd);
+  return act.filter((p) => { const att = p.k + p.ae + p.bd, rk = tk - p.k, ra = ta - att; return eff(p) < 0 && att >= N_MIN && ra > 0 && p.k / att < rk / ra && clearGap(p.k, att, rk, ra).clear; })
+    .sort((x, y) => eff(x) - eff(y) || String(x.pid).localeCompare(String(y.pid)))[0] || null;
+}
+// Người đỡ bước 1 kém rõ: điểm đỡ thấp rõ so với phần còn lại của đội. list = [{ pid, v: [điểm đỡ…] }], all = mọi điểm đỡ kèm rp.
+export function passFlagOf(list, all) {
+  const avg = (v) => v.reduce((s, x) => s + x, 0) / v.length;
+  return list.map((q) => ({ ...q, n: q.v.length, avg: avg(q.v) }))
+    .filter((q) => { const o = all.filter((r) => r.rp !== q.pid).map((r) => r.rc); return o.length && q.avg < avg(o) && meanGap(q.v, o).clear; })
+    .sort((x, y) => x.avg - y.avg || String(x.pid).localeCompare(String(y.pid)))[0] || null;
+}
+
 // Thống kê cho màn HLV. setN = null → cả trận.
 export function stats(m, R, setN) {
   const rs = R.rallies.filter((r) => !setN || r.set === setN);
@@ -204,17 +253,20 @@ export function stats(m, R, setN) {
   players.sort(byNum);
   const passers = Object.values(pass).map((q) => ({ ...q, avg: q.sum / q.n })).sort(byNum);
   const rotList = Object.values(rot).map((x) => ({ ...x, n: x.won + x.lost, diff: x.won - x.lost }));
-  const cand = rotList.filter((x) => x.n >= 3);
-  let worst = null;
-  for (const x of cand) {
-    if (!worst || x.diff < worst.diff || (x.diff === worst.diff && x.soN && worst.soN && x.soW / x.soN < worst.soW / worst.soN)) worst = x;
-  }
+  // Vòng yếu nhất: vòng kém rõ (qua cổng) nếu có, không thì vòng tỉ lệ thắng thấp nhất đang thua nhiều hơn thắng.
+  const rg = rotGate(rotList, won, rs.length);
+  const worst = rg.flag || (rg.low && rg.low.won < rg.low.lost ? rg.low : null);
+  const rcs = rs.filter((r) => r.serve === 'them' && typeof r.rc === 'number');
+  const pv = {};
+  rcs.forEach((r) => { if (r.rp) (pv[r.rp] ||= []).push(r.rc); });
+  const passFlag = passFlagOf(Object.entries(pv).map(([pid, v]) => ({ pid, v })), rcs);
   const soN = rs.filter((r) => r.serve === 'them').length;
   const soW = rs.filter((r) => r.serve === 'them' && r.win).length;
   const bpN = rs.length - soN;
   const bpW = won - soW;
   return {
-    n: rs.length, won, lost, rot: rotList, worst: worst && worst.diff < 0 ? worst : null,
+    n: rs.length, won, lost, rot: rotList, worst, worstFlag: !!rg.flag, rotLow: rg.low,
+    atkFlag: atkFlagOf(players), passFlag,
     src, players, passers, recv, run: currentRun(rs), soN, soW, bpN, bpW,
     ace: src.ace, se: src.ser,
   };
@@ -228,9 +280,11 @@ export function insights(m, st, isCurrentSet) {
   const add = (sev, text) => out.push({ sev, text, order: out.length });
   const name = (pid) => playerLabel(m, pid);
 
+  // Cùng cổng với lời khuyên: có người / vòng kém rõ thì nêu đúng người / vòng đó; chưa qua cổng thì chỉ kể số + "chưa đủ chắc".
+  const unsure = (ok) => (ok ? '' : ' — chưa đủ chắc để kết luận');
   const w = st.worst;
   if (w && w.n >= 4 && w.diff <= -2) {
-    add(10 + (w.lost - w.won) * 2, `Xoay vòng ${w.k} đang thua điểm: thắng ${w.won}/${w.n} pha (${w.diff}); khi đối thủ phát, ta giành ${pct(w.soW, w.soN)}.`);
+    add(10 + (w.lost - w.won) * 2, `Xoay vòng ${w.k} đang thua điểm: thắng ${w.won}/${w.n} pha (${w.diff}); khi đối thủ phát, ta giành ${pct(w.soW, w.soN)}${unsure(st.worstFlag)}.`);
   }
   if (isCurrentSet && st.run.side === 'them' && st.run.len >= 3) {
     add(10 + st.run.len * 2, `Đối thủ đang có chuỗi ${st.run.len} điểm liên tiếp.`);
@@ -239,17 +293,17 @@ export function insights(m, st, isCurrentSet) {
   if (r.n >= 5 && r.sum / r.n < 1.8) {
     add(8 + Math.round((1.8 - r.sum / r.n) * 10), `Đỡ bước 1 cả đội trung bình ${dec(r.sum / r.n)}/3 (${r.n} lần); khi đối thủ phát, ta giành ${pct(st.soW, st.soN)}.`);
   }
-  let weak = null;
-  for (const p of st.passers) if (p.n >= 4 && p.avg < 1.5 && (!weak || p.avg < weak.avg)) weak = p;
-  if (weak) add(7 + Math.round((1.5 - weak.avg) * 10), `${name(weak.pid)} đỡ bước 1 trung bình ${dec(weak.avg)}/3 (${weak.n} lần).`);
+  let weak = st.passFlag ? st.passers.find((p) => p.pid === st.passFlag.pid) : null;
+  if (!weak) for (const p of st.passers) if (p.n >= 4 && p.avg < 1.5 && (!weak || p.avg < weak.avg)) weak = p;
+  if (weak) add(7 + Math.round((1.5 - weak.avg) * 10), `${name(weak.pid)} đỡ bước 1 trung bình ${dec(weak.avg)}/3 (${weak.n} lần)${unsure(st.passFlag && st.passFlag.pid === weak.pid)}.`);
   if (st.se >= 3 && st.se > st.ace * 2) {
     add(6 + st.se - st.ace, `Phát bóng: ${st.se} lần hỏng, ${st.ace} lần ăn điểm trực tiếp trong ${st.bpN} lượt ta phát.`);
   }
-  let bad = null;
-  for (const p of st.players) {
+  let bad = st.atkFlag;
+  if (!bad) for (const p of st.players) {
     if (p.e >= 3 && p.e > p.k && (!bad || p.e - p.k > bad.e - bad.k)) bad = p;
   }
-  if (bad) add(6 + (bad.e - bad.k) * 2, `${name(bad.pid)} tấn công ${bad.k} ghi / ${bad.e} hỏng (lỗi ${bad.ae}, bị chắn ${bad.bd}).`);
+  if (bad) add(6 + (bad.e - bad.k) * 2, `${name(bad.pid)} tấn công ${bad.k} ghi / ${bad.e} hỏng (lỗi ${bad.ae}, bị chắn ${bad.bd})${unsure(bad === st.atkFlag)}.`);
   if (st.lost >= 6 && st.src.oat / st.lost >= 0.4 && st.src.oat >= 4) {
     add(5 + st.src.oat, `Đối thủ ghi ${st.src.oat}/${st.lost} điểm bằng tấn công (${pct(st.src.oat, st.lost)} số điểm ta mất).`);
   }

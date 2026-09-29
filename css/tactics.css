@@ -34,7 +34,7 @@
 .tx-hint { margin: 0; font-size: 13px; color: var(--tx-muted); }
 .tx-muted { color: var(--tx-muted); font-size: 13px; }
 .tx-pill, .tx-btn {
-  border: 0; border-radius: 99px; padding: 9px 14px; min-height: 40px; font-size: 14px; font-weight: 600;
+  border: 0; border-radius: 99px; padding: 9px 14px; min-height: 44px; font-size: 14px; font-weight: 600;
   background: var(--tx-bg); color: var(--tx-ink); cursor: pointer; touch-action: manipulation; white-space: nowrap;
   transition: background-color .15s, transform .1s;
 }
@@ -69,7 +69,7 @@
 .tx-draw.is-preview { opacity: .6; }
 .tx-draw, .tx-autozone, .tx-link { pointer-events: none; }
 
-.tx-sim { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; min-height: 40px; }
+.tx-sim { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; min-height: 44px; }
 .tx-simlab { font-weight: 700; font-size: 15px; min-width: 110px; text-align: center; }
 .tx-simlab.tx-muted { font-weight: 500; font-size: 13px; min-width: 0; }
 .tx-textbar { display: flex; gap: 8px; }
@@ -97,7 +97,7 @@
 .tx-pcard dl { margin: 10px 0 0; display: grid; grid-template-columns: 64px 1fr; gap: 6px 10px; font-size: 14px; }
 .tx-pcard dt { font-weight: 700; color: var(--tx-lav-d); }
 .tx-pcard dd { margin: 0; }
-.tx-tag { font-size: 11px; font-weight: 600; background: var(--tx-bg); color: var(--tx-muted); border-radius: 99px; padding: 2px 8px; white-space: nowrap; }
+.tx-tag { font-size: 12px; font-weight: 600; background: var(--tx-bg); color: var(--tx-muted); border-radius: 99px; padding: 2px 8px; white-space: nowrap; }
 .tx-notelab { display: block; font-size: 13px; font-weight: 600; color: var(--tx-muted); margin-top: 10px; }
 .tx-notelab textarea { background: #fff; margin-bottom: 0; }
 .tx-pairs { list-style: none; margin: 10px 0 0; padding: 12px 14px; background: rgba(255, 255, 255, .72); border-radius: 18px; font-size: 14px; display: grid; gap: 4px; }
@@ -105,9 +105,9 @@
 .tx-plans { list-style: none; margin: 6px 0 12px; padding: 0; display: grid; gap: 6px; }
 .tx-plan { display: flex; align-items: center; gap: 8px; background: var(--tx-bg); border-radius: 18px; padding: 6px 6px 6px 4px; }
 .tx-plan.is-on { background: var(--tx-mint); }
-.tx-planbtn { flex: 1; min-width: 0; text-align: left; border: 0; background: transparent; padding: 6px 8px; cursor: pointer; display: grid; gap: 2px; }
+.tx-planbtn { flex: 1; min-width: 0; text-align: left; border: 0; background: transparent; padding: 6px 8px; min-height: 44px; cursor: pointer; display: grid; gap: 2px; }
 .tx-planbtn b { font-size: 14px; overflow: hidden; text-overflow: ellipsis; }
-.tx-src { font-size: 11px; font-weight: 700; background: var(--tx-lav); color: var(--tx-lav-d); border-radius: 99px; padding: 3px 8px; }
+.tx-src { font-size: 12px; font-weight: 700; background: var(--tx-lav); color: var(--tx-lav-d); border-radius: 99px; padding: 3px 8px; }
 .tx-plan .tx-btn { background: #fff; }
 .tx-empty { padding: 8px 4px; }
 .tx-planacts { justify-content: flex-start; margin-bottom: 8px; }
@@ -159,3 +159,4 @@
   .tx-pcard dl { grid-template-columns: 58px 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { .tx-pill, .tx-btn { transition: none; } }
+.tx-input { min-height: 44px; }

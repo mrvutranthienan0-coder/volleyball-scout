@@ -1,22 +1,13 @@
 // Phân tích tại chỗ — không gọi mạng, không đụng DOM. Mọi số tính lại từ nhật ký trận qua logic.js.
 // Dùng cho: "Kết luận hiện tại" (Hội ý, Các pha), dữ liệu biểu đồ xu hướng, và các thẻ trả lời của Trợ lý hội ý.
 // Luật: số nào cũng kèm cỡ mẫu n + nhãn chắc chắn. Lời khuyên ("nên…") chỉ khi đủ mẫu VÀ chênh lệch vượt sai số.
-import { stats, playerById, pct, dec, currentRun, POS_SHORT } from './logic.js';
+import { stats, playerById, pct, dec, currentRun, POS_SHORT, N_MIN, clearGap, meanGap, rotGate, atkFlagOf, passFlagOf } from './logic.js';
 
-export const N_MIN = 8; // dưới mức này: chỉ kể số, không nói xu hướng, không khuyên
+export { N_MIN, clearGap, meanGap }; // dưới N_MIN: chỉ kể số, không nói xu hướng, không khuyên (cổng nằm ở logic.js)
 export const N_OK = 20;
 export const cert = (n) => (n < N_MIN ? { label: 'Chưa đủ dữ liệu', cls: 'lo' } : n < N_OK ? { label: 'Trung bình', cls: 'mid' } : { label: 'Khá chắc', cls: 'hi' });
 export const FACT = { label: 'Số đếm', cls: 'fact' }; // chuyện đã xảy ra, không suy rộng
 export const NO_ADVICE = 'chưa đủ chắc để khuyên';
-
-// Hai tỉ lệ a/n1 và b/n2 khác nhau thật hay chỉ do mẫu nhỏ (kiểm định z hai tỉ lệ, |z| ≥ 1,64).
-export function clearGap(a, n1, b, n2) {
-  if (n1 < N_MIN || n2 < N_MIN) return { clear: false, small: true };
-  const p = (a + b) / (n1 + n2);
-  const se = Math.sqrt(p * (1 - p) * (1 / n1 + 1 / n2));
-  const z = se ? (a / n1 - b / n2) / se : 0;
-  return { clear: Math.abs(z) >= 1.64, small: false, z };
-}
 
 export const rsOf = (R, setN) => R.rallies.filter((r) => !setN || r.set === setN);
 export const scopeLabel = (setN) => (setN ? `Set ${setN}` : 'Cả trận');
@@ -99,23 +90,14 @@ export function nowConclusions(m, R, setN) {
 // ---------- Cổng lời khuyên DÙNG CHUNG (Hội ý: câu tóm + thẻ; Kết luận hiện tại; Các pha; Trợ lý) ----------
 // Luật duy nhất: chỉ khuyên khi mẫu ≥ N_MIN VÀ chênh lệch với phần còn lại vượt sai số (clearGap / meanGap).
 // Dưới cổng: chỉ kể sự việc kèm "chưa đủ chắc để kết luận".
-export function meanGap(a, b) {
-  if (a.length < N_MIN || b.length < N_MIN) return { clear: false, small: true };
-  const mean = (x) => x.reduce((s, v) => s + v, 0) / x.length;
-  const vr = (x, mu) => x.reduce((s, v) => s + (v - mu) ** 2, 0) / Math.max(1, x.length - 1);
-  const ma = mean(a), mb = mean(b);
-  const se = Math.sqrt(vr(a, ma) / a.length + vr(b, mb) / b.length);
-  const t = se ? (ma - mb) / se : 0;
-  return { clear: Math.abs(t) >= 1.64, small: false, t };
-}
 // Xếp hạng xoay vòng: worst = tỉ lệ thắng thấp nhất (mọi n); flag = vòng kém rõ (qua cổng); best = vòng tốt rõ.
 export function rotRank(st) {
   const act = st.rot.filter((x) => x.n);
   const rate = (x) => x.won / x.n;
   const rest = (x) => ({ rw: st.won - x.won, rn: st.n - x.n });
   const pass = (x, dir) => { const { rw, rn } = rest(x); return x.n >= N_MIN && rn > 0 && (dir < 0 ? rate(x) < rw / rn : rate(x) > rw / rn) && clearGap(x.won, x.n, rw, rn).clear; };
-  const worst = act.slice().sort((x, y) => rate(x) - rate(y) || y.lost - x.lost)[0] || null;
-  const flag = act.filter((x) => pass(x, -1)).sort((x, y) => rate(x) - rate(y) || y.lost - x.lost)[0] || null;
+  const g = rotGate(st.rot, st.won, st.n); // cùng một hàm với logic.stats → mọi màn chọn cùng một vòng
+  const worst = g.low, flag = g.flag;
   const best = act.filter((x) => pass(x, 1)).sort((x, y) => rate(y) - rate(x) || y.won - x.won)[0] || null;
   return { act, worst, flag, best, rest };
 }
@@ -126,7 +108,8 @@ export function atkRank(pl) {
   const rest = (p) => ({ rk: tk - p.k, ra: ta - p.att });
   const pass = (p, dir) => { const { rk, ra } = rest(p); return p.att >= N_MIN && ra > 0 && (dir < 0 ? p.k / p.att < rk / ra : p.k / p.att > rk / ra) && clearGap(p.k, p.att, rk, ra).clear; };
   const worst = act.filter((p) => p.eff < 0).sort((x, y) => x.eff - y.eff || (y.ae + y.bd) - (x.ae + x.bd))[0] || null;
-  const flag = act.filter((p) => p.eff < 0 && pass(p, -1)).sort((x, y) => x.eff - y.eff)[0] || null;
+  const f0 = atkFlagOf(act);
+  const flag = f0 ? act.find((p) => p.pid === f0.pid) : null;
   const hot = act.filter((p) => p.eff >= 0.3 && pass(p, 1)).sort((x, y) => y.k - x.k)[0] || null;
   return { act, worst, flag, hot, rest };
 }
@@ -138,7 +121,8 @@ export function passRank(m, R, setN) {
   const list = Object.entries(by).map(([pid, v]) => ({ pid, n: v.length, avg: v.reduce((s, x) => s + x, 0) / v.length, v }));
   const others = (pid) => rs.filter((r) => r.rp !== pid).map((r) => r.rc);
   const worst = list.slice().sort((x, y) => x.avg - y.avg || y.n - x.n)[0] || null;
-  const flag = list.filter((q) => { const o = others(q.pid); return o.length && q.avg < o.reduce((s, x) => s + x, 0) / o.length && meanGap(q.v, o).clear; }).sort((x, y) => x.avg - y.avg)[0] || null;
+  const f0 = passFlagOf(list, rs);
+  const flag = f0 ? list.find((q) => q.pid === f0.pid) : null;
   return { list, worst, flag, others };
 }
 // Toàn bộ tín hiệu theo đúng một thứ tự ưu tiên — mọi màn đọc từ đây nên không bao giờ nói ngược nhau.
@@ -163,6 +147,7 @@ export function signals(m, R, setN) {
 export function rotFact(rot) {
   const w = rot.worst;
   if (!w || w.won >= w.lost) return null;
+  if (rot.act.length === 1) return `Mới có số ở ${w.k} (thắng ${w.won}/${w.n}), chưa có vòng khác để so — chưa đủ chắc để kết luận.`;
   return `${w.k} đang thua nhiều nhất (thắng ${w.won}/${w.n}) — chưa đủ chắc để kết luận.`;
 }
 
@@ -170,7 +155,8 @@ function adviceOf(m, R, setN) {
   const sg = signals(m, R, setN);
   const top = sg.weak[0];
   if (top) return { text: top.text, tag: cert(top.n), n: top.n };
-  return { text: `Chưa đủ chắc để khuyên đổi chiến thuật: cần ≥${N_MIN} pha ở cùng một vòng / một người và chênh lệch vượt sai số.`, tag: cert(0), n: 0, none: true };
+  const f = rotFact(sg.rot); // dưới cổng: chỉ kể sự việc, cùng vòng với câu tóm Hội ý
+  return { text: f || `Chưa đủ chắc để khuyên đổi chiến thuật: cần ≥${N_MIN} pha ở cùng một vòng / một người và chênh lệch vượt sai số.`, tag: cert(f ? sg.rot.worst.n : 0), n: f ? sg.rot.worst.n : 0, none: true };
 }
 
 // ---------- Dữ liệu biểu đồ xu hướng ----------
@@ -397,6 +383,11 @@ export function artPlayer(m, R, setN, pid) {
   return { ...a, answer: ans, n: inv, nText: `${inv} pha có tên`, cert: cert(inv) };
 }
 
+export function artNotOurs(m, R, setN, num) {
+  const a = baseArt('notOurs', `Số ${num}`, setN);
+  return { ...a, answer: `Đội ta (${m.teamName || 'đội nhà'}) không có số ${num}, nên mình chưa trả lời được câu này. Trợ lý chỉ phân tích các pha của trận ta đang ghi — không có số liệu riêng về cầu thủ đối thủ. Hồ sơ cầu thủ ${m.opponent || 'đối thủ'} (nếu đã dựng) nằm ở Báo cáo đối thủ.`,
+    n: 0, nText: '0 pha', cert: cert(0), link: { href: '#/scout', text: 'Mở báo cáo đối thủ' } };
+}
 export const CAN_ANSWER = 'xoay vòng mất điểm, đỡ bước 1, ai ghi điểm / mắc lỗi, đối thủ ghi điểm thế nào, chuỗi mất điểm, so sánh 2 vòng hoặc 2 người, hoặc một VĐV theo tên / số áo';
 export function artOverview(m, R, setN, unknown = false) {
   const st = stats(m, R, setN);
@@ -423,6 +414,10 @@ export function matchIntent(q, m) {
     if (full.length >= 5 && t.includes(' ' + full + ' ')) pids.push(p.id);
     else if (last && new RegExp(`(^|[^\\w])${last.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}($|[^\\w])`).test(t) && m.players.filter((x) => x.name && clean(x.name).split(' ').filter((w) => w.length >= 3).pop() === last).length === 1) pids.push(p.id);
   }
+  // Số áo không có trong đội ta (vd hỏi số 36 của đối thủ) → nói thẳng là trợ lý không có số liệu người đó, không trả lời lạc đề.
+  const nums = [...t.matchAll(/(?:#|\bso ao |\bso )\s*(\d{1,3})\b/g)].map((x) => x[1]);
+  const foreign = nums.find((n) => !m.players.some((x) => String(x.num) === n));
+  if (foreign && !pids.length) return { k: 'notOurs', num: foreign };
   const rots = [...new Set([...t.matchAll(/\b(?:p|vong )([1-6])\b/g)].map((x) => 'P' + x[1]))];
   if (/so sanh|\bvs\b|\bhay la\b|khac nhau|\bvoi\b.*\bai\b/.test(t)) {
     if (rots.length >= 2) return { k: 'cmp', o: { type: 'rot', a: rots[0], b: rots[1] } };
