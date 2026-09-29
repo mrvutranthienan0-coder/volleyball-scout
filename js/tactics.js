@@ -429,6 +429,7 @@ export async function mountTactics(el, opts = {}) {
   function drawSvg() {
     const [vx, vy, vw, vh] = viewBox();
     svg.setAttribute('viewBox', `${vx} ${vy} ${vw} ${vh}`);
+    svg.dataset.view = ui.view; // CSS lấy tỉ lệ khung theo nửa sân / cả sân (css/tactics.css .tx-court)
     const full = ui.view === 'full';
     const pos = ui.anim ? ui.anim.pos : posAt(ui.sim);
     const k = ui.anim ? ui.anim.k : ui.sim;
@@ -511,7 +512,7 @@ export async function mountTactics(el, opts = {}) {
         <div class="tx-rots" role="group" aria-label="Xoay vòng — vị trí chuyền hai"><span class="tx-lab">Xoay vòng</span>${[1, 2, 3, 4, 5, 6].map((r) => pill('rot:' + r, board.rotation === r, 'P' + r, `data-testid="tx-rot-${r}"`)).join('')}</div>
         <button class="tx-pill tx-morebtn${ui.more ? ' is-open' : ''}" data-act="more" aria-expanded="${ui.more}" aria-controls="tx-more-panel" data-testid="tx-more">Thêm<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
       </div>
-      <p class="tx-hint">${esc(PHASE[board.phase].hint)}. Xoay vòng P${board.rotation} = chuyền hai đứng ở vị trí ${board.rotation} lúc bắt đầu.</p>
+      <p class="tx-hint">${esc(PHASE[board.phase].hint)}. P${board.rotation}: chuyền hai đứng vị trí ${board.rotation}.</p>
       <div class="tx-more" id="tx-more-panel" data-testid="tx-more-panel" ${ui.more ? '' : 'hidden'}>
         <div class="tx-lab">Hiển thị trên sân</div>
         <div class="tx-toggles">
@@ -547,8 +548,8 @@ export async function mountTactics(el, opts = {}) {
         <div class="tx-tools" role="group" aria-label="Công cụ vẽ">${tools.map(([k, t]) => pill('tool:' + k, ui.tool === k, t, `data-testid="tx-tool-${k}"`)).join('')}</div>
         <div class="tx-stepper"><span class="tx-lab">Nét mới thuộc</span><button class="tx-btn tx-sq" data-act="dstep-" aria-label="Bớt bước">−</button><b data-testid="tx-draw-step">Bước ${ui.drawStep}</b><button class="tx-btn tx-sq" data-act="dstep+" aria-label="Thêm bước">+</button></div>
       </div>
-      <p class="tx-hint">${ui.tool === 'text' ? 'Chạm lên sân chỗ muốn đặt ghi chú.' : ui.tool === 'zone' ? 'Kéo trên sân để khoanh vùng. Vùng chứa một cầu thủ sẽ thành vùng phụ trách của người đó.' : 'Kéo từ một cầu thủ để vẽ đường chạy của người đó (dùng khi mô phỏng). Các nét cùng bước chạy cùng lúc.'}</p>`
-      : '<p class="tx-hint">Kéo cầu thủ để chỉnh chỗ đứng. Chạm một người để xem ở đâu, khi nào, làm gì; chạm thêm người để xem phối hợp; chạm chỗ trống để bỏ chọn.</p>'}`;
+      <p class="tx-hint">${ui.tool === 'text' ? 'Chạm lên sân chỗ muốn đặt ghi chú.' : ui.tool === 'zone' ? 'Kéo trên sân để khoanh vùng phụ trách.' : 'Kéo từ một cầu thủ để vẽ đường chạy.'}</p>`
+      : '<p class="tx-hint">Kéo cầu thủ để đổi chỗ đứng. Chạm một người để xem việc của người đó.</p>'}`;
   }
 
   function stepsOf(pid) {
@@ -581,7 +582,7 @@ export async function mountTactics(el, opts = {}) {
     const pos = posAt(ui.sim);
     const foc = ui.focus.filter((pid) => pos[pid]);
     if (!foc.length) {
-      ref.focus.innerHTML = `<div class="tx-k">Tập trung VĐV</div><h2>Chạm một cầu thủ trên sân</h2><p class="tx-muted">Sẽ hiện: đứng ở đâu, trong pha nào, làm gì. Chạm thêm người để xem cách hai người phối hợp.</p>`;
+      ref.focus.innerHTML = `<div class="tx-k">Tập trung VĐV</div><h2>Chạm một cầu thủ trên sân</h2>`;
       return;
     }
     const slots = slotOf(board);
@@ -628,7 +629,7 @@ export async function mountTactics(el, opts = {}) {
         ${board.id && plans.some((p) => p.id === board.id) ? '<button class="tx-btn" data-act="plan-save-new" data-testid="tx-plan-save-new">Lưu thành bản mới</button>' : ''}
         <button class="tx-btn" data-act="plan-new" data-testid="tx-plan-new">Bảng mới</button>
       </div>
-      ${ro ? '<p class="tx-muted tx-ro" data-testid="tx-readonly">Phương án có sẵn trong báo cáo đối thủ — chỉ đọc. Sửa rồi bấm Lưu sẽ thành bản riêng trên máy này.</p>' : ''}
+      ${ro ? '<p class="tx-muted tx-ro" data-testid="tx-readonly">Phương án trong báo cáo — chỉ đọc. Sửa rồi Lưu sẽ thành bản riêng.</p>' : ''}
       <ul class="tx-plans" data-testid="tx-plan-list">${plans.length ? plans.map((p) => row(p, false)).join('') : '<li class="tx-muted tx-empty">Chưa lưu phương án nào.</li>'}</ul>
       <div class="tx-lab">Mẫu có sẵn</div><ul class="tx-plans">${row(SAMPLE, true)}${BUILTIN.filter((b) => !plans.some((p) => p.id === b.id)).map((b) => row(b, true).replace('data-testid="tx-plan-item"', 'data-testid="tx-plan-builtin"')).join('')}</ul>`;
   }

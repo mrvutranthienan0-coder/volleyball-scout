@@ -1,13 +1,13 @@
 {
   "team": "XMLS Thanh Hóa",
   "teamKey": "xmls-thanh-hoa",
-  "generated": "2026-09-27",
+  "generated": "2026-09-29",
   "note": "Hồ sơ từng cầu thủ chỉ ghép lại những gì đã có trong báo cáo (xmls-thanh-hoa.json: ghi chú đội hình, xu hướng, chuỗi điểm đếm từ bảng điểm) và research/players-new/candidates.json cho 2 ngoại binh mới. Mỗi ý trỏ về nguồn gốc bằng 'ref' (id xu hướng, run:<số> = chuỗi điểm đã đếm, roster = ghi chú đội hình); ý nào trỏ sai thì trang tự bỏ. Không có số đo riêng từng người từ video (máy nhận số áo người phát mới đúng 54%).",
   "oldLineup": "Dựa trên đội hình vòng 1 (tháng 3–4/2026). Đội hình cũ — có thể đã thay đổi ở giai đoạn 2.",
   "players": [
     {
       "num": 36, "name": "Cai Xiaoqing", "nationality": "Trung Quốc", "foreign": true,
-      "status": "Giai đoạn 2 chưa rõ còn ở lại",
+      "status": "Giai đoạn 2 chưa rõ còn ở lại — các bài 27–28/9/2026 về 2 ngoại binh mới không nhắc cô",
       "stats": [
         { "label": "Điểm ghi trận thắng Long An", "value": "22 điểm", "date": "9/4/2026", "src": "Ghi chú đội hình (theo báo) — chưa gắn link bài gốc", "conf": "thấp" }
       ],
@@ -22,7 +22,7 @@
       "exploit": [
         { "from": "w-bi-chan", "text": "Chắn đôi kín tay khi cô ở biên 4; khi cô xuống hàng sau, phụ công đứng giữa chờ quả 33 sau.", "planId": "ai-thh-chan-cai" }
       ],
-      "flags": ["Tin 26–27/9: Thanh Hóa ký 2 chủ công ngoại binh mới (Sasipaporn, Hoffman) — hai người này thay vai trò của Cai. Phương án chắn cô có thể phải chuyển sang người mới."]
+      "flags": ["Tin 27–28/9: Thanh Hóa đạt thoả thuận sơ bộ với 2 chủ công ngoại binh mới (Sasipaporn, Hoffman), hội quân đầu tháng 10 — hai người này thay vai trò của Cai. Phương án chắn cô có thể phải chuyển sang người mới."]
     },
     {
       "num": 10, "name": "Hoàng Thị Thảo",
@@ -118,7 +118,7 @@
     {
       "name": "Sasipaporn Janthawisut", "nationality": "Thái Lan", "foreign": true, "role": "Chủ công · ngoại binh Thái Lan (mới)",
       "h": 178, "hNote": "1m78 theo Volleyball World và thethaovanhoa 27/9/2026; một bài 2024 ghi 1m75 — hai nguồn lệch nhau.",
-      "status": "Đã đạt thoả thuận, CLB chưa công bố chính thức (tin 26–27/9/2026). Chưa có số áo ở Thanh Hóa.",
+      "status": "Thoả thuận sơ bộ, CLB chưa công bố hợp đồng; dự kiến hội quân đầu tháng 10/2026 (baothanhhoa 28/9, thethaovanhoa 27/9). Chưa có số áo ở Thanh Hóa.",
       "info": [
         { "label": "Sinh", "value": "10/6/1997 (Wikidata ghi 1998)" },
         { "label": "Số áo tuyển Thái Lan", "value": "11 (VNL 2026) — không phải số áo ở Thanh Hóa" },
@@ -132,13 +132,14 @@
         { "label": "Hồ sơ VNL — volleyballworld.com", "url": "https://en.volleyballworld.com/volleyball/competitions/volleyball-nations-league/players/180383" },
         { "label": "Hồ sơ — volleybox.net", "url": "https://women.volleybox.net/sasipapron-janthawisut-p11315" },
         { "label": "Quá trình CLB — globalsportsarchive.com", "url": "https://globalsportsarchive.com/people/volleyball/sasipapron-janthawisut/7783139/" },
+        { "label": "Thanh Hóa sắp có 2 ngoại binh — baothanhhoa.vn 28/9", "url": "https://baothanhhoa.vn/doi-bong-chuyen-nu-xmls-thanh-hoa-sap-co-hai-ngoai-binh-chat-luong-303404.htm" },
         { "label": "Thanh Hóa ký 2 ngoại binh mới — thethao247.vn 26/9", "url": "https://thethao247.vn/503-xac-nhan-chien-than-tuyen-thai-lan-gia-nhap-giai-bong-chuyen-viet-nam-c45-d437696.html" }
       ]
     },
     {
       "name": "Claire Hoffman", "nationality": "Mỹ", "foreign": true, "role": "Chủ công · ngoại binh Mỹ (mới)",
       "h": null, "hNote": "Chưa tìm thấy chiều cao ở nguồn nào đã kiểm.",
-      "status": "Đã đạt thoả thuận, CLB chưa công bố chính thức (tin 26/9/2026). Chưa có số áo ở Thanh Hóa.",
+      "status": "Thoả thuận sơ bộ, CLB chưa công bố hợp đồng; dự kiến hội quân đầu tháng 10/2026 (baothanhhoa 28/9, thethaovanhoa 27/9). Chưa có số áo ở Thanh Hóa.",
       "stats": [
         { "label": "Đập ghi điểm (kills) thời đại học", "value": "1.571 — thứ 6 lịch sử ĐH Washington", "date": "2018–2022", "src": "gohuskies.com (hồ sơ ĐH Washington)", "url": "https://gohuskies.com/sports/womens-volleyball/roster/claire-hoffman/14502", "conf": "vừa" },
         { "label": "Ace thời đại học", "value": "151 — thứ 4 lịch sử ĐH Washington", "date": "2018–2022", "src": "gohuskies.com (hồ sơ ĐH Washington)", "url": "https://gohuskies.com/sports/womens-volleyball/roster/claire-hoffman/14502", "conf": "vừa" }
@@ -150,6 +151,8 @@
       ],
       "videos": 10,
       "sources": [
+        { "label": "Thanh Hóa sắp có 2 ngoại binh — baothanhhoa.vn 28/9", "url": "https://baothanhhoa.vn/doi-bong-chuyen-nu-xmls-thanh-hoa-sap-co-hai-ngoai-binh-chat-luong-303404.htm" },
+        { "label": "Thanh Hóa chiêu mộ chủ công hàng đầu châu Á — thethaovanhoa.vn 27/9", "url": "https://thethaovanhoa.vn/doi-bong-chuyen-nu-thanh-hoa-chieu-mo-chu-cong-hang-dau-chau-a-quyet-tao-bat-ngo-o-giai-vdqg-2026-20260927082335107.htm" },
         { "label": "Thanh Hóa ký 2 ngoại binh mới — thethao247.vn 26/9", "url": "https://thethao247.vn/503-xac-nhan-chien-than-tuyen-thai-lan-gia-nhap-giai-bong-chuyen-viet-nam-c45-d437696.html" },
         { "label": "Hồ sơ LOVB Salt Lake — lovb.com", "url": "https://www.lovb.com/teams/lovb-salt-lake-volleyball/athletes/claire-hoffman" },
         { "label": "Hồ sơ Athletes Unlimited — auprosports.com", "url": "https://auprosports.com/volleyball/athletes/claire-hoffman/" },

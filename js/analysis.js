@@ -5,7 +5,9 @@ import { stats, playerById, pct, dec, currentRun, POS_SHORT, N_MIN, clearGap, me
 
 export { N_MIN, clearGap, meanGap }; // dưới N_MIN: chỉ kể số, không nói xu hướng, không khuyên (cổng nằm ở logic.js)
 export const N_OK = 20;
-export const cert = (n) => (n < N_MIN ? { label: 'Chưa đủ dữ liệu', cls: 'lo' } : n < N_OK ? { label: 'Trung bình', cls: 'mid' } : { label: 'Khá chắc', cls: 'hi' });
+// Nhãn độ chắc (một bộ chữ cho cả app): dưới N_MIN = "Chưa chắc", tới N_OK = "Khá chắc", từ N_OK = "Chắc".
+// Chỉ "Chưa chắc" / "Khá chắc" hiện thành nhãn trên màn; "Chắc" và số đếm không cần nhãn (giải thích ở nút "Giải thích").
+export const cert = (n) => (n < N_MIN ? { label: 'Chưa chắc', cls: 'lo' } : n < N_OK ? { label: 'Khá chắc', cls: 'mid' } : { label: 'Chắc', cls: 'hi' });
 export const FACT = { label: 'Số đếm', cls: 'fact' }; // chuyện đã xảy ra, không suy rộng
 export const NO_ADVICE = 'chưa đủ chắc để khuyên';
 
@@ -210,7 +212,7 @@ export function artRot(m, R, setN) {
   const st = stats(m, R, setN);
   const a = baseArt('rot', 'Xoay vòng nào đang mất điểm?', setN);
   a.table = { head: ['Vòng', 'Pha', 'Thắng–thua', 'Đỡ phát (SO)', 'Ta phát (BP)'], rows: st.rot.map((x) => [x.k, x.n, `${x.won}–${x.lost}`, frac(x.soW, x.soN), frac(x.bpW, x.bpN)]) };
-  a.chart = { type: 'pair', legend: [['a', 'Đỡ phát (side-out)'], ['b', 'Ta phát (break-point)']],
+  a.chart = { type: 'pair', legend: [['a', 'Khi đối thủ phát'], ['b', 'Khi ta phát']],
     items: st.rot.map((x) => ({ label: x.k, a: x.soN ? x.soW / x.soN : null, an: `${x.soW}/${x.soN}`, b: x.bpN ? x.bpW / x.bpN : null, bn: `${x.bpW}/${x.bpN}` })) };
   const rk = rotRank(st);
   const act = rk.act;

@@ -14,10 +14,11 @@ const YT = /^https:\/\/www\.youtube\.com\/watch\?v=[\w-]{11}&t=\d+s$/;
 export const isEvidenceUrl = (u) => YT.test(String(u || ''));
 const safeHref = (u) => (/^https?:\/\//.test(String(u || '')) ? String(u) : '#');
 
+// Một bộ nhãn cho cả app: "Chưa chắc" / "Khá chắc"; đã chắc thì không gắn nhãn (giải thích ở nút Giải thích + mục cuối báo cáo).
 const CONF = {
   cao: { label: 'Chắc chắn', cls: 'hi' },
   'vừa': { label: 'Khá chắc', cls: 'mid' },
-  'thấp': { label: 'Cần kiểm', cls: 'lo' },
+  'thấp': { label: 'Chưa chắc', cls: 'lo' },
 };
 const METHOD = {
   dem: 'Đếm từ bảng điểm',
@@ -34,11 +35,11 @@ const PHASE = { recv: 'Đỡ phát bóng', serve: 'Phát bóng', attack: 'Tấn 
 
 function badge(conf) {
   const c = CONF[conf] || CONF['thấp'];
+  if (c.cls === 'hi') return '';
   return `<span class="sr-conf sr-conf-${c.cls}" data-testid="sr-conf">${c.label}</span>`;
 }
-function methodTag(m) {
-  return m && METHOD[m] ? `<span class="sr-method">${METHOD[m]}</span>` : '';
-}
+// Cách lấy số (đếm / bình luận viên / AI / báo): không in trên từng thẻ nữa — gom ở mục "Độ tin của báo cáo".
+function methodTag() { return ''; }
 function evLink(ev, text = 'Xem bằng chứng', cls = 'sr-btn') {
   if (!ev || !isEvidenceUrl(ev.url)) return '';
   return `<a class="${cls}" data-evidence href="${esc(ev.url)}" target="_blank" rel="noopener" title="${esc(ev.label || '')}">${esc(text)}</a>`;
@@ -233,9 +234,9 @@ export function frameAt(tl, t) {
 
 // Nhãn chắc chắn theo DECISIONS.md: < 3 trận hoặc < 100 pha liên quan = chưa đủ dữ liệu.
 function certainty(nMatch, n) {
-  if (nMatch < 3 || n < 100) return { label: 'Chưa đủ dữ liệu', cls: 'lo' };
-  if (nMatch <= 5) return { label: 'Trung bình', cls: 'mid' };
-  return { label: 'Khá chắc', cls: 'hi' };
+  if (nMatch < 3 || n < 100) return { label: 'Chưa chắc', cls: 'lo' };
+  if (nMatch <= 5) return { label: 'Khá chắc', cls: 'mid' };
+  return { label: 'Chắc chắn', cls: 'hi' };
 }
 
 export function boardModel(B, team) {
@@ -373,15 +374,15 @@ function boardsSection(M, m = 'attack') {
     + ` Vị trí mỗi người lệch khoảng ${esc(dec1(pn.depth))} m theo hướng xa–gần camera, ${esc(dec1(pn.lateral))} m theo hướng ngang.`
     + ' Vùng phát bóng máy đoán còn sai nhiều nên không đưa vào.';
   const labels = `<span class="sr-conf sr-conf-${M.cert.cls}" data-testid="sr-conf">${esc(M.cert.label)}</span>`
-    + (M.oldRoster ? '<span class="sr-conf sr-conf-mid" data-testid="sr-old">Đội hình cũ — có thể đã thay đổi</span>' : '')
-    + '<span class="sr-method">Máy đọc từ video, chưa HLV kiểm</span>';
+    + (M.oldRoster ? '<span class="sr-conf sr-conf-mid" data-testid="sr-old">Đội hình cũ</span>' : '');
   const h = [`<section class="sr-t sr-boards" data-testid="sr-boards" data-moment="${m}">
-    <div class="sr-rhead"><div><div class="sr-lab">Pha thật trên sa bàn · ${when} gặp LPBank</div><h3>${esc(M.focus)} đập từ đâu — máy đọc từ video</h3></div>
+    <div class="sr-rhead"><div><div class="sr-lab">Sa bàn · ${when} gặp LPBank</div><h3>${esc(M.focus)} đập từ đâu</h3></div>
     ${momentSwitch(m, 'data-bm')}</div>
     <div class="sr-row">${labels}</div>
-    <p class="sr-note">Có ${M.pool} pha ${esc(M.focus)} đỡ phát bóng; máy đọc được chỗ đập ở ${M.n} pha. Mỗi sân là một khoảnh khắc thật nhìn từ trên xuống,
-      ${esc(M.focus)} ở trên (cam), LPBank ở dưới (xanh). Chạm vào sân để xem lớn, chạy lại pha và mở video.</p>
-    <p class="sr-acc" data-testid="sr-acc">${acc}</p>`];
+    <p class="sr-note">Máy đọc từ video, chưa HLV kiểm. Chỉ là quan sát, không phải lời khuyên. ${esc(M.focus)} màu cam, LPBank màu xanh.</p>
+    <details class="sr-why" data-testid="sr-why"><summary>Máy đọc đúng đến đâu?</summary>
+      <p class="sr-acc" data-testid="sr-acc">Có ${M.pool} pha ${esc(M.focus)} đỡ phát bóng; máy đọc được chỗ đập ở ${M.n} pha. ${acc}</p>
+      <p class="sr-fine">Chưa qua phép thử "sai số có làm đổi kết luận không". Chú thích: vòng đen = người đập, vòng nét đứt = chuyền hai, ô viền tím = vùng máy đọc là chỗ giậm nhảy đập.</p></details>`];
   if (!M.obs.length) {
     h.push(`<p class="sr-note" data-testid="sr-bd-empty">Máy chưa đọc được pha tấn công nào của ${esc(M.focus)}.</p></section>`);
     return h.join('');
@@ -391,15 +392,32 @@ function boardsSection(M, m = 'attack') {
     const pc = ob.n ? Math.round((100 * ob.k) / ob.n) : 0;
     h.push(`<article class="sr-obs" data-testid="sr-obs" data-obs="${esc(ob.id)}">
       <div class="sr-obs-hd"><b class="sr-obs-pc">${pc}%</b><span>${ob.k}/${ob.n} pha · ${M.nMatch} trận</span></div>
-      <h4>${esc(ob.title)}</h4><p>${esc(ob.text)}</p>
+      <h4>${esc(ob.title)}</h4>
       <div class="sr-row">${labels.replace(/ data-testid="sr-(conf|old)"/g, '').replace(/<span class="sr-method">.*?<\/span>/, '')}</div>
       <ul class="sr-snaps" data-obs-snaps="${esc(ob.id)}">${snapsHtml(M, ob, m)}</ul></article>`);
   }
-  h.push(`</div><p class="sr-fine">Chỉ là quan sát, chưa phải lời khuyên: chưa qua phép thử "sai số có làm đổi kết luận không". Chú thích: vòng đen = người đập, vòng nét đứt = chuyền hai, ô viền tím = vùng máy đọc là chỗ giậm nhảy đập.</p></section>`);
+  h.push('</div></section>');
   return h.join('');
 }
 function vnDay(iso) { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso)); return m ? `${+m[3]}/${+m[2]}/${m[1]}` : ''; }
 function dec1(v) { return isNum(v) ? (Math.round(v * 10) / 10).toString().replace('.', ',') : '?'; }
+
+function trustSection(D) {
+  const m = D.match || {}, f = D.form || {}, c = D.counts || {}, R = D.roster || {};
+  const rows = [
+    ['Nhãn', 'Chưa chắc = ít trận, ít pha hoặc nguồn chưa kiểm: chỉ để tham khảo, không đưa vào phương án. Khá chắc = có nguồn nhưng chưa đủ nhiều trận. Không nhãn = đã đếm hoặc đã đối chiếu nguồn.'],
+    ['Cách lấy số', Object.values(METHOD).join(' · ') + '.'],
+    ['Lịch trận', m.note],
+    ['Lối chơi', D.methodNote],
+    ['Phong độ', [f.method, f.note].filter(Boolean).join('. ')],
+    ['Số đếm từ bảng điểm', c.caveat],
+    ['Nhân sự', [R.startingBasis, R.note].filter(Boolean).join('. ')],
+    ['Phương án', ['AI đề xuất, HLV quyết.', D.plansNote].filter(Boolean).join(' ')],
+    ['Nguồn', D.sourcesNote],
+  ].filter(([, v]) => v);
+  return `<section class="sr-t sr-trust" data-testid="sr-trust"><details><summary>Độ tin của báo cáo</summary>
+    <dl class="sr-trustl">${rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></details></section>`;
+}
 
 // extra (tuỳ chọn): { players: data/scout/players-<đội>.json, credits: ảnh đã ghi công, teamKey, cf/sf: bộ lọc clip/nguồn, open: các hàng đã bấm 'Xem thêm' }
 export function renderScoutReport(D, now = new Date(), boards = null, extra = {}) {
@@ -424,8 +442,8 @@ export function renderScoutReport(D, now = new Date(), boards = null, extra = {}
     <div class="sr-lab">Trận tới · ${esc(m.competition)}</div>
     <div class="sr-vs"><b>${esc(m.home)}</b><i>gặp</i><b>${esc(m.opponent)}</b></div>
     <div class="sr-count" data-testid="sr-countdown">${esc(countdown(m.start, now))}</div>
-    <div class="sr-when">${esc(vnDate(m.start))}<br>${esc(m.venue)}</div>
-    <div class="sr-row">${badge(m.confidence)}<a class="sr-src" href="${esc(safeHref(m.source))}" target="_blank" rel="noopener">Nguồn lịch</a></div>
+    <div class="sr-when">${esc(vnDate(m.start))}<br>${esc(String(m.venue || '').split(' · ')[0])}</div>
+    <div class="sr-row">${m.confidence && m.confidence !== 'cao' ? '<span class="sr-conf sr-conf-lo" data-testid="sr-conf">Chưa chốt giờ</span>' : ''}<a class="sr-src" href="${esc(safeHref(m.source))}" target="_blank" rel="noopener">Nguồn lịch</a></div>
   </section>`);
 
   // 2. Tóm lại
@@ -449,10 +467,9 @@ export function renderScoutReport(D, now = new Date(), boards = null, extra = {}
   h.push(`<section class="sr-t sr-form" data-testid="sr-form"><div class="sr-lab">Phong độ gần đây</div>
     <div class="sr-big">${esc(f.record)}<span>${esc(f.recordNote || '')}</span></div>
     <ul class="sr-results">${arr(f.last5).map(chip).join('')}</ul>
-    <p class="sr-note">${esc(f.note || '')}</p>
     <div class="sr-sub">Đối đầu với ${esc(m.home)}</div>
     <ul class="sr-h2h">${arr(f.h2h).map((r) => `<li><b>${r.sets && r.sets !== '—' ? `${esc(r.winner)} thắng ${esc(r.sets)}` : esc(r.winner)}</b> <span>${esc(r.dateLabel || r.date)} · ${esc(r.competition)}</span>${r.setPoints ? `<small>${esc(r.setPoints)}</small>` : ''}${r.video ? evLink(r.video, 'Xem video', 'sr-mini') : ''}</li>`).join('')}</ul>
-    <div class="sr-row">${badge(f.confidence)}<span class="sr-method">${esc(f.method || '')}</span></div></section>`);
+    <div class="sr-row">${badge(f.confidence)}</div></section>`);
 
   // 5. Số đếm được (trận đối đầu)
   const c = D.counts;
@@ -463,8 +480,7 @@ export function renderScoutReport(D, now = new Date(), boards = null, extra = {}
       <div class="sr-bars">${c.perSet.map((x) => { const th = arr(x && x.th).map(Number); return `<div class="sr-barrow"><span>Set ${esc(x && x.set)} <small>${esc(x && x.score)}</small></span><div class="sr-bar">${bar(th[0] || 0, th[1] || 0)}</div><b>${esc(th[0])}/${esc(th[1])}</b></div>`; }).join('')}</div>
       <p class="sr-note">${esc(c.explain)}</p>
       <ul class="sr-runs">${arr(c.runs).map((r) => `<li><b>${esc(r.text)}</b>${evLink(r.evidence, 'Xem đoạn này', 'sr-mini')}</li>`).join('')}</ul>
-      <div class="sr-row">${badge(c.confidence)}<span class="sr-method">${esc(METHOD.dem)}</span></div>
-      <p class="sr-fine">${esc(c.caveat)}</p></section>`);
+      <div class="sr-row">${badge(c.confidence)}</div></section>`);
   } else {
     h.push(`<section class="sr-t sr-counts" data-testid="sr-counts"><div class="sr-lab">Số đếm được</div><h3>Chưa đếm</h3><p class="sr-note">${esc((c && c.note) || 'Chưa có trận nào được đếm từ video.')}</p></section>`);
   }
@@ -474,24 +490,21 @@ export function renderScoutReport(D, now = new Date(), boards = null, extra = {}
   const PL = thPlayers(D, extra.players);
   const tile = (p) => playerCard(p, photoFor(p, extra.credits, extra.teamKey));
   h.push(`<section class="sr-t sr-roster" data-testid="sr-roster"><div class="sr-rhead"><div><div class="sr-lab">Nhân sự · HLV ${esc(R.coach)}</div>
-      <h3>${esc(R.startingTitle)}</h3></div><div class="sr-row">${badge(R.startingConfidence)}<span class="sr-method">${esc(R.startingBasis)}</span></div></div>
-    <p class="sr-note">Chạm vào một cầu thủ để mở hồ sơ: chỉ số, ưu điểm, điểm yếu, chỗ nên khai thác — kèm nguồn.</p>
+      <h3>${esc(R.startingTitle)}</h3></div><div class="sr-row">${badge(R.startingConfidence)}</div></div>
     <ul class="sr-six">${PL.start.map(tile).join('')}</ul>
     ${PL.fresh.length ? `<div class="sr-sub" data-testid="sr-newforeign">Ngoại binh mới giai đoạn 2 (chưa chính thức)</div><ul class="sr-six sr-new">${PL.fresh.map(tile).join('')}</ul>` : ''}
     <details class="sr-more"><summary>Dự bị và thông tin khác <span>${PL.bench.length} người</span></summary>
-      <ul class="sr-bench">${PL.bench.map(tile).join('')}</ul><p class="sr-note">${esc(R.note || '')}</p></details></section>`);
+      <ul class="sr-bench">${PL.bench.map(tile).join('')}</ul></details></section>`);
 
   // 7. Lối chơi
   const evItem = (e) => `<li><a data-evidence href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.label)}</a>${e.quote ? `<q>${esc(e.quote)}</q>` : ''}</li>`;
-  h.push(`<section class="sr-t sr-tend-wrap"><div class="sr-rhead"><div><div class="sr-lab">Lối chơi · từ ${esc(D.videosUsed)} video</div><h3>Xu hướng của ${esc(D.team)}</h3></div>
-    <p class="sr-note">${esc(D.methodNote || '')}</p></div><div class="sr-tends">`);
+  h.push(`<section class="sr-t sr-tend-wrap"><div class="sr-rhead"><div><div class="sr-lab">Lối chơi · từ ${esc(D.videosUsed)} video</div><h3>Xu hướng của ${esc(D.team)}</h3></div></div><div class="sr-tends">`);
   for (const t of D.tendencies || []) {
     const ev = arr(t.evidence).filter((e) => isEvidenceUrl(e.url));
     h.push(`<article class="sr-tend" data-testid="sr-tendency" id="t-${esc(t.id)}">
       <div class="sr-row"><span class="sr-area">${esc(AREA[t.area] || t.area)}</span>${badge(t.confidence)}${methodTag(t.method)}</div>
-      <h4>${esc(t.title)}</h4><p>${esc(t.detail)}</p>
-      ${ev.length ? `<ul class="sr-evs">${ev.slice(0, 3).map(evItem).join('')}</ul>` : ''}
-      ${ev.length > 3 ? `<details class="sr-evmore"><summary>Thêm ${ev.length - 3} mốc</summary><ul class="sr-evs">${ev.slice(3).map(evItem).join('')}</ul></details>` : ''}
+      <h4>${esc(t.title)}</h4>
+      ${t.detail || ev.length ? `<details class="sr-evmore"><summary>Chi tiết${ev.length ? ` · ${ev.length} đoạn video` : ''}</summary>${t.detail ? `<p>${esc(t.detail)}</p>` : ''}${ev.length ? `<ul class="sr-evs">${ev.map(evItem).join('')}</ul>` : ''}</details>` : ''}
       <div class="sr-acts">${evLink(ev[0])}${t.planId ? planLink(t.planId) : ''}</div></article>`);
   }
   h.push('</div></section>');
@@ -501,7 +514,7 @@ export function renderScoutReport(D, now = new Date(), boards = null, extra = {}
 
   // 8. Phương án
   h.push(`<section class="sr-t sr-plans" data-testid="sr-plans"><div class="sr-rhead"><div><div class="sr-lab">Phương án đề xuất</div><h3>Đề xuất của AI — HLV quyết</h3></div>
-    <p class="sr-note">Mỗi phương án gắn với một xu hướng ở trên. Bấm "Mở trên bàn chiến thuật" để sửa, mô phỏng và lưu. ${esc(D.plansNote || '')}</p></div><div class="sr-plangrid">`);
+    </div><div class="sr-plangrid">`);
   for (const P of D.plans || []) {
     const p = P.plan;
     h.push(`<article class="sr-plan" data-testid="sr-plan">${miniCourt(p, D.homeNums || {})}
@@ -517,6 +530,9 @@ export function renderScoutReport(D, now = new Date(), boards = null, extra = {}
 
   // 10. Nguồn
   h.push(sourcesSection(D, sourceModel(D, CM), extra.sf || { k: '', t: new Set() }, extra.open));
+
+  // 11. Độ tin của báo cáo: MỘT chỗ gom mọi chú thích về cách lấy số, độ chắc, sai số (trước đây lặp dưới từng thẻ).
+  h.push(trustSection(D));
 
   const cd = countdown(m.start, now);
   const lead = /^(Còn|Ngày mai|Hôm nay)/.test(cd) ? `${cd} tới trận gặp ${m.opponent || ''}` : `Trận gặp ${m.opponent || ''}`;

@@ -141,7 +141,7 @@ const sel = (attr, label, all, opts, cur, tid) => `<label class="sr-sel"><span c
 function clipCard(x) {
   return `<li><a class="sr-clip" data-pp-open data-evidence data-clip="${x.i}" data-testid="sr-clip" href="${esc(x.url)}" target="_blank" rel="noopener" title="${esc(x.label)}">
     <span class="sr-thumb"><img src="${thumb(x.vid)}" alt="" loading="lazy" data-thumb-fb><i class="sr-playic" aria-hidden="true"></i><b class="sr-ts">${esc(fmtTime(x.sec))}</b></span>
-    <span class="sr-cmeta"><b>${esc(x.match ? x.match.short : x.label)}</b><small>${esc(x.tag)}</small></span></a></li>`;
+    <span class="sr-cmeta"><b>${esc(x.match ? x.match.short : x.label)}</b></span></a></li>`;
 }
 function rowHtml(list, card, key, open) {
   const more = list.length - MOBILE_CAP;
@@ -164,13 +164,13 @@ export function clipsSection(M, f, open = new Set()) {
       const its = list.filter((x) => x.gi === t.gi);
       if (!its.length) return '';
       return `<div class="sr-tagsec" data-testid="sr-tagsec" data-gi="${t.gi}"><div class="sr-taghd"><b>${esc(t.tag)}</b><span>${its.length} mốc</span></div>
-        <p class="sr-tagdesc">${esc(t.tend ? t.tend.title : t.title)}</p>${rowHtml(its, clipCard, 'c' + t.gi, open.has('c' + t.gi))}</div>`;
+${rowHtml(its, clipCard, 'c' + t.gi, open.has('c' + t.gi))}</div>`;
     }).join('');
     const n = list.filter((x) => x.cat.id === c.id).length;
     return n ? `<section class="sr-cat" data-testid="sr-cat" data-cat="${c.id}"><h4>${esc(c.label)} <span>${n} mốc</span></h4>${secs}</section>` : '';
   }).join('');
   return `<section class="sr-t sr-clips sr-lib" data-testid="sr-clips"><div class="sr-rhead"><div><div class="sr-lab">Clip theo xu hướng</div><h3>Xem lại đúng đoạn video</h3></div>
-    <p class="sr-note">Chia theo nhóm rồi theo tag. Bấm một thẻ để xem ngay trong khung bên cạnh (cần mạng).</p></div>
+</div>
     <div class="sr-fbar" data-testid="sr-cfilters">
       <div class="sr-pills" role="group" aria-label="Nhóm">${pill('data-cf-c', '', !f.c, 'Tất cả', base.length, '', 'sr-cf-all')}${M.cats.map((c) => pill('data-cf-c', c.id, f.c === c.id, c.label, catN(c.id), '', 'sr-cf-c')).join('')}</div>
       ${f.c ? `<div class="sr-pills sr-tags" role="group" aria-label="Tag trong nhóm">${M.tags.filter((t) => t.cat.id === f.c).map((t) => pill('data-cf-g', t.gi, !!(f.g && f.g.has(t.gi)), t.tag, inC.filter((x) => x.gi === t.gi).length, 'sr-pb-tag', 'sr-cf-g')).join('')}</div>` : ''}
@@ -204,7 +204,7 @@ export function sourcesSection(D, S, f, open = new Set()) {
     return `<section class="sr-cat" data-cat="${k}"><h4>${esc(KIND[k])} <span>${its.length} nguồn</span></h4>
       <div class="sr-tagsec">${rowHtml(its, srcCard, 's' + k, open.has('s' + k))}</div></section>`;
   }).join('');
-  return `<footer class="sr-t sr-sources sr-lib" data-testid="sr-sources"><div class="sr-lab">Nguồn và cách làm</div><p class="sr-note">${esc(D.sourcesNote || '')}</p>
+  return `<footer class="sr-t sr-sources sr-lib" data-testid="sr-sources"><div class="sr-lab">Nguồn</div>
     <div class="sr-fbar"><div class="sr-pills" role="group" aria-label="Loại nguồn">${pill('data-sf-k', '', !f.k, 'Tất cả', S.length, '', 'sr-sf-all')}${KINDS.filter((k) => kN(k)).map((k) => pill('data-sf-k', k, f.k === k, KIND[k], kN(k), '', 'sr-sf-k')).join('')}</div>
       ${f.k ? `<div class="sr-pills sr-tags" role="group" aria-label="Trận / chủ đề">${tagsOf(f.k).map((t) => pill('data-sf-t', t.key, !!(f.t && f.t.has(t.key)), t.label, S.filter((s) => s.kind === f.k && s.tag.key === t.key).length, 'sr-pb-tag', 'sr-sf-t')).join('')}</div>` : ''}
       <div class="sr-fsec"><span class="sr-fcount" data-testid="sr-scount">${list.length}/${S.length} nguồn</span></div></div>

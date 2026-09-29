@@ -106,7 +106,7 @@ export async function checkTrend(m, R, n = 20) {
 
 // ---------- Giao diện (phong cách C: nền xám ấm, ô bo lớn, pastel) ----------
 const CSS = `
-.ail{--ail-ink:#1D1B20;--ail-muted:#6F6A75;--ail-bg:#F3F1EC;--ail-tile:#fff;--ail-mint:#DDF2E3;--ail-mint-d:#2E8B57;--ail-lav:#E6E1FA;--ail-lav-d:#6A55D8;--ail-peach:#FDE4D6;--ail-peach-d:#D9653B;--ail-sky:#DDEBFA;--ail-sky-d:#2F6FD1;
+.ail{--ail-ink:#1D1B20;--ail-muted:#57525D;--ail-bg:#F3F1EC;--ail-tile:#fff;--ail-mint:#DDF2E3;--ail-mint-d:#2E8B57;--ail-lav:#E6E1FA;--ail-lav-d:#6A55D8;--ail-peach:#FDE4D6;--ail-peach-d:#D9653B;--ail-sky:#DDEBFA;--ail-sky-d:#2F6FD1;
   font-family:'Be Vietnam Pro',system-ui,sans-serif;color:var(--ail-ink);display:flex;flex-direction:column;gap:10px}
 .ail *{box-sizing:border-box}
 .ail-tile{background:var(--ail-tile);border-radius:24px;padding:16px}

@@ -1,24 +1,67 @@
 {
  "team": "XMLS Thanh Hóa",
- "generated": "2026-09-26",
+ "generated": "2026-09-29",
  "label": "Đề xuất của AI — HLV quyết",
  "match": {
   "home": "LPBank Ninh Bình",
   "opponent": "XMLS Thanh Hóa",
   "start": "2026-10-14T20:00:00+07:00",
-  "venue": "Nhà thi đấu tỉnh Vĩnh Long",
+  "venue": "Nhà thi đấu tỉnh Vĩnh Long · giờ theo lịch công bố 04/2026, chưa xác nhận lại — báo Thanh Hóa 28/9 ghi trận mở màn của họ là 15/10",
   "competition": "VĐQG 2026 · giai đoạn 2",
-  "confidence": "vừa",
-  "source": "https://webthethao.vn/bong-chuyen-viet-nam/lich-thi-dau-giai-bong-chuyen-vo-dich-quoc-gia-2026-moi-nhat-qn0ArdgRg.htm"
+  "confidence": "thấp",
+  "source": "https://www.24h.com.vn/the-thao/lich-thi-dau-giai-bong-chuyen-vo-dich-quoc-gia-2026-moi-nhat-c101a1747430.html",
+  "note": "Lịch từng trận 24h.com.vn (đăng 20/4/2026) và Wikipedia (sửa 29/9/2026) cùng ghi 14/10 20:00, trận 4 sau lễ khai mạc 19:30. Báo Thanh Hóa 28/9/2026 viết Thanh Hóa \"thi đấu trận đầu tiên … vào ngày 15/10, gặp LP Bank Ninh Bình\" — lệch 1 ngày, không ghi giờ. Chưa có văn bản VFV/BTC nào xác nhận lại. Bài webthethao cũ đã gỡ (404, 29/9).",
+  "fixtures": [
+   {
+    "date": "2026-10-14",
+    "time": "20:00",
+    "opponent": "XMLS Thanh Hóa"
+   },
+   {
+    "date": "2026-10-15",
+    "time": "17:00",
+    "opponent": "Geleximco Hưng Yên"
+   },
+   {
+    "date": "2026-10-17",
+    "time": "14:30",
+    "opponent": "HCĐG Lào Cai"
+   },
+   {
+    "date": "2026-10-18",
+    "time": "12:00",
+    "opponent": "Hà Nội Tasco Auto"
+   },
+   {
+    "date": "2026-10-19",
+    "time": "14:30",
+    "opponent": "VTV Bình Điền Long An"
+   },
+   {
+    "date": "2026-10-21",
+    "time": "17:00",
+    "opponent": "Binh chủng Thông tin – BĐ19"
+   },
+   {
+    "date": "2026-10-22",
+    "time": "19:30",
+    "opponent": "Vietinbank"
+   }
+  ],
+  "fixturesSource": {
+   "url": "https://www.24h.com.vn/the-thao/lich-thi-dau-giai-bong-chuyen-vo-dich-quoc-gia-2026-moi-nhat-c101a1747430.html",
+   "date": "2026-04-20",
+   "note": "khớp Wikipedia sửa 29/9/2026; 24–25/10 là bán kết / xếp hạng theo thứ hạng chung cuộc"
+  }
  },
  "summary": {
   "sentence": "Thanh Hóa sống nhờ [[ngoại binh chủ công]] và sụp khi [[bước một bị ép]]: trận 7/4 ta thắng 3-1 nhờ hai lượt phát bóng ăn liền 5 và 9 điểm.",
   "chips": [
    "Hạng 6/8 sau vòng 1 · 3 thắng, 4 thua",
    "Thua ta cả 2 lần năm 2026, cùng 1-3",
-   "Giai đoạn 2 có thể thêm 2 ngoại binh mới"
+   "2 chủ công ngoại binh mới: thoả thuận sơ bộ, hội quân đầu tháng 10"
   ],
-  "bottomLine": "Thanh Hóa có 2 chủ công ngoại binh mới, đang dựng hồ sơ",
+  "bottomLine": "Thanh Hóa có 2 chủ công ngoại binh mới (thoả thuận sơ bộ, tin 28/9), đang dựng hồ sơ",
   "insights": [
    {
     "tone": "lav",
@@ -62,12 +105,12 @@
     "tone": "peach",
     "kicker": "Cần để ý",
     "title": "Đội hình giai đoạn 2 có thể khác",
-    "text": "Tin 26/9: Thanh Hóa ký 2 chủ công ngoại binh mới (Thái Lan, Mỹ); chưa rõ Cai Xiaoqing còn không. Mọi video ở đây là đội hình tháng 3–4.",
+    "text": "Tin 28/9 (báo Thanh Hóa): CLB đạt thoả thuận sơ bộ với 2 chủ công ngoại binh (Thái Lan, Mỹ), hội quân đầu tháng 10 — chưa công bố hợp đồng. Chưa bài nào nhắc Cai Xiaoqing. Mọi video ở đây là đội hình tháng 3–4.",
     "confidence": "vừa",
     "method": "bao",
     "source": {
-     "url": "https://thethao247.vn/503-xac-nhan-chien-than-tuyen-thai-lan-gia-nhap-giai-bong-chuyen-viet-nam-c45-d437696.html",
-     "label": "Đọc tin"
+     "url": "https://baothanhhoa.vn/doi-bong-chuyen-nu-xmls-thanh-hoa-sap-co-hai-ngoai-binh-chat-luong-303404.htm",
+     "label": "Đọc tin 28/9"
     }
    }
   ]
@@ -122,7 +165,7 @@
     "source": "https://baothanhhoa.vn/xmls-thanh-hoa-xep-thu-6-sau-vong-1-giai-bong-chuyen-vdqg-nam-2026-285132.htm"
    }
   ],
-  "note": "Sau vòng 1: hạng 6/8, 3 thắng – 4 thua, 8 điểm. Không tìm thấy trận chính thức nào từ 20/4 đến nay.",
+  "note": "Sau vòng 1: Thanh Hóa hạng 6/8, 3 thắng – 4 thua, 8 điểm; ta hạng 5, 3 thắng – 4 thua, 10 điểm (điểm vòng 1 tính tiếp sang vòng 2, vòng tròn 2 lượt). Không tìm thấy trận chính thức nào của Thanh Hóa từ 20/4 đến 29/9/2026.",
   "h2h": [
    {
     "date": "2026-04-07",
@@ -227,7 +270,7 @@
     }
    }
   ],
-  "caveat": "Đọc tỷ số bằng mắt ở 149 lần bảng điểm đổi số (video 360p). Biết chắc thứ tự 145/173 điểm; 14 chỗ bảng điểm bị che qua điểm của cả hai đội thì bỏ, không đoán. Chưa đếm được vùng phát, ai đỡ, ai đập — cần xem hình từng pha. Lúc đó Thanh Hóa chưa có 2 ngoại binh mới."
+  "caveat": "Đọc tỷ số bằng mắt ở 149 lần bảng điểm đổi số (video 360p). Biết chắc thứ tự 145/173 điểm; 14 chỗ bảng điểm bị che qua điểm của cả hai đội thì bỏ, không đoán. Chưa đếm được vùng phát, ai đỡ, ai đập — cần xem hình từng pha. Lúc đó Thanh Hóa chưa có 2 ngoại binh mới. Giai đoạn 2 ta thiếu Nguyễn Thị Uyên (đứt dây chằng gối, đã phẫu thuật, nghỉ ít nhất 10 tháng — SGGP 23/9/2026): chuỗi 5 điểm set 3 là lượt phát của cô."
  },
  "roster": {
   "coach": "Bùi Huy Sơn",
@@ -245,7 +288,7 @@
      "Điểm đến bóng khó",
      "4/5 trận xuất phát"
     ],
-    "note": "Ghi điểm nhiều nhất đội vòng 1 (22 điểm trận thắng Long An). Giai đoạn 2 chưa rõ còn ở lại."
+    "note": "Ghi điểm nhiều nhất đội vòng 1 (22 điểm trận thắng Long An). Giai đoạn 2 chưa rõ còn ở lại — các bài 27–28/9 về 2 ngoại binh mới không nhắc cô."
    },
    {
     "num": 10,
@@ -381,21 +424,21 @@
     "name": "Sasipaporn Janthawisut",
     "role": "Chủ công · ngoại binh Thái Lan (mới)",
     "tags": [
-     "Tin 26/9 · 1 nguồn"
+     "Thoả thuận sơ bộ · 2 nguồn 27–28/9"
     ],
-    "note": "Tuyển Thái Lan, từng chơi cho HCĐG Lào Cai. Chưa có số áo."
+    "note": "Tuyển Thái Lan, cao 1m78, từng chơi cho HCĐG Lào Cai. Dự kiến hội quân đầu tháng 10. Chưa có số áo."
    },
    {
     "num": "?",
     "name": "Claire Hoffman",
     "role": "Chủ công · ngoại binh Mỹ (mới)",
     "tags": [
-     "Tin 26/9 · 1 nguồn"
+     "Thoả thuận sơ bộ · 2 nguồn 27–28/9"
     ],
-    "note": "Từng dự Pan American Cup 2026 với tuyển Mỹ. Chưa có số áo."
+    "note": "Từng khoác áo tuyển Mỹ. Dự kiến hội quân đầu tháng 10. Chưa có số áo."
    }
   ],
-  "note": "Số áo, chiều cao theo Wikipedia (03/2026). Danh sách đăng ký giai đoạn 2 chưa công bố."
+  "note": "Số áo, chiều cao theo Wikipedia (03/2026). Danh sách đăng ký giai đoạn 2 chưa công bố (tra đến 29/9/2026)."
  },
  "plansNote": "Đội hình ta trên sơ đồ lấy theo trận 7/4 (NB = ngoại binh chủ công; trên app đang là số 26) — HLV đổi người trên bàn.",
  "videosUsed": "8",
@@ -1529,9 +1572,34 @@
  ],
  "sources": [
   {
-   "label": "Lịch giai đoạn 2 — webthethao.vn",
-   "url": "https://webthethao.vn/bong-chuyen-viet-nam/lich-thi-dau-giai-bong-chuyen-vo-dich-quoc-gia-2026-moi-nhat-qn0ArdgRg.htm",
-   "note": "lịch công bố 04/2026, chưa xác nhận lại gần ngày"
+   "label": "Lịch giai đoạn 2 — 24h.com.vn (20/4)",
+   "url": "https://www.24h.com.vn/the-thao/lich-thi-dau-giai-bong-chuyen-vo-dich-quoc-gia-2026-moi-nhat-c101a1747430.html",
+   "note": "lịch từng trận, đăng 04/2026; báo Thanh Hóa 28/9 ghi 15/10 — chưa xác nhận lại"
+  },
+  {
+   "label": "Lịch và bảng xếp hạng — Wikipedia (sửa 29/9)",
+   "url": "https://vi.wikipedia.org/wiki/Gi%E1%BA%A3i_b%C3%B3ng_chuy%E1%BB%81n_v%C3%B4_%C4%91%E1%BB%8Bch_qu%E1%BB%91c_gia_Vi%E1%BB%87t_Nam_2026",
+   "note": "trùng lịch 24h: 14/10 20:00; nguồn thứ cấp"
+  },
+  {
+   "label": "Thanh Hóa sắp có 2 ngoại binh — baothanhhoa.vn 28/9",
+   "url": "https://baothanhhoa.vn/doi-bong-chuyen-nu-xmls-thanh-hoa-sap-co-hai-ngoai-binh-chat-luong-303404.htm",
+   "note": "thoả thuận sơ bộ; ghi trận mở màn 15/10 gặp LPBank"
+  },
+  {
+   "label": "Thanh Hóa chiêu mộ chủ công hàng đầu châu Á — thethaovanhoa.vn 27/9",
+   "url": "https://thethaovanhoa.vn/doi-bong-chuyen-nu-thanh-hoa-chieu-mo-chu-cong-hang-dau-chau-a-quyet-tao-bat-ngo-o-giai-vdqg-2026-20260927082335107.htm",
+   "note": "CLB chưa công bố hợp đồng"
+  },
+  {
+   "label": "Nguyễn Thị Uyên phẫu thuật, nghỉ vòng 2 — SGGP 23/9",
+   "url": "https://thethao.sggp.org.vn/noi-lo-cua-bong-chuyen-ninh-binh-sau-ca-phau-thuat-cua-nguyen-thi-uyen-post872977.html",
+   "note": "tin đội ta"
+  },
+  {
+   "label": "Ninh Bình gần chốt Paskova cho vòng 2 — thethaovanhoa.vn 29/9",
+   "url": "https://thethaovanhoa.vn/ngoi-sao-bong-chuyen-nu-tan-cong-xuat-sac-nhat-mua-giai-2025-tro-lai-viet-nam-thi-dau-2026092908525708.htm",
+   "note": "tin đội ta, chưa chốt"
   },
   {
    "label": "Thanh Hóa ký 2 ngoại binh mới — thethao247.vn 26/9",

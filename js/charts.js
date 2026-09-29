@@ -3,7 +3,8 @@
 import * as A from './analysis.js';
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-export const certTag = (c) => `<span class="cert ${c.cls}">${esc(c.label)}</span>`;
+// Nhãn chỉ hiện khi CHƯA chắc hẳn (lo / mid) — số đếm và số đủ chắc không gắn nhãn, tránh lặp chữ trên mọi thẻ.
+export const certTag = (c) => (c && (c.cls === 'lo' || c.cls === 'mid') ? `<span class="cert ${c.cls}">${esc(c.label)}</span>` : '');
 export const metaLine = (nText, c, extra = '') => `<p class="nmeta">${certTag(c)}<span>n = ${esc(nText)}</span>${extra ? `<span>${esc(extra)}</span>` : ''}</p>`;
 export const legend = (items) => `<div class="lgd">${items.map(([cls, l]) => `<span><i class="k ${cls}"></i>${esc(l)}</span>`).join('')}</div>`;
 
@@ -59,36 +60,36 @@ export function nowBlock(m, R, setN, { testid = 'now', compact = false } = {}) {
   const c = A.nowConclusions(m, R, setN);
   const li = (b) => `<li><span>${esc(b.text)}</span><span class="nm">${certTag(b.tag)}<small>n = ${b.n}</small></span></li>`;
   const adv = c.advice ? `<p class="adv ${c.advice.none ? 'none' : ''}" data-testid="${testid}-advice">${c.advice.none ? '' : '<b>Gợi ý · </b>'}${esc(c.advice.text)} ${c.advice.none ? '' : certTag(c.advice.tag) + `<small> n = ${c.advice.n}</small>`}</p>` : '';
-  return `<section class="t nowc ${compact ? 'compact' : ''}" data-testid="${testid}"><div class="lab-row"><div class="lab">Kết luận hiện tại · ${esc(A.scopeLabel(setN))} · tự tính lại sau mỗi pha</div></div>
+  return `<section class="t nowc ${compact ? 'compact' : ''}" data-testid="${testid}"><div class="lab-row"><div class="lab">Kết luận · ${esc(A.scopeLabel(setN))}</div></div>
     <ul class="nowl">${c.bullets.map(li).join('')}</ul>${adv}</section>`;
 }
 
 // ---------- Thẻ xu hướng ----------
-const card = (id, title, sub, body, meta, cls = '') => `<section class="card tcard ${cls}" data-testid="tr-${id}"><div class="card-h"><div><h2>${esc(title)}</h2><p class="sub">${esc(sub)}</p></div></div>${body}${meta}</section>`;
+const card = (id, title, sub, body, meta, cls = '') => `<section class="card tcard ${cls}" data-testid="tr-${id}"><div class="card-h"><div><h2>${esc(title)}</h2>${sub ? `<p class="sub">${esc(sub)}</p>` : ''}</div></div>${body}${meta}</section>`;
 const empty = (t) => `<p class="empty">${esc(t)}</p>`;
 
 export function trScore(td) {
-  if (!td.n) return card('score', 'Diễn biến tỉ số', 'Điểm hai đội qua từng pha', empty('Chưa có pha nào.'), '');
+  if (!td.n) return card('score', 'Diễn biến tỉ số', '', empty('Chưa có pha nào.'), '');
   const mx = niceMax(Math.max(...td.us, ...td.them, 1));
   const svg = lineSvg({ series: [{ v: td.us, cls: 's-us' }, { v: td.them, cls: 's-them' }], n: td.n, yMin: 0, yMax: mx, ticks: [0, Math.round(mx / 2), mx], marks: td.marks, label: `Tỉ số qua ${td.n} pha` });
-  return card('score', 'Diễn biến tỉ số', 'Điểm hai đội qua từng pha, vạch dọc = sang set mới', svg + legend([['s-us', 'Ta'], ['s-them', 'Đối thủ']]), metaLine(`${td.n} pha`, A.FACT));
+  return card('score', 'Diễn biến tỉ số', '', svg + legend([['s-us', 'Ta'], ['s-them', 'Đối thủ']]), metaLine(`${td.n} pha`, A.FACT));
 }
 export function trMargin(td) {
-  if (!td.n) return card('margin', 'Hiệu số điểm', 'Trên 0 = ta dẫn', empty('Chưa có pha nào.'), '');
+  if (!td.n) return card('margin', 'Hiệu số điểm', '', empty('Chưa có pha nào.'), '');
   const mx = Math.max(3, ...td.margin.map(Math.abs));
   const svg = lineSvg({ series: [{ v: td.margin, cls: 's-us' }], n: td.n, yMin: -mx, yMax: mx, zero: 0, ticks: [-mx, mx], fmt: (v) => (v > 0 ? '+' + v : v), marks: td.marks, label: 'Hiệu số điểm qua từng pha' });
-  return card('margin', 'Hiệu số điểm', 'Trên 0 = ta dẫn; tính lại từ đầu mỗi set', svg, metaLine(`${td.n} pha`, A.FACT));
+  return card('margin', 'Hiệu số điểm', 'Trên 0 là ta dẫn', svg, metaLine(`${td.n} pha`, A.FACT));
 }
 export function trRolling(td) {
   const has = td.so.some((v) => v != null) || td.bp.some((v) => v != null);
   const body = has ? lineSvg({ series: [{ v: td.so.map((v) => (v == null ? null : v * 100)), cls: 's-so' }, { v: td.bp.map((v) => (v == null ? null : v * 100)), cls: 's-bp' }], n: td.n, yMin: 0, yMax: 100, ticks: [0, 50, 100], fmt: (v) => v + '%', marks: td.marks, label: `Tỉ lệ side-out và break-point trong ${td.win} pha gần nhất` })
-    + legend([['s-so', `Đỡ phát (side-out)`], ['s-bp', `Ta phát (break-point)`]]) : empty('Cần ít nhất 3 pha cùng loại (ta phát / đối thủ phát) mới vẽ được.');
-  return card('rolling', `Side-out / break-point · ${td.win} pha gần nhất`, 'Tỉ lệ giành pha, tính trượt theo từng loại lượt phát', body, metaLine(`${td.soN} pha đỡ phát · ${td.bpN} pha ta phát`, A.cert(Math.min(td.soN, td.bpN))));
+    + legend([['s-so', 'Khi đối thủ phát'], ['s-bp', 'Khi ta phát']]) : empty('Cần ít nhất 3 pha mới vẽ được.');
+  return card('rolling', `Tỉ lệ giành pha · ${td.win} pha gần nhất`, '', body, metaLine(`${td.soN} pha đỡ phát · ${td.bpN} pha ta phát`, A.cert(Math.min(td.soN, td.bpN))));
 }
 const UP = [['atk', 'c-atk', 'Tấn công'], ['blk', 'c-blk', 'Chắn'], ['ace', 'c-ace', 'Ace'], ['oer', 'c-oer', 'Đối thủ lỗi'], ['uw', 'c-unk', 'Không rõ']];
 const DN = [['oat', 'c-oat', 'Đối thủ tấn công'], ['bkd', 'c-bkd', 'Bị chắn'], ['rer', 'c-rer', 'Bị ace / đỡ hỏng'], ['own', 'c-own', 'Ta tự lỗi'], ['ul', 'c-unk', 'Không rõ']];
 export function trChunks(td) {
-  if (!td.n) return card('chunks', `Điểm theo từng ${td.chunk} pha`, 'Trên: ta ghi · dưới: ta mất', empty('Chưa có pha nào.'), '');
+  if (!td.n) return card('chunks', `Điểm theo từng ${td.chunk} pha`, '', empty('Chưa có pha nào.'), '');
   const cols = td.chunks.map((c) => ({ ...c, dn: { ...c.dn, own: c.dn.aer + c.dn.ser + c.dn.xer } }));
   const h = 130, T = 6, B = 16, mid = T + (h - T - B) / 2, half = (h - T - B) / 2 - 2;
   const mx = Math.max(1, ...cols.map((c) => Math.max(UP.reduce((s, [k]) => s + c.up[k], 0), DN.reduce((s, [k]) => s + c.dn[k], 0))));
@@ -103,7 +104,7 @@ export function trChunks(td) {
     if (cols.length <= 12 || i % 2 === 0) g += `<text class="xt m" x="${(+x + bw / 2).toFixed(1)}" y="${h - 3}">${c.to}</text>`;
   });
   const svg = `<svg class="tch" viewBox="0 0 ${W} ${h}" role="img" aria-label="Điểm ghi và mất theo từng ${td.chunk} pha">${g}</svg>`;
-  return card('chunks', `Điểm theo từng ${td.chunk} pha`, 'Trên vạch: ta ghi · dưới vạch: ta mất · số dưới cột = tới pha thứ mấy', svg + legend([...UP, ...DN].filter(([k], i, arr) => arr.findIndex((y) => y[1] === arr[i][1]) === i).map(([, c, l]) => [c, l])), metaLine(`${td.n} pha · ${cols.length} cột`, A.FACT));
+  return card('chunks', `Điểm theo từng ${td.chunk} pha`, 'Trên vạch: ta ghi · dưới vạch: ta mất', svg + legend([...UP, ...DN].filter(([k], i, arr) => arr.findIndex((y) => y[1] === arr[i][1]) === i).map(([, c, l]) => [c, l])), metaLine(`${td.n} pha · ${cols.length} cột`, A.FACT));
 }
 export function trRot(td) {
   const cell = (k) => {
@@ -114,23 +115,23 @@ export function trRot(td) {
     return `<div class="rs-c" data-testid="tr-rot-${k}"><div class="rs-h"><b>${k}</b><span class="num ${last > 0 ? 'c-win' : last < 0 ? 'c-lose' : ''}">${last > 0 ? '+' : ''}${last}</span><small>${v.length} pha</small></div>${svg}</div>`;
   };
   const n = Object.values(td.rot).reduce((s, v) => s + v.length, 0);
-  return card('rot', 'Hiệu số theo xoay vòng qua thời gian', 'Mỗi ô: hiệu số tích luỹ của vòng đó sau từng pha ở vòng đó', n ? `<div class="rs-g">${['P4', 'P3', 'P2', 'P5', 'P6', 'P1'].map(cell).join('')}</div>` : empty('Chưa có pha nào.'),
+  return card('rot', 'Hiệu số theo xoay vòng', '', n ? `<div class="rs-g">${['P4', 'P3', 'P2', 'P5', 'P6', 'P1'].map(cell).join('')}</div>` : empty('Chưa có pha nào.'),
     metaLine(`${Math.max(0, ...Object.values(td.rot).map((v) => v.length))} pha ở vòng nhiều nhất`, A.cert(Math.max(0, ...Object.values(td.rot).map((v) => v.length)))));
 }
 const TOP_CLS = ['s-t1', 's-t2', 's-t3'];
 export function trTop(td, m) {
-  if (!td.cum.length) return card('top', 'Người ghi điểm nhiều nhất', 'Điểm cộng dồn (tấn công + chắn + ace)', empty('Chưa có điểm nào ghi rõ cầu thủ.'), '');
+  if (!td.cum.length) return card('top', 'Người ghi điểm nhiều nhất', '', empty('Chưa có điểm nào ghi rõ cầu thủ.'), '');
   const mx = niceMax(Math.max(1, ...td.cum.map((c) => c.v[c.v.length - 1])));
   const svg = lineSvg({ series: td.cum.map((c, i) => ({ v: c.v, cls: TOP_CLS[i] })), n: td.n, yMin: 0, yMax: mx, ticks: [0, mx], marks: td.marks, label: 'Điểm cộng dồn của 3 người ghi nhiều nhất' });
   const tot = td.cum.reduce((s, c) => s + c.v[c.v.length - 1], 0);
-  return card('top', 'Người ghi điểm nhiều nhất', 'Điểm cộng dồn qua từng pha (tấn công + chắn + ace)', svg + legend(td.cum.map((c, i) => [TOP_CLS[i], `${A.shortP(m, c.pid)} · ${c.v[c.v.length - 1]}`])), metaLine(`${tot} điểm của ${td.cum.length} người`, A.FACT));
+  return card('top', 'Người ghi điểm nhiều nhất', '', svg + legend(td.cum.map((c, i) => [TOP_CLS[i], `${A.shortP(m, c.pid)} · ${c.v[c.v.length - 1]}`])), metaLine(`${tot} điểm của ${td.cum.length} người`, A.FACT));
 }
 export function trServe(td) {
-  if (!td.bpN) return card('serve', 'Phát bóng: ace và lỗi', 'Cộng dồn qua các lượt ta phát', empty('Ta chưa phát quả nào.'), '');
+  if (!td.bpN) return card('serve', 'Phát bóng: ace và lỗi', '', empty('Ta chưa phát quả nào.'), '');
   const a = td.serve.ace, e = td.serve.se;
   const mx = Math.max(3, a[a.length - 1], e[e.length - 1]);
   const svg = lineSvg({ series: [{ v: a, cls: 's-win' }, { v: e, cls: 's-lose' }], n: td.bpN, yMin: 0, yMax: mx, ticks: [0, mx], label: 'Ace và lỗi phát cộng dồn', xl: 'lượt phát' });
-  return card('serve', 'Phát bóng: ace và lỗi', 'Cộng dồn qua các lượt ta phát', svg + legend([['s-win', `Ace · ${a[a.length - 1]}`], ['s-lose', `Lỗi phát · ${e[e.length - 1]}`]]), metaLine(`${td.bpN} lượt phát`, A.cert(td.bpN)));
+  return card('serve', 'Phát bóng: ace và lỗi', '', svg + legend([['s-win', `Ace · ${a[a.length - 1]}`], ['s-lose', `Lỗi phát · ${e[e.length - 1]}`]]), metaLine(`${td.bpN} lượt phát`, A.cert(td.bpN)));
 }
 
 // Hội ý: bản gọn (3 biểu đồ) — màn hình không bao giờ trống khi đã có pha.
