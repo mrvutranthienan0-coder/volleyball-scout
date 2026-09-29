@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Hướng dẫn Scout Bóng Chuyền</title>
-<meta name="description" content="Hướng dẫn có hình cho HLV và scout: cài app, lập đội, ghi trận, hội ý, xem báo cáo đối thủ, bàn chiến thuật, sao lưu.">
-<script src="https://cdn.shopify.com/s/files/1/0959/0128/6675/files/anvtt-kit.v2.js?v=1790047347"></script>
+<meta name="description" content="Hướng dẫn có hình cho HLV và scout: cài app, lập đội, ghi trận, hội ý, trợ lý hội ý, xem báo cáo đối thủ, bàn chiến thuật, sao lưu.">
+<script src="https://cdn.shopify.com/s/files/1/0959/0128/6675/files/anvtt-kit.v3.js?v=1790674567"></script>
 <style>
   .doc ol.st-list{list-style:none;padding:0;margin:20px 0 8px;counter-reset:st}
   .doc ol.st-list>li{counter-increment:st;position:relative;padding:18px 0 22px 52px;margin:0;
@@ -32,25 +32,44 @@
   .doc .lbl.lo{background:#fde2dc;color:#b3412a}
   .doc .lbl.mid{background:#fbf0cf;color:#7a5a00}
   .doc .lbl.hi{background:#dcf1e3;color:#1f6b3d}
+  .doc .lbl.fact{background:#ecebe6;color:#45443f}
   .doc .credit{font-size:12px;opacity:.65}
   .doc .credit a{color:inherit}
+  .doc .phone-box{border-radius:16px;padding:16px 18px;margin:18px 0 8px;
+    background:color-mix(in srgb,#4f46e5 9%,transparent);border:1px solid color-mix(in srgb,#4f46e5 28%,transparent)}
+  .doc .phone-box h2{margin:0 0 6px;font-size:18px;border:0;padding:0}
+  .doc .phone-box p{margin:6px 0}
+  .doc .phone-box ol{margin:6px 0 0;padding-left:20px}
+  .doc .phone-box .link{font-weight:700;word-break:break-all}
 </style>
 </head>
 <body>
 <main class="doc">
   <div class="kicker">Hướng dẫn sử dụng · cho HLV và scout</div>
   <h1>Scout Bóng Chuyền <span>từng bước, có hình</span></h1>
-  <p class="sub">Trên màn hình, app hiện tên <b>Sổ tay HLV</b>. Mở app tại
-    <a href="https://mrvutranthienan0-coder.github.io/volleyball-scout/">mrvutranthienan0-coder.github.io/volleyball-scout</a>.
-    Mỗi bước ghi rõ: bấm vào đâu, sẽ thấy gì, và làm gì nếu màn hình khác đi.</p>
+  <p class="sub">Trên màn hình, app hiện tên <b>Sổ tay HLV</b>. Mỗi bước ghi rõ: bấm vào đâu, sẽ thấy gì, và làm gì nếu màn hình khác đi. Hình chụp trên iPhone.</p>
+
+  <div class="phone-box">
+    <div class="lab" style="font-weight:700;margin-bottom:4px">Mở trên điện thoại</div>
+    <p>Link app: <a class="link" href="https://mrvutranthienan0-coder.github.io/volleyball-scout/">mrvutranthienan0-coder.github.io/volleyball-scout</a></p>
+    <p><b>Thêm vào màn hình chính</b> để mở như một ứng dụng và dùng được khi mất mạng:</p>
+    <ol>
+      <li><b>iPhone:</b> mở link bằng Safari → nút <b>Chia sẻ</b> (ô vuông có mũi tên lên) → <b>Thêm vào MH chính</b> → <b>Thêm</b>.</li>
+      <li><b>Android:</b> mở link bằng Chrome → menu <b>⋮</b> → <b>Cài đặt ứng dụng</b> hoặc <b>Thêm vào màn hình chính</b>.</li>
+      <li>Mở biểu tượng <b>Sổ tay HLV</b> một lần khi còn mạng. Từ đó trở đi app chạy cả khi không có mạng.</li>
+    </ol>
+  </div>
 
   <nav class="toc" data-title="Mục lục"></nav>
 
   <!-- ============ 1 ============ -->
   <h2>1 · App dùng để làm gì</h2>
-  <p>App giúp ban huấn luyện chuẩn bị và chơi một trận theo 3 bước. Trước trận: đọc báo cáo đối thủ. Soạn phương án trên bàn chiến thuật. Trong trận: một người ghi từng pha bằng 1–3 chạm, cả ban huấn luyện xem chung màn Hội ý.</p>
+  <p>App giúp ban huấn luyện chuẩn bị và chơi một trận theo 3 bước. Trước trận: đọc báo cáo đối thủ, soạn phương án trên bàn chiến thuật. Trong trận: một người ghi từng pha bằng 1–3 chạm, cả ban huấn luyện xem chung màn Hội ý và hỏi Trợ lý hội ý.</p>
   <p>Dữ liệu chỉ nằm trên máy đang dùng. App không gửi đi đâu. Không có mạng vẫn ghi được.</p>
-  <figure class="shot ph"><img src="img/p-home-steps.png" alt="Trang Trận tới có 3 thẻ Bước 1, Bước 2, Bước 3" width="756" height="968" loading="lazy" data-zoomable><figcaption>Trang đầu tiên (tab <b>Trận tới</b>) luôn có 3 thẻ theo đúng thứ tự làm việc.</figcaption></figure>
+  <div class="shots2">
+    <figure class="shot ph"><img src="img/p-home-top.png" alt="Trang Trận tới trên điện thoại: thẻ trận sắp tới, nút Đọc báo cáo đối thủ" width="780" height="1688" loading="lazy" data-zoomable><figcaption>Mở app là thấy ngay trận sắp tới, số ngày còn lại và nút <b>Đọc báo cáo đối thủ</b>.</figcaption></figure>
+    <figure class="shot ph"><img src="img/p-home-steps.png" alt="Ba thẻ Bước 1, Bước 2, Bước 3" width="748" height="954" loading="lazy" data-zoomable><figcaption>Kéo xuống: 3 thẻ theo đúng thứ tự làm việc.</figcaption></figure>
+  </div>
 
   <!-- ============ 2 ============ -->
   <h2>2 · Cài lên điện thoại và dùng khi mất mạng</h2>
@@ -86,67 +105,67 @@
       <div>
         <h3>Kiểm tra chạy không cần mạng</h3>
         <p><span class="k">Bấm:</span> bật chế độ máy bay → đóng hẳn app → mở lại.</p>
-        <p><span class="k">Sẽ thấy:</span> app mở bình thường, ghi trận được như thường.</p>
+        <p><span class="k">Sẽ thấy:</span> app mở bình thường, ghi trận và hỏi Trợ lý hội ý được như thường.</p>
         <p class="if"><span class="k">Nếu khác:</span> tắt chế độ máy bay, mở app một lần nữa khi có mạng, chờ vài giây rồi thử lại. Nên thử việc này ở nhà, trước ngày thi đấu.</p>
       </div>
     </div></li>
   </ol>
-  <div class="alert alert-info"><span>Những thứ cần mạng: xem video YouTube trong báo cáo đối thủ và ở màn Xem lại video. Mọi việc còn lại chạy được khi mất mạng.</span></div>
+  <div class="alert alert-info"><span>Những thứ cần mạng: xem clip YouTube trong báo cáo đối thủ, mở link nguồn (báo, video), màn Xem lại video với link YouTube, và nhận xét thêm từ máy chủ AI (nếu đã nối). Mọi việc còn lại chạy được khi mất mạng.</span></div>
 
   <!-- ============ 3 ============ -->
   <h2>3 · Lập đội của mình</h2>
-  <p>Lần đầu mở, app đã có sẵn 13 cầu thủ LPBank Ninh Bình lấy từ nguồn công khai. HLV chỉ cần kiểm lại.</p>
+  <p>Lần đầu mở, app đã có sẵn 13 cầu thủ LPBank Ninh Bình lấy từ nguồn công khai, mỗi người có ảnh. HLV chỉ cần kiểm lại.</p>
   <ol class="st-list">
     <li><div class="st ph">
       <div>
         <h3>Mở danh sách cầu thủ</h3>
         <p><span class="k">Bấm:</span> tab <b>Cầu thủ</b> ở thanh dưới.</p>
-        <p><span class="k">Sẽ thấy:</span> danh sách xếp theo vị trí. Nhãn vàng "Nguồn công khai · HLV kiểm lại". Dấu <b>?</b> cạnh tên nghĩa là hai nguồn ghi khác nhau, cần HLV xem lại.</p>
-        <p class="if"><span class="k">Nếu khác:</span> danh sách trống hoặc thiếu người thì kéo xuống cuối, bấm <b>Nạp lại danh sách LPBank Ninh Bình</b>. Trận đã ghi không bị ảnh hưởng.</p>
+        <p><span class="k">Sẽ thấy:</span> trên điện thoại, danh sách đội nằm ngay đầu trang, xếp theo vị trí, có ảnh từng người. Nhãn vàng "Nguồn công khai · HLV kiểm lại". Dấu <b>?</b> cạnh tên nghĩa là hai nguồn ghi khác nhau, cần HLV xem lại.</p>
+        <p class="if"><span class="k">Nếu khác:</span> danh sách trống hoặc thiếu người thì kéo xuống cuối danh sách, bấm <b>Nạp lại danh sách LPBank Ninh Bình</b>. Trận đã ghi không bị ảnh hưởng.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-team-list.png" alt="Danh sách cầu thủ có nhãn nguồn công khai và dấu hỏi" width="756" height="1720" loading="lazy" data-zoomable><figcaption>Người có dấu ? (số 11, số 26) cần HLV xem lại.</figcaption></figure>
+      <figure class="shot ph"><img src="img/p-team-list.png" alt="Danh sách cầu thủ có ảnh, nhãn nguồn công khai và dấu hỏi" width="780" height="1688" loading="lazy" data-zoomable><figcaption>Người có dấu ? (số 11, số 26) cần HLV xem lại.</figcaption></figure>
     </div></li>
     <li><div class="st ph">
       <div>
         <h3>Chọn một cầu thủ</h3>
         <p><span class="k">Bấm:</span> tên cầu thủ trong danh sách.</p>
-        <p><span class="k">Sẽ thấy:</span> thẻ hồ sơ ở đầu trang: số áo, vị trí, chiều cao, số trận, số điểm. Chưa ghi trận nào thì các số là 0.</p>
-        <p class="if"><span class="k">Nếu khác:</span> thẻ hồ sơ nằm ở đầu trang. Trên điện thoại, cuộn lên trên cùng để thấy.</p>
+        <p><span class="k">Sẽ thấy:</span> app tự cuộn xuống thẻ hồ sơ ngay dưới danh sách: ảnh, dòng ghi nguồn ảnh, số áo, vị trí, chiều cao, số trận, số điểm. Chưa ghi trận nào thì các số là 0. Dưới thẻ là điểm mạnh, biểu đồ kỹ năng và kết quả theo xoay vòng của người đó.</p>
+        <p class="if"><span class="k">Nếu khác:</span> muốn quay lại danh sách thì cuộn lên đầu trang.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-team-profile.png" alt="Thẻ hồ sơ cầu thủ với nút Sửa hồ sơ" width="756" height="524" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-team-profile.png" alt="Thẻ hồ sơ cầu thủ số 11 có ảnh, dòng ghi nguồn và nút Sửa hồ sơ" width="748" height="646" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st ph">
       <div>
         <h3>Sửa hồ sơ và xác nhận</h3>
         <p><span class="k">Bấm:</span> <b>Sửa hồ sơ</b> → sửa số áo, tên, chiều cao, vị trí → <b>Lưu</b>.</p>
-        <p><span class="k">Sẽ thấy:</span> dòng vàng "Chưa xác minh" giải thích chỗ nguồn ghi khác nhau. Bấm <b>Lưu</b> nghĩa là HLV đã kiểm, dấu <b>?</b> biến mất.</p>
+        <p><span class="k">Sẽ thấy:</span> dòng vàng "Chưa xác minh" giải thích chỗ nguồn ghi khác nhau. Bấm <b>Lưu</b> nghĩa là HLV đã kiểm, dấu <b>?</b> biến mất. Nút <b>Thêm ảnh</b> để thay ảnh bằng ảnh HLV tự chụp.</p>
         <p class="if"><span class="k">Nếu khác:</span> muốn xoá người thì kéo xuống, bấm <b>Xoá VĐV này</b>. Muốn thêm người thì bấm <b>Thêm cầu thủ</b> ở trên danh sách.</p>
       </div>
       <figure class="shot ph"><img src="img/p-team-edit.png" alt="Bảng sửa hồ sơ cầu thủ số 11" width="780" height="1688" loading="lazy" data-zoomable></figure>
     </div></li>
   </ol>
   <div class="alert alert-warning"><span>Khai đúng <b>Chuyền hai</b> và <b>Libero</b>. App tính xoay vòng P1–P6 theo chỗ đứng của chuyền hai, và tự đề xuất đội hình theo vị trí đã khai.</span></div>
-  <p class="credit">Ảnh cầu thủ trong hình: số 11 và số 26 — <a href="https://thethao.sggp.org.vn/noi-lo-cua-bong-chuyen-ninh-binh-sau-ca-phau-thuat-cua-nguyen-thi-uyen-post872977.html">SGGP Thể Thao</a>; số 16 — <a href="https://danviet.vn/chu-cong-tai-sac-dinh-thi-thuy-1m76-ke-chuyen-yeu-2021082916565263-d824508.html">Dân Việt</a>; số 17 — <a href="https://thethaovanhoa.vn/ngoi-sao-bong-chuyen-nu-viet-nam-can-ke-ky-tich-lich-su-moi-song-hanh-phuc-ben-chong-la-thieu-ta-quan-doi-20251015161134062.htm">Thể Thao &amp; Văn Hóa</a>. Ghi công đầy đủ nằm trong app.</p>
+  <p class="credit">Ảnh cầu thủ trong hình lấy từ <a href="https://women.volleybox.net/">Volleybox</a>, <a href="https://thethao.sggp.org.vn/">Thể Thao SGGP</a>, <a href="https://danviet.vn/">Dân Việt</a>, <a href="https://webthethao.vn/">Webthethao.vn</a> và <a href="https://thethaovanhoa.vn/">Thể Thao &amp; Văn Hóa</a>. Nguồn của từng ảnh ghi ngay dưới ảnh trong thẻ hồ sơ.</p>
 
   <!-- ============ 4 ============ -->
   <h2>4 · Tạo trận mới</h2>
   <ol class="st-list">
-    <li><div class="st ph">
+    <li><div class="st">
       <div>
         <h3>Mở màn Trận mới</h3>
         <p><span class="k">Bấm:</span> tab <b>Ghi trận</b>, hoặc thẻ <b>Bước 3 · Bắt đầu ghi trận</b> ở trang Trận tới.</p>
         <p><span class="k">Sẽ thấy:</span> màn "Trận mới", khung <b>Trận đấu</b> ở trên.</p>
-        <p class="if"><span class="k">Nếu khác:</span> nếu đang có trận ghi dở, app mở thẳng màn ghi. Muốn trận mới thì kết thúc trận cũ trước (mục 5, bước 9).</p>
+        <p class="if"><span class="k">Nếu khác:</span> nếu đang có trận ghi dở, app mở thẳng màn ghi. Muốn trận mới thì kết thúc trận cũ trước (mục 5, bước 10).</p>
       </div>
     </div></li>
     <li><div class="st ph">
       <div>
         <h3>Điền thông tin trận</h3>
         <p><span class="k">Bấm:</span> chọn <b>Đấu tập</b> hay <b>Chính thức</b> → chọn <b>Đối thủ</b> trong danh sách (đội ngoài danh sách thì chọn "Đội khác…" rồi gõ tên) → kiểm <b>Ngày</b> → chọn <b>Thể thức</b> 5 set hay 3 set → chọn đội <b>Phát bóng trước</b>.</p>
-        <p><span class="k">Sẽ thấy:</span> nút đang chọn chuyển sang màu đen.</p>
+        <p><span class="k">Sẽ thấy:</span> nút đang chọn chuyển sang màu đen. Chọn đội đã có báo cáo (ví dụ XMLS Thanh Hóa) thì hiện luôn câu tóm tắt đối thủ và nút <b>Xem báo cáo đối thủ</b>.</p>
         <p class="if"><span class="k">Nếu khác:</span> dòng "Chưa có hồ sơ cho đội này" dưới ô đối thủ là bình thường. Vẫn ghi trận được.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-setup-match.png" alt="Khung Trận đấu với loại trận, đối thủ, ngày, thể thức, đội phát trước" width="756" height="1116" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-setup-match.png" alt="Khung Trận đấu với loại trận, đối thủ, ngày, thể thức, đội phát trước" width="748" height="1438" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st ph">
       <div>
@@ -155,7 +174,7 @@
         <p><span class="k">Sẽ thấy:</span> app đã xếp sẵn theo hệ 5-1: chuyền hai ở P1, chủ công P2 và P5, phụ công P3 và P6, đối chuyền P4, libero riêng.</p>
         <p class="if"><span class="k">Nếu khác:</span> ô trống hoặc sai người thường do chưa khai vị trí ở tab Cầu thủ. Sửa ở đó rồi quay lại.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-setup-lineup.png" alt="Sơ đồ đội hình xuất phát, libero và hàng dự bị" width="756" height="1420" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-setup-lineup.png" alt="Sơ đồ đội hình xuất phát, libero và hàng dự bị" width="748" height="1412" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st ph">
       <div>
@@ -164,7 +183,7 @@
         <p><span class="k">Sẽ thấy:</span> màn ghi trận, tỉ số 0–0.</p>
         <p class="if"><span class="k">Nếu khác:</span> app hiện dòng chữ đỏ báo lỗi (ví dụ "Chọn đối thủ hoặc nhập tên đội khác.") thì sửa đúng chỗ đó rồi bấm lại.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-setup-start.png" alt="Nút Bắt đầu ghi" width="756" height="160" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-setup-start.png" alt="Nút Bắt đầu ghi" width="772" height="176" loading="lazy" data-zoomable></figure>
     </div></li>
   </ol>
 
@@ -176,8 +195,8 @@
       <div>
         <h3>Đọc màn ghi</h3>
         <p><span class="k">Bấm:</span> không cần bấm gì. Nhìn một lượt trước khi còi đầu tiên.</p>
-        <p><span class="k">Sẽ thấy:</span> trên cùng là tỉ số hai đội. Đội đang phát có khung xanh và chữ "● Đang phát". Dưới đó là xoay vòng hiện tại (P1–P6), số lần hội ý còn lại, và sơ đồ 6 người trên sân.</p>
-        <p class="if"><span class="k">Nếu khác:</span> tỉ số hoặc bên phát sai ngay từ đầu thì xem bước 8 (Chỉnh tay).</p>
+        <p><span class="k">Sẽ thấy:</span> trên cùng là tỉ số hai đội. Đội đang phát có khung xanh và chữ "● Đang phát". Dưới đó là xoay vòng hiện tại (P1–P6), số lần hội ý còn lại, và sơ đồ 6 người trên sân. Mọi nút ghi nằm gọn trong một màn, không phải cuộn.</p>
+        <p class="if"><span class="k">Nếu khác:</span> tỉ số hoặc bên phát sai ngay từ đầu thì xem bước 9 (Chỉnh tay).</p>
       </div>
       <figure class="shot ph"><img src="img/p-live-start.png" alt="Màn ghi trận lúc 0–0" width="780" height="1688" loading="lazy" data-zoomable></figure>
     </div></li>
@@ -186,9 +205,9 @@
         <h3>Chạm 1: pha kết thúc thế nào</h3>
         <p><span class="k">Bấm:</span> một nút. Cột xanh <b>Ta ghi điểm</b>: Tấn công, Chắn bóng, Phát bóng ăn điểm, Đối thủ lỗi. Cột cam <b>Ta mất điểm</b>: Lỗi tấn công, Bị chắn, Lỗi phát bóng, Đỡ hỏng / bị ace, Lỗi khác, Đối thủ tấn công ghi điểm.</p>
         <p><span class="k">Sẽ thấy:</span> nút đã gồm luôn ghi hay mất điểm. Không cần bấm thêm nút cộng điểm.</p>
-        <p class="if"><span class="k">Nếu khác:</span> nút mờ là nút không hợp lệ lúc đó. Ví dụ "Đỡ hỏng / bị ace" mờ khi ta đang phát.</p>
+        <p class="if"><span class="k">Nếu khác:</span> nút xám là nút không hợp lệ lúc đó. Ví dụ "Đỡ hỏng / bị ace" xám khi ta đang phát.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-live-buttons.png" alt="Hai cột nút Ta ghi điểm và Ta mất điểm" width="772" height="772" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-live-buttons.png" alt="Hai cột nút Ta ghi điểm và Ta mất điểm" width="780" height="922" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st ph">
       <div>
@@ -202,17 +221,17 @@
     <li><div class="st ph">
       <div>
         <h3>Kiểm dòng "Pha trước"</h3>
-        <p><span class="k">Bấm:</span> không cần bấm. Liếc dòng này sau mỗi lần ghi. Bấm vào dòng này sẽ mở danh sách các pha.</p>
-        <p><span class="k">Sẽ thấy:</span> dòng tím nhắc lại pha vừa ghi: ghi hay mất, cách, cầu thủ, tỉ số.</p>
-        <p class="if"><span class="k">Nếu khác:</span> ghi nhầm thì bấm <b>Hoàn tác</b> ở thanh dưới ngay (mục 11).</p>
+        <p><span class="k">Bấm:</span> không cần bấm. Liếc dòng này sau mỗi lần ghi. Bấm vào dòng này sẽ mở trang Các pha.</p>
+        <p><span class="k">Sẽ thấy:</span> dòng nhắc lại pha vừa ghi: ghi hay mất, cách, cầu thủ, tỉ số.</p>
+        <p class="if"><span class="k">Nếu khác:</span> ghi nhầm thì bấm <b>Hoàn tác</b> ở thanh dưới ngay (mục 12). Khi ô chấm đỡ bước 1 đang hiện (bước 5), dòng này tạm ẩn.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-live-lastline.png" alt="Dòng Pha trước xác nhận pha vừa ghi" width="772" height="120" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-live-lastline.png" alt="Dòng Pha trước xác nhận pha vừa ghi" width="772" height="128" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st ph">
       <div>
         <h3>Chạm 3 (tuỳ chọn): chấm đỡ bước 1</h3>
         <p><span class="k">Bấm:</span> sau mỗi pha đối thủ phát, ô tím hiện ra. Chấm 0 đến 3: 0 là hỏng, 1 là chỉ đập biên được, 2 là có 2 hướng tấn công, 3 là hoàn hảo. Kịp thì bấm thêm số áo người đỡ.</p>
-        <p><span class="k">Sẽ thấy:</span> số đã chọn được tô đậm.</p>
+        <p><span class="k">Sẽ thấy:</span> số đã chọn được tô tím đậm.</p>
         <p class="if"><span class="k">Nếu khác:</span> không kịp thì bỏ qua, cứ ghi pha tiếp theo. Ô tự biến mất.</p>
       </div>
       <figure class="shot ph"><img src="img/p-live-recv.png" alt="Ô chấm đỡ bước 1 với nút 0 đến 3 và số áo" width="772" height="356" loading="lazy" data-zoomable></figure>
@@ -221,16 +240,16 @@
       <div>
         <h3>Xem bên phát và xoay vòng tự đổi</h3>
         <p><span class="k">Bấm:</span> không cần bấm. App tự đổi.</p>
-        <p><span class="k">Sẽ thấy:</span> khi ta giành lại quyền phát, xoay vòng tự nhảy (ví dụ P1 thành P6) và chấm tròn nhỏ báo người đang phát.</p>
-        <p class="if"><span class="k">Nếu khác:</span> xoay vòng lệch so với sân thật thì dùng Chỉnh tay (bước 8).</p>
+        <p><span class="k">Sẽ thấy:</span> khi ta giành lại quyền phát, xoay vòng tự nhảy (ví dụ P1 thành P6) và khung xanh chuyển sang đội đang phát.</p>
+        <p class="if"><span class="k">Nếu khác:</span> xoay vòng lệch so với sân thật thì dùng Chỉnh tay (bước 9).</p>
       </div>
-      <figure class="shot ph"><img src="img/p-live-score.png" alt="Tỉ số hai đội, đội đang phát có viền xanh" width="772" height="250" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-live-score.png" alt="Tỉ số hai đội, đội đang phát có viền xanh, xoay vòng P6" width="748" height="300" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st">
       <div>
         <h3>Hết set, bắt đầu set mới</h3>
         <p><span class="k">Sẽ thấy:</span> set thường tới 25, set quyết định tới 15, phải hơn 2 điểm. App tự báo "Hết set" và hiện nút <b>Bắt đầu set 2</b>.</p>
-        <p><span class="k">Bấm:</span> <b>Bắt đầu set 2</b> → kiểm đội hình như lúc tạo trận → <b>Bắt đầu</b>.</p>
+        <p><span class="k">Bấm:</span> <b>Bắt đầu set 2</b> → kiểm đội hình và đội phát trước → <b>Bắt đầu</b>.</p>
         <p class="if"><span class="k">Nếu khác:</span> set chưa đủ điểm mà thật sự đã hết (ví dụ trọng tài xử thua) thì dùng <b>Thêm ▾ → Kết thúc set (thủ công)</b>.</p>
       </div>
       <div class="shots2">
@@ -242,7 +261,7 @@
       <div>
         <h3>Đối soát tỉ số với trọng tài</h3>
         <p><span class="k">Bấm:</span> <b>Thêm ▾</b> góc trên → <b>Đối soát tỉ số với trọng tài</b> → nhập tỉ số trên bảng → <b>Đối soát</b>. Làm mỗi 5–10 điểm hoặc cuối set.</p>
-        <p><span class="k">Sẽ thấy:</span> "Khớp" nếu đúng. Nếu lệch, app ghi <b>LỆCH</b> và <b>không tự sửa</b>, để người ghi tìm pha sai.</p>
+        <p><span class="k">Sẽ thấy:</span> "Khớp" nếu đúng. Nếu lệch, app ghi <b>LỆCH</b> kèm cả hai tỉ số và <b>không tự sửa</b>, để người ghi tìm pha sai.</p>
         <p class="if"><span class="k">Nếu khác:</span> lệch thì bấm <b>Mở các pha</b> để tìm pha ghi nhầm, hoặc <b>Chỉnh tay</b> nếu lỡ nhiều pha.</p>
       </div>
       <div class="shots2">
@@ -261,10 +280,10 @@
     </div></li>
     <li><div class="st ph">
       <div>
-        <h3>Việc khác trong menu Thêm</h3>
-        <p>Thay người · Đối thủ xin hội ý · Kết thúc set (thủ công) · <b>Kết thúc trận</b> · Tổng kết / xuất dữ liệu.</p>
-        <p><span class="k">Bấm:</span> <b>Kết thúc trận</b> khi trận xong mà app chưa tự kết thúc. App hỏi lại một lần. Việc này cũng hoàn tác được.</p>
-        <p><span class="k">Sẽ thấy:</span> thẻ "Trận kết thúc" với nút <b>Xem tổng kết</b>.</p>
+        <h3>Việc khác trong menu Thêm, kết thúc trận</h3>
+        <p>Thay người · Danh sách pha · sửa / xoá · Đối thủ xin hội ý · Kết thúc set (thủ công) · <b>Kết thúc trận</b> · Tổng kết / xuất dữ liệu.</p>
+        <p><span class="k">Sẽ thấy:</span> khi đội nào thắng đủ số set, app tự báo "Trận kết thúc" với nút <b>Xem tổng kết</b>.</p>
+        <p><span class="k">Bấm:</span> <b>Kết thúc trận</b> chỉ khi trận xong mà app chưa tự kết thúc (ví dụ đấu tập dừng sớm). App hỏi lại một lần. Việc này cũng hoàn tác được.</p>
         <p class="if"><span class="k">Nếu khác:</span> nút trong menu bị mờ là việc chưa làm được lúc đó, ví dụ Thay người khi set đã kết thúc.</p>
       </div>
       <figure class="shot ph"><img src="img/p-live-ended.png" alt="Thẻ Trận kết thúc với nút Xem tổng kết" width="780" height="1688" loading="lazy" data-zoomable></figure>
@@ -273,82 +292,187 @@
 
   <!-- ============ 6 ============ -->
   <h2>6 · Màn Hội ý lúc xin hội ý</h2>
-  <p>Màn này trước đây gọi là "Màn HLV". Đọc trong khoảng 30 giây.</p>
+  <p>Đọc trong khoảng 30 giây: đang yếu ở đâu, đang mạnh ở đâu, nên thử gì. Mọi con số tự tính lại sau mỗi pha.</p>
   <ol class="st-list">
     <li><div class="st ph">
       <div>
         <h3>Mở màn Hội ý</h3>
         <p><span class="k">Bấm:</span> <b>Hội ý ta</b> ở thanh dưới màn ghi (app trừ 1 lượt, mỗi set còn 2 lượt), hoặc nút đen <b>Hội ý</b> nếu chỉ muốn xem.</p>
-        <p><span class="k">Sẽ thấy:</span> màn "Hội ý". Nút <b>Ghi trận</b> góc trên để quay lại ghi.</p>
-        <p class="if"><span class="k">Nếu khác:</span> nút "Hội ý ta" mờ nghĩa là set này ta đã dùng hết 2 lượt.</p>
+        <p><span class="k">Sẽ thấy:</span> màn "Hội ý". Nút <b>‹ Ghi trận</b> góc trên để quay lại ghi.</p>
+        <p class="if"><span class="k">Nếu khác:</span> nút "Hội ý ta" mờ nghĩa là set này ta đã dùng hết 2 lượt, hoặc set đã kết thúc.</p>
       </div>
       <figure class="shot ph"><img src="img/p-live-bottombar.png" alt="Thanh dưới màn ghi: Hoàn tác, Hội ý ta, Hội ý, Các pha" width="780" height="130" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st ph">
       <div>
-        <h3>Đọc câu tóm lại</h3>
+        <h3>Đọc câu tóm lại và tỉ số</h3>
         <p><span class="k">Bấm:</span> <b>Set này</b> hoặc <b>Cả trận</b> để đổi phạm vi.</p>
-        <p><span class="k">Sẽ thấy:</span> một câu tóm tắt tình hình, kèm hai con số: lượt ta phát ăn bao nhiêu điểm, khi đối thủ phát ta giành được bao nhiêu pha.</p>
+        <p><span class="k">Sẽ thấy:</span> một câu tóm tắt tình hình, kèm hai con số: lượt ta phát ăn bao nhiêu điểm, khi đối thủ phát ta giành được bao nhiêu pha. Hai nút <b>Hỏi AI</b> (mở Trợ lý hội ý, mục 7) và <b>Mở phương án</b> (mở bàn chiến thuật). Dưới đó là thẻ tỉ số với đường diễn biến của set.</p>
         <p class="if"><span class="k">Nếu khác:</span> câu tóm lại chỉ tính từ các pha đã ghi. Ghi thiếu pha thì câu này có thể lệch.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-coach-summary.png" alt="Khối Tóm lại với nút Set này, Cả trận" width="756" height="668" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-coach-summary.png" alt="Khối Tóm lại với nút Set này, Cả trận, Hỏi AI và thẻ tỉ số" width="748" height="1222" loading="lazy" data-zoomable></figure>
     </div></li>
-    <li><div class="st">
+    <li><div class="st ph">
       <div>
-        <h3>Đang mạnh ở đâu, nên thử gì</h3>
-        <p><span class="k">Bấm:</span> không cần bấm. Kéo xuống dưới khối Tóm lại.</p>
-        <p><span class="k">Sẽ thấy:</span> thẻ xanh <b>Đang mạnh ở</b> và thẻ tím <b>Nên thử</b>, mỗi thẻ có con số làm bằng chứng.</p>
-        <p class="if"><span class="k">Nếu khác:</span> đầu set ít pha thì thẻ có thể chưa hiện. Ghi thêm vài pha. App chỉ nêu số liệu, quyết định vẫn là của HLV.</p>
+        <h3>Kết luận hiện tại</h3>
+        <p><span class="k">Bấm:</span> không cần bấm. Kéo xuống.</p>
+        <p><span class="k">Sẽ thấy:</span> vài dòng ngắn, mỗi dòng một sự việc: tỉ số, ta ghi điểm bằng gì, mất điểm vì đâu, chuỗi điểm, đỡ bước 1. Mỗi dòng có nhãn và <b>n</b> (số pha làm căn cứ). Dòng tím cuối là <b>Gợi ý</b>, chỉ hiện khi số liệu đủ chắc.</p>
+        <p class="if"><span class="k">Nếu khác:</span> không có dòng Gợi ý nghĩa là chưa đủ số liệu để khuyên đổi gì. Cách đọc nhãn: xem khung ngay dưới.</p>
       </div>
-      <div class="shots2">
-        <figure class="shot ph"><img src="img/p-coach-strong.png" alt="Thẻ Đang mạnh ở" width="756" height="478" loading="lazy" data-zoomable></figure>
-        <figure class="shot ph"><img src="img/p-coach-try.png" alt="Thẻ Nên thử" width="756" height="436" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-coach-now.png" alt="Khối Kết luận hiện tại với nhãn Số đếm, Trung bình và dòng Gợi ý" width="748" height="1220" loading="lazy" data-zoomable></figure>
+    </div></li>
+    <li><div class="st ph">
+      <div>
+        <h3>Đang yếu ở, đang mạnh ở, nên thử</h3>
+        <p><span class="k">Bấm:</span> không cần bấm. Kéo xuống tiếp.</p>
+        <p><span class="k">Sẽ thấy:</span> tối đa 3 thẻ: cam <b>Đang yếu ở</b>, xanh <b>Đang mạnh ở</b>, tím <b>Nên thử</b>. Mỗi thẻ có vòng tròn số làm bằng chứng (ví dụ 10/12). Thẻ Nên thử lấy từ phương án soạn trước trận, bấm <b>Mở phương án</b> để xem trên sân.</p>
+        <p class="if"><span class="k">Nếu khác:</span> đầu set ít pha thì thẻ ghi "chưa đủ chắc để kết luận". Ghi thêm vài pha. Quyết định vẫn là của HLV.</p>
       </div>
+      <figure class="shot ph"><img src="img/p-coach-cards.png" alt="Ba thẻ Đang yếu ở, Đang mạnh ở, Nên thử" width="748" height="1334" loading="lazy" data-zoomable></figure>
+    </div></li>
+    <li><div class="st ph">
+      <div>
+        <h3>Biểu đồ diễn biến</h3>
+        <p><span class="k">Sẽ thấy:</span> 3 biểu đồ nhỏ. <b>Hiệu số điểm</b>: đường trên 0 là ta đang dẫn. <b>Điểm theo từng 5 pha</b>: cột trên vạch là ta ghi, dưới vạch là ta mất, tô màu theo cách ghi. <b>Side-out / break-point</b>: tỉ lệ giành pha khi đối thủ phát và khi ta phát, tính trên 10 pha gần nhất.</p>
+        <p class="if"><span class="k">Nếu khác:</span> đầu set biểu đồ còn ngắn. Muốn xem cả trận thì bấm <b>Cả trận</b> ở trên.</p>
+      </div>
+      <figure class="shot ph"><img src="img/p-coach-trends.png" alt="Ba biểu đồ Hiệu số điểm, Điểm theo từng 5 pha, Side-out và break-point" width="748" height="1662" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st ph">
       <div>
         <h3>So điểm hai đội theo cách ghi</h3>
-        <p><span class="k">Bấm:</span> kéo xuống tiếp.</p>
-        <p><span class="k">Sẽ thấy:</span> khối <b>Số liệu nói gì</b>: điểm ta (xanh) và đối thủ (cam) theo từng cách: tấn công, chắn bóng, phát bóng, lỗi bên kia.</p>
+        <p><span class="k">Sẽ thấy:</span> khối <b>Số liệu nói gì</b>: tối đa 3 nhận định đánh số, rồi thanh so điểm ta (xanh) và đối thủ (cam) theo từng cách: tấn công, chắn bóng, phát bóng, lỗi bên kia.</p>
         <p class="if"><span class="k">Nếu khác:</span> điểm của đối thủ app suy ra từ các pha ta mất điểm. Ghi đúng cột "Ta mất điểm" thì số này mới đúng.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-coach-numbers.png" alt="Khối Số liệu nói gì so sánh hai đội" width="756" height="772" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-coach-numbers.png" alt="Khối Số liệu nói gì so sánh hai đội" width="748" height="994" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st ph">
       <div>
         <h3>Xem chi tiết theo xoay vòng</h3>
-        <p><span class="k">Bấm:</span> <b>Xem chi tiết set 1</b> ở cuối màn Hội ý.</p>
+        <p><span class="k">Bấm:</span> <b>Xem chi tiết set 2</b> ở cuối màn Hội ý.</p>
         <p><span class="k">Sẽ thấy:</span> các ô P1–P6 xếp như trên sân. Số lớn là hiệu số điểm của vòng đó. "Đỡ phát" là khi đối thủ phát ta giành được bao nhiêu. "Ta phát" là lượt ta phát ăn bao nhiêu. Vòng kém nhất có <b>viền cam</b>. Dưới nữa có bảng tấn công, đỡ bước 1 và phát bóng theo từng người.</p>
         <p class="if"><span class="k">Nếu khác:</span> vòng có "0–0 pha" là chưa có pha nào ở vòng đó, bỏ qua.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-summary-rot.png" alt="Ô điểm theo xoay vòng P1 đến P6" width="756" height="1096" loading="lazy" data-zoomable></figure>
-    </div></li>
-    <li><div class="st">
-      <div>
-        <h3>Hỏi AI</h3>
-        <!-- TODO hoi-ai: cập nhật sau khi panel mới xong -->
-        <p>Nút <b>Hỏi AI</b> ở màn Hội ý và màn Tổng kết đang được làm lại. Hướng dẫn phần này sẽ được bổ sung sau. Kết quả từ AI chỉ để tham khảo, luôn đối chiếu với số liệu trên màn Hội ý.</p>
-      </div>
+      <figure class="shot ph"><img src="img/p-summary-rot.png" alt="Ô điểm theo xoay vòng P1 đến P6" width="700" height="1104" loading="lazy" data-zoomable></figure>
     </div></li>
   </ol>
+  <div class="card panel">
+    <div class="ct">Cách đọc nhãn cạnh mỗi con số</div>
+    <ul>
+      <li><span class="lbl fact">Số đếm</span> — chuyện đã xảy ra, đếm thẳng từ các pha đã ghi (ví dụ tỉ số, số điểm tấn công). Không suy ra điều gì thêm.</li>
+      <li><span class="lbl lo">Chưa đủ dữ liệu</span> — dưới 8 pha. Xem cho biết, chưa nên đổi chiến thuật chỉ vì số này.</li>
+      <li><span class="lbl mid">Trung bình</span> — từ 8 đến 19 pha. Dùng được, nên đối chiếu với điều HLV thấy trên sân.</li>
+      <li><span class="lbl hi">Khá chắc</span> — từ 20 pha trở lên.</li>
+    </ul>
+    <p class="ft">App chỉ đưa lời khuyên ("nên…") khi có từ 8 pha trở lên <b>và</b> chênh lệch lớn hơn mức dao động bình thường. Chưa đủ hai điều đó thì app chỉ nêu số, ghi rõ "chưa đủ chắc để khuyên".</p>
+  </div>
 
   <!-- ============ 7 ============ -->
-  <h2>7 · Xem lại các pha, tổng kết và lịch sử</h2>
+  <h2>7 · Trợ lý hội ý</h2>
+  <p>Trợ lý trả lời nhanh những câu HLV hay hỏi lúc hội ý, bằng chính số liệu trận đang ghi. Số tự tính ngay trên máy, không cần mạng, không phải chép câu hỏi sang trang AI nào khác.</p>
   <ol class="st-list">
     <li><div class="st ph">
       <div>
-        <h3>Danh sách các pha</h3>
-        <p><span class="k">Bấm:</span> <b>Các pha</b> ở thanh dưới màn ghi.</p>
-        <p><span class="k">Sẽ thấy:</span> mọi pha, mới nhất ở trên. Mỗi dòng có set và số thứ tự pha, tỉ số, cách kết thúc, cầu thủ, xoay vòng, bên phát. Vạch xanh là ta ghi, vạch cam là ta mất.</p>
+        <h3>Mở trợ lý</h3>
+        <p><span class="k">Bấm:</span> nút đen <b>Hỏi AI</b> trên màn Hội ý, hoặc <b>Hỏi AI</b> trên màn Tổng kết trận.</p>
+        <p><span class="k">Sẽ thấy:</span> trên điện thoại, bảng <b>Trợ lý hội ý</b> trượt lên gần kín màn. Trên cùng chọn phạm vi <b>Set này</b> hoặc <b>Cả trận</b>. Dưới là 6 thẻ câu hỏi có sẵn và ô <b>Hỏi thêm…</b> ở đáy.</p>
+        <p class="if"><span class="k">Nếu khác:</span> bấm <b>✕</b> góc phải để đóng, màn Hội ý vẫn giữ nguyên.</p>
+      </div>
+      <figure class="shot ph"><img src="img/p-as-open.png" alt="Bảng Trợ lý hội ý với 6 thẻ câu hỏi và ô Hỏi thêm" width="780" height="1688" loading="lazy" data-zoomable></figure>
+    </div></li>
+    <li><div class="st">
+      <div>
+        <h3>Chọn một câu hỏi có sẵn</h3>
+        <p><span class="k">Bấm:</span> một trong 6 thẻ:</p>
+        <ul>
+          <li><b>Xoay vòng nào đang mất điểm?</b> — side-out và break-point theo P1–P6.</li>
+          <li><b>Đỡ bước 1 theo từng người</b> — điểm đỡ 0–3 trung bình, và tỉ lệ giành pha sau bóng đỡ tốt, xấu.</li>
+          <li><b>Ai đang gánh điểm, ai mắc lỗi / bị chắn</b> — điểm ghi và lỗi từng VĐV.</li>
+          <li><b>Đối thủ ghi điểm bằng cách nào</b> — điểm ta mất chia theo cách.</li>
+          <li><b>Chuỗi mất điểm gần đây</b> — các đoạn mất từ 3 điểm liền trở lên.</li>
+          <li><b>So sánh 2 phương án</b> — 2 xoay vòng, hoặc 2 VĐV cùng vị trí.</li>
+        </ul>
+        <p><span class="k">Sẽ thấy:</span> một thẻ trả lời: câu trả lời ngắn, biểu đồ thanh, bảng số. Cuối thẻ là nhãn độ chắc và <b>n</b> (số pha làm căn cứ).</p>
+        <p class="if"><span class="k">Nếu khác:</span> câu trả lời ghi "chưa đủ chắc để khuyên" nghĩa là chưa đủ 8 pha hoặc chênh lệch còn nhỏ. Xem cách đọc nhãn ở cuối mục 6.</p>
+      </div>
+      <div class="shots2">
+        <figure class="shot ph"><img src="img/p-as-rot.png" alt="Thẻ trả lời Xoay vòng nào đang mất điểm với biểu đồ" width="780" height="1688" loading="lazy" data-zoomable><figcaption>Câu trả lời và biểu đồ theo từng vòng.</figcaption></figure>
+        <figure class="shot ph"><img src="img/p-as-table.png" alt="Bảng số theo xoay vòng, nhãn Chưa đủ dữ liệu và n" width="780" height="1688" loading="lazy" data-zoomable><figcaption>Kéo xuống: bảng số, nhãn độ chắc, n.</figcaption></figure>
+      </div>
+    </div></li>
+    <li><div class="st ph">
+      <div>
+        <h3>Hỏi thêm bằng lời</h3>
+        <p><span class="k">Bấm:</span> gõ vào ô <b>Hỏi thêm…</b> ở đáy, ví dụ "Số 12 đang thế nào?" → <b>Hỏi</b>.</p>
+        <p><span class="k">Sẽ thấy:</span> thẻ trả lời riêng cho người đó: điểm ghi, lỗi, lượt phát, đỡ bước 1, kèm bảng chỉ số và nhãn độ chắc.</p>
+        <p class="if"><span class="k">Nếu khác:</span> câu hỏi trợ lý chưa hiểu thì nó gửi thẻ <b>Tổng quan</b> và liệt kê những câu trả lời được. Hỏi về một số áo của đối thủ thì thẻ ghi "Không có số liệu" kèm nút <b>Mở báo cáo đối thủ</b>, vì trợ lý chỉ tính các pha của đội ta.</p>
+      </div>
+      <figure class="shot ph"><img src="img/p-as-free.png" alt="Thẻ trả lời cho câu hỏi Số 12 đang thế nào" width="780" height="1688" loading="lazy" data-zoomable></figure>
+    </div></li>
+    <li><div class="st ph">
+      <div>
+        <h3>So sánh 2 phương án</h3>
+        <p><span class="k">Bấm:</span> thẻ <b>So sánh 2 phương án</b> → chọn <b>Hai xoay vòng</b> hoặc <b>Hai VĐV cùng vị trí</b> → chọn phương án A, B → <b>So sánh</b>.</p>
+        <p><span class="k">Sẽ thấy:</span> hai bên đặt cạnh nhau: tỉ lệ thắng, đỡ phát, ta phát. Câu trả lời nói rõ bên nào tốt hơn, hoặc "chưa đủ chắc để kết luận".</p>
+        <p class="if"><span class="k">Nếu khác:</span> muốn cả hai bên có từ 8 pha trở lên thì chọn phạm vi <b>Cả trận</b>.</p>
+      </div>
+      <figure class="shot ph"><img src="img/p-as-cmp.png" alt="Thẻ So sánh P2 và P6" width="780" height="1688" loading="lazy" data-zoomable></figure>
+    </div></li>
+    <li><div class="st">
+      <div>
+        <h3>Quản lý các thẻ đã hỏi</h3>
+        <p><span class="k">Bấm:</span> hàng nhãn trên cùng (1 · Xoay vòng, 2 · Đỡ bước 1…) để nhảy tới thẻ đã hỏi. <b>Sao chép</b> dưới mỗi thẻ để dán vào Zalo. <b>Xoá</b> để bỏ thẻ.</p>
+        <p><span class="k">Sẽ thấy:</span> các thẻ giữ nguyên trong lúc app đang mở. Số trong thẻ tính lại theo pha mới khi bấm hỏi lại.</p>
+        <p class="if"><span class="k">Nếu khác:</span> đóng hẳn app thì các thẻ mất. Số liệu trận vẫn còn nguyên.</p>
+      </div>
+    </div></li>
+    <li><div class="st">
+      <div>
+        <h3>Trên máy tính: màn chia đôi</h3>
+        <p><span class="k">Sẽ thấy:</span> trợ lý mở ở cột bên phải, màn Hội ý vẫn đọc và bấm được bên trái.</p>
+        <p class="if"><span class="k">Nếu khác:</span> muốn có thêm nhận xét bằng lời của AI dưới mỗi thẻ thì vào <b>Cài đặt → Trợ lý AI</b>, nhập địa chỉ máy chủ và mã đội do người quản lý đưa. Không nối thì trợ lý vẫn trả lời đầy đủ bằng số trên máy.</p>
+      </div>
+      <figure class="shot wide"><img src="img/p-as-desktop.png" alt="Trợ lý hội ý mở bên phải màn Hội ý trên máy tính" width="780" height="488" loading="lazy" data-zoomable></figure>
+    </div></li>
+  </ol>
+
+  <!-- ============ 8 ============ -->
+  <h2>8 · Các pha, tổng kết và lịch sử</h2>
+  <ol class="st-list">
+    <li><div class="st ph">
+      <div>
+        <h3>Mở trang Các pha</h3>
+        <p><span class="k">Bấm:</span> <b>Các pha</b> ở thanh dưới màn ghi, hoặc dòng "Pha trước".</p>
+        <p><span class="k">Sẽ thấy:</span> trang phân tích cả trận. Trên cùng chọn <b>Set</b> hoặc <b>Cả trận</b>, rồi hàng nút nhảy nhanh: Kết luận · Diễn biến · Ghi / mất · Xoay vòng · Cầu thủ · Phát &amp; đỡ · Chuỗi điểm · Danh sách pha. Phần đầu là <b>Kết luận hiện tại</b>, đọc giống màn Hội ý.</p>
+        <p class="if"><span class="k">Nếu khác:</span> hàng nút dài hơn màn điện thoại thì vuốt ngang hàng nút.</p>
+      </div>
+      <figure class="shot ph"><img src="img/p-an-top.png" alt="Trang Các pha với hàng nút nhảy nhanh và Kết luận hiện tại" width="780" height="1688" loading="lazy" data-zoomable></figure>
+    </div></li>
+    <li><div class="st">
+      <div>
+        <h3>Đọc các phần phân tích</h3>
+        <p><span class="k">Sẽ thấy:</span> <b>Diễn biến</b>: đường điểm hai đội qua từng pha và hiệu số. <b>Ghi / mất</b>: nguồn điểm theo cách. <b>Xoay vòng</b>: ô P1–P6 và hiệu số từng vòng qua thời gian. <b>Cầu thủ</b>: điểm, lỗi, tấn công từng người. <b>Phát &amp; đỡ</b>: side-out, break-point, đỡ bước 1 theo người. <b>Chuỗi điểm</b>: các đoạn một bên ghi liền từ 3 điểm.</p>
+        <p class="if"><span class="k">Nếu khác:</span> mỗi phần có nhãn độ chắc và n riêng. Cách đọc ở cuối mục 6.</p>
+      </div>
+      <div class="shots2">
+        <figure class="shot ph"><img src="img/p-an-flow.png" alt="Phần Diễn biến tỉ số và Hiệu số điểm" width="748" height="1104" loading="lazy" data-zoomable><figcaption>Diễn biến: vạch dọc là sang set mới.</figcaption></figure>
+        <figure class="shot ph"><img src="img/p-an-rot.png" alt="Phần Theo xoay vòng P1 đến P6" width="748" height="1696" loading="lazy" data-zoomable><figcaption>Xoay vòng: vòng kém nhất viền cam.</figcaption></figure>
+      </div>
+    </div></li>
+    <li><div class="st ph">
+      <div>
+        <h3>Danh sách pha (cuối trang)</h3>
+        <p><span class="k">Bấm:</span> nút <b>Danh sách pha</b> trên hàng nhảy nhanh.</p>
+        <p><span class="k">Sẽ thấy:</span> mọi pha, mới nhất ở trên. Mỗi dòng có set và số thứ tự pha, tỉ số, cách kết thúc, cầu thủ, xoay vòng, bên phát, điểm đỡ. Vạch xanh là ta ghi, vạch cam là ta mất.</p>
         <p class="if"><span class="k">Nếu khác:</span> có dòng "Bị bỏ qua" nghĩa là sau khi sửa, pha đó rơi ra ngoài set. Bấm vào để sửa hoặc xoá.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-rallies.png" alt="Danh sách các pha đã ghi" width="780" height="1688" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-rallies.png" alt="Danh sách pha đã ghi" width="748" height="1280" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st ph">
       <div>
         <h3>Sửa hoặc xoá một pha</h3>
         <p><span class="k">Bấm:</span> một dòng bất kỳ, kể cả pha ở set trước → đổi cách, cầu thủ hoặc điểm đỡ bước 1 → <b>Xong</b>. Muốn xoá thì bấm <b>Xoá pha này</b> ở cuối bảng.</p>
-        <p><span class="k">Sẽ thấy:</span> tỉ số, xoay vòng và thống kê phía sau tự tính lại.</p>
+        <p><span class="k">Sẽ thấy:</span> tỉ số, xoay vòng và mọi số phía trên tự tính lại.</p>
         <p class="if"><span class="k">Nếu khác:</span> sau khi sửa mà app báo set kết thúc khi chưa đủ điểm, xem lại các pha quanh chỗ vừa sửa.</p>
       </div>
       <figure class="shot ph"><img src="img/p-rally-edit.png" alt="Bảng sửa một pha" width="780" height="1688" loading="lazy" data-zoomable></figure>
@@ -357,147 +481,193 @@
       <div>
         <h3>Tổng kết trận</h3>
         <p><span class="k">Bấm:</span> <b>Xem tổng kết</b> khi trận kết thúc, hoặc <b>Thêm ▾ → Tổng kết / xuất dữ liệu</b> giữa trận.</p>
-        <p><span class="k">Sẽ thấy:</span> kết quả, tỉ số từng set, và các nút <b>In / PDF</b>, <b>Chia sẻ</b>, <b>Xuất CSV</b>, <b>Xuất JSON</b>, <b>Hỏi AI</b>, <b>Xem lại video</b>. Dưới đó là các con số chính của cả trận.</p>
+        <p><span class="k">Sẽ thấy:</span> kết quả, tỉ số từng set, và các nút <b>In / PDF</b>, <b>Chia sẻ</b>, <b>Xuất CSV</b>, <b>Xuất JSON</b>, <b>Hỏi AI</b>, <b>Xem lại video</b>. Dưới đó là 4 ô số chính của cả trận, rồi các bảng theo xoay vòng, nguồn điểm, tấn công, đỡ bước 1, phát bóng.</p>
         <p class="if"><span class="k">Nếu khác:</span> <b>Chia sẻ</b> mở bảng chia sẻ của máy để gửi Zalo. Máy không hỗ trợ thì app tự sao chép nội dung để dán.</p>
       </div>
       <div class="shots2">
-        <figure class="shot ph"><img src="img/p-summary-top.png" alt="Khối kết quả và các nút In, Chia sẻ, Xuất CSV, Xuất JSON" width="756" height="860" loading="lazy" data-zoomable></figure>
-        <figure class="shot ph"><img src="img/p-summary-kpi.png" alt="Bốn ô số chính của cả trận" width="756" height="478" loading="lazy" data-zoomable></figure>
+        <figure class="shot ph"><img src="img/p-summary-top.png" alt="Khối kết quả và các nút In, Chia sẻ, Xuất CSV, Xuất JSON, Hỏi AI" width="748" height="846" loading="lazy" data-zoomable></figure>
+        <figure class="shot ph"><img src="img/p-summary-kpi.png" alt="Bốn ô số chính của cả trận" width="748" height="464" loading="lazy" data-zoomable></figure>
       </div>
     </div></li>
     <li><div class="st ph">
       <div>
         <h3>Lịch sử trận</h3>
         <p><span class="k">Bấm:</span> trang <b>Trận tới</b> → <b>Tất cả trận</b> (ở khối "Trận gần đây").</p>
-        <p><span class="k">Sẽ thấy:</span> mọi trận đã ghi trên máy này, mới nhất trước. Bấm một trận để mở tổng kết. Trận còn dở có nút <b>Tiếp tục ghi</b>.</p>
+        <p><span class="k">Sẽ thấy:</span> số trận cả mùa, rồi mọi trận đã ghi trên máy này, mới nhất trước. Bấm một trận để mở tổng kết. Trận còn dở có nút <b>Tiếp tục ghi</b>.</p>
         <p class="if"><span class="k">Nếu khác:</span> nút cam <b>Xoá</b> xoá vĩnh viễn trận khỏi máy. App hỏi lại trước khi xoá.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-history-list.png" alt="Danh sách trận đã lưu" width="756" height="472" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-history-list.png" alt="Trang Lịch sử trận" width="780" height="1440" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st ph">
       <div>
         <h3>Xem lại video trận</h3>
         <p><span class="k">Bấm:</span> <b>Xem lại video</b> (ở Tổng kết, hoặc Mở nhanh trên trang Trận tới) → chọn trận → <b>Chọn video trên máy</b> hoặc dán link YouTube rồi bấm <b>Mở</b> → nhập phút:giây của pha đầu tiên → <b>Đặt mốc</b>. Với video trên máy: tua tới pha đầu rồi bấm <b>Lấy lúc đang phát</b>.</p>
-        <p><span class="k">Sẽ thấy:</span> danh sách pha bên dưới. Bấm một pha để tua tới đó, sớm 5 giây. Lọc theo ghi hay mất, cầu thủ, xoay vòng.</p>
+        <p><span class="k">Sẽ thấy:</span> danh sách pha bên dưới. Bấm một pha để tua tới đó, sớm 5 giây. Lọc theo kết quả, cầu thủ, xoay vòng.</p>
         <p class="if"><span class="k">Nếu khác:</span> chỉ khớp khi trận được ghi trực tiếp tại sân. Lệch thì đặt lại mốc. Video YouTube cần mạng, video trên máy thì không.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-video-setup.png" alt="Phần chọn video và đặt mốc (chưa mở video)" width="780" height="916" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-video-setup.png" alt="Phần chọn video và đặt mốc (chưa mở video)" width="780" height="1520" loading="lazy" data-zoomable></figure>
     </div></li>
   </ol>
 
-  <!-- ============ 8 ============ -->
-  <h2>8 · Đọc báo cáo đối thủ và sa bàn chạy lại pha</h2>
-  <p>Báo cáo đối thủ gom mọi thứ đã biết về đội sắp gặp. Hiện có báo cáo cho <b>XMLS Thanh Hóa</b>. Nên xem trên máy tính hoặc máy tính bảng.</p>
+  <!-- ============ 9 ============ -->
+  <h2>9 · Đọc báo cáo đối thủ</h2>
+  <p>Báo cáo đối thủ gom mọi thứ đã biết về đội sắp gặp. Hiện có báo cáo cho <b>XMLS Thanh Hóa</b>. Đọc tốt trên điện thoại, kéo từ trên xuống theo thứ tự dưới đây.</p>
   <ol class="st-list">
-    <li><div class="st">
+    <li><div class="st ph">
       <div>
         <h3>Mở báo cáo</h3>
-        <p><span class="k">Bấm:</span> tab <b>Đối thủ</b>, hoặc thẻ <b>Bước 1 · Xem báo cáo đối thủ</b> ở trang Trận tới.</p>
-        <p><span class="k">Sẽ thấy:</span> đếm ngược tới trận, và một câu tóm lại cách đối thủ chơi, kèm 3 dòng bối cảnh.</p>
-        <p class="if"><span class="k">Nếu khác:</span> muốn xem đội khác thì bấm <b>Các đội khác</b> góc phải. Trang đó là nhận xét của bình luận viên, cần kiểm lại bằng video.</p>
+        <p><span class="k">Bấm:</span> nút <b>Đọc báo cáo đối thủ</b> ở đầu trang Trận tới, hoặc tab <b>Đối thủ</b>.</p>
+        <p><span class="k">Sẽ thấy:</span> một câu tóm lại cách đối thủ chơi, 3 dòng bối cảnh, rồi thẻ trận tới với đếm ngược.</p>
+        <p class="if"><span class="k">Nếu khác:</span> muốn xem đội khác thì bấm <b>Các đội khác</b>. Trang đó là nhận xét của bình luận viên, cần kiểm lại bằng video.</p>
       </div>
-      <figure class="shot wide"><img src="img/s-top.png" alt="Đầu báo cáo: đếm ngược và câu tóm lại" width="800" height="242" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/s-top.png" alt="Đầu báo cáo: câu tóm lại, bối cảnh và đếm ngược" width="780" height="1820" loading="lazy" data-zoomable></figure>
     </div></li>
-    <li><div class="st">
+    <li><div class="st ph">
       <div>
         <h3>Ba điều quan trọng nhất</h3>
-        <p><span class="k">Bấm:</span> không cần bấm. Đọc ba thẻ ngay dưới phần tóm lại.</p>
-        <p><span class="k">Sẽ thấy:</span> 3 thẻ màu: <b>Điểm mạnh nhất</b>, <b>Nên khai thác</b>, <b>Cần để ý</b>. Mỗi thẻ có nhãn độ chắc và nguồn: bình luận viên, đếm từ bảng điểm, hay báo chí.</p>
+        <p><span class="k">Bấm:</span> không cần bấm. Đọc ba thẻ ngay dưới.</p>
+        <p><span class="k">Sẽ thấy:</span> <b>Điểm mạnh nhất</b>, <b>Nên khai thác</b>, <b>Cần để ý</b>. Mỗi thẻ có nhãn độ chắc và nguồn: bình luận viên, đếm từ bảng điểm, hay báo chí. Nút <b>Xem bằng chứng</b> mở đúng đoạn video (cần mạng), <b>Mở trên bàn chiến thuật</b> để soạn phương án đáp trả.</p>
         <p class="if"><span class="k">Nếu khác:</span> thẻ có nhãn "Khá chắc" hay "Trung bình" thì nên xem thêm video trước khi dựa vào.</p>
       </div>
-      <figure class="shot wide"><img src="img/s-insights.png" alt="Ba thẻ Điểm mạnh nhất, Nên khai thác, Cần để ý" width="800" height="294" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/s-insights.png" alt="Ba thẻ Điểm mạnh nhất, Nên khai thác, Cần để ý" width="748" height="2212" loading="lazy" data-zoomable></figure>
     </div></li>
-    <li><div class="st">
-      <div>
-        <h3>Từng xu hướng, kèm bằng chứng</h3>
-        <p><span class="k">Bấm:</span> <b>Xem bằng chứng</b> để mở đoạn video đúng phút (cần mạng). <b>Mở trên bàn chiến thuật</b> để soạn phương án đáp trả.</p>
-        <p><span class="k">Sẽ thấy:</span> mỗi thẻ có câu nhận xét, trích lời bình luận viên kèm phút video, và nhãn độ chắc.</p>
-        <p class="if"><span class="k">Nếu khác:</span> không mở được video thì kiểm mạng. Mọi phần chữ vẫn đọc được khi mất mạng.</p>
-      </div>
-      <figure class="shot half"><img src="img/s-tendency.png" alt="Một thẻ xu hướng với trích dẫn và hai nút" width="706" height="728" loading="lazy" data-zoomable></figure>
-    </div></li>
-    <li><div class="st">
+    <li><div class="st ph">
       <div>
         <h3>Số đếm từ bảng điểm</h3>
         <p><span class="k">Bấm:</span> không cần bấm. Kéo xuống khối "Đếm thật từ bảng điểm".</p>
         <p><span class="k">Sẽ thấy:</span> các thanh ngang cho biết khi ta phát, đối thủ giành lại được bao nhiêu pha ở từng set. Đây là số đếm thật, chắc hơn nhận xét bằng lời.</p>
         <p class="if"><span class="k">Nếu khác:</span> dưới thanh có dòng "Xem đoạn này" để mở video đúng lúc chuỗi điểm xảy ra (cần mạng).</p>
       </div>
-      <figure class="shot half"><img src="img/s-counts.png" alt="Thanh ngang số pha đối thủ giành lại theo từng set" width="800" height="890" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/s-counts.png" alt="Thanh ngang số pha đối thủ giành lại theo từng set" width="748" height="1698" loading="lazy" data-zoomable></figure>
+    </div></li>
+    <li><div class="st ph">
+      <div>
+        <h3>Đội hình ra sân của đối thủ</h3>
+        <p><span class="k">Bấm:</span> không cần bấm. Kéo xuống khối <b>Nhân sự</b>.</p>
+        <p><span class="k">Sẽ thấy:</span> thẻ từng cầu thủ hay ra sân: số áo, vị trí, chiều cao, số trận xuất phát, một dòng nhận xét. Ngoại binh mới giai đoạn 2 nằm riêng, ghi rõ "chưa chính thức". Dự bị nằm trong mục thu gọn.</p>
+        <p class="if"><span class="k">Nếu khác:</span> thẻ không có ảnh thì hiện chữ cái đầu tên và số áo. Đó là bình thường.</p>
+      </div>
+      <figure class="shot ph"><img src="img/s-roster.png" alt="Khối Nhân sự với thẻ từng cầu thủ đối thủ" width="748" height="1520" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st">
       <div>
+        <h3>Hồ sơ một cầu thủ đối thủ</h3>
+        <p><span class="k">Bấm:</span> một thẻ cầu thủ.</p>
+        <p><span class="k">Sẽ thấy:</span> bảng hồ sơ trượt lên từ dưới. Trên cùng là thông tin và nhãn (ngoại binh, số trận xuất phát, chấn thương). Kéo xuống: <b>Chỉ số</b> kèm nguồn và nhãn độ chắc · <b>Ưu điểm</b> · <b>Điểm yếu</b> · <b>Chỗ nên khai thác</b> · <b>Lưu ý</b> · <b>Nguồn</b> (link video đúng giây và bài báo).</p>
+        <p><span class="k">Bấm tiếp:</span> nút <b>‹</b> <b>›</b> góc trên để sang người trước, người sau mà không phải đóng bảng. <b>✕</b> để đóng.</p>
+        <p class="if"><span class="k">Nếu khác:</span> mục <b>Chỗ nên khai thác</b> luôn mang nhãn <b>Giả thuyết — cần kiểm bằng video/trận thật</b>. Đây là suy luận từ các nguồn, chưa phải điều đã được chứng minh.</p>
+      </div>
+      <div class="shots2">
+        <figure class="shot ph"><img src="img/s-pp-top.png" alt="Hồ sơ Cai Xiaoqing: thông tin, nhãn và chỉ số" width="780" height="1688" loading="lazy" data-zoomable><figcaption>Đầu hồ sơ và Chỉ số.</figcaption></figure>
+        <figure class="shot ph"><img src="img/s-pp-exploit.png" alt="Mục Chỗ nên khai thác với nhãn Giả thuyết" width="780" height="1688" loading="lazy" data-zoomable><figcaption>Chỗ nên khai thác, nhãn Giả thuyết.</figcaption></figure>
+      </div>
+    </div></li>
+    <li><div class="st ph">
+      <div>
+        <h3>Từng xu hướng, kèm bằng chứng</h3>
+        <p><span class="k">Bấm:</span> <b>Xem bằng chứng</b> để mở đoạn video đúng phút (cần mạng). <b>Thêm N mốc</b> để xem các lần khác. <b>Mở trên bàn chiến thuật</b> để soạn phương án đáp trả.</p>
+        <p><span class="k">Sẽ thấy:</span> mỗi thẻ có câu nhận xét, trích lời bình luận viên kèm phút video, và nhãn độ chắc.</p>
+        <p class="if"><span class="k">Nếu khác:</span> không mở được video thì kiểm mạng. Mọi phần chữ vẫn đọc được khi mất mạng.</p>
+      </div>
+      <figure class="shot ph"><img src="img/s-tendency.png" alt="Một thẻ xu hướng với trích dẫn và các mốc video" width="668" height="1596" loading="lazy" data-zoomable></figure>
+    </div></li>
+    <li><div class="st ph">
+      <div>
         <h3>Sa bàn: đối thủ đập từ đâu</h3>
-        <p><span class="k">Bấm:</span> <b>Phát</b>, <b>Chuyền</b>, <b>Đập</b> ở góc phải để xem vị trí mọi người ở từng khoảnh khắc.</p>
+        <p><span class="k">Bấm:</span> <b>Phát</b>, <b>Chuyền</b>, <b>Đập</b> để xem vị trí mọi người ở từng khoảnh khắc.</p>
         <p><span class="k">Sẽ thấy:</span> các sân nhỏ nhìn từ trên xuống. Đối thủ ở trên (cam), ta ở dưới (xanh). Vòng đen là người đập, vòng nét đứt là chuyền hai, ô viền tím là chỗ máy đọc được là nơi giậm nhảy đập. Những vị trí này do máy đọc từ video trận.</p>
         <p class="if"><span class="k">Nếu khác:</span> khối ghi "Chưa có sa bàn" nghĩa là đội này chưa có dữ liệu từ video. Phần còn lại của báo cáo vẫn dùng được.</p>
       </div>
-      <figure class="shot wide"><img src="img/s-boards.png" alt="Khối sa bàn với ba nhóm quan sát" width="800" height="548" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/s-boards.png" alt="Khối sa bàn với nhãn độ chắc và nhóm quan sát đầu tiên" width="748" height="2154" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st">
       <div>
-        <h3>Hiểu các nhãn độ chắc</h3>
+        <h3>Hiểu các nhãn trong báo cáo</h3>
         <p>Máy đo có sai số. Nhãn cho biết con số đủ chắc để dựa vào hay chưa:</p>
         <ul>
-          <li><span class="lbl lo">Chưa đủ dữ liệu</span> — máy đo có sai số, số này chưa đủ chắc để ra quyết định. Xem cho biết, chưa đổi chiến thuật chỉ vì nó. Nhãn này hiện khi có dưới 3 trận hoặc dưới 100 pha.</li>
+          <li><span class="lbl lo">Chưa đủ dữ liệu</span> — số này chưa đủ chắc để ra quyết định. Xem cho biết, chưa đổi chiến thuật chỉ vì nó. Trên sa bàn, nhãn này hiện khi có dưới 3 trận hoặc dưới 100 pha.</li>
           <li><span class="lbl mid">Đội hình cũ — có thể đã thay đổi</span> — video quay đội hình tháng 3–4. Đối thủ có thể đã đổi người, nên số này có thể không còn đúng.</li>
           <li><span class="lbl mid">Máy đọc từ video, chưa HLV kiểm</span> — chưa ai xem lại từng pha. Máy đoán đúng chỗ đập khoảng 5–7 trên 10 pha.</li>
-          <li><span class="lbl hi">Chắc chắn</span>, <span class="lbl hi">Khá chắc</span>, <span class="lbl mid">Trung bình</span> — mức tin cậy của từng nhận xét trong báo cáo.</li>
+          <li><span class="lbl hi">Chắc chắn</span>, <span class="lbl hi">Khá chắc</span>, <span class="lbl mid">Trung bình</span>, <span class="lbl mid">Cần kiểm</span> — mức tin cậy của từng nhận xét.</li>
+          <li><span class="lbl lo">Giả thuyết</span> — suy luận để HLV kiểm lại bằng video hoặc trận thật.</li>
         </ul>
       </div>
-      <figure class="shot ph"><img src="img/s-obs.png" alt="Một nhóm quan sát với nhãn Chưa đủ dữ liệu và Đội hình cũ" width="474" height="651" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st">
       <div>
         <h3>Mở sân lớn và chạy lại pha</h3>
         <p><span class="k">Bấm:</span> một sân nhỏ bất kỳ → <b>Chạy lại pha</b>. Chọn <b>0,5×</b> để chạy chậm, hoặc kéo thanh trượt để tua.</p>
-        <p><span class="k">Sẽ thấy:</span> sân lớn với tỉ số trước pha đó. Các chấm di chuyển từ lúc phát, qua lúc chuyền, tới lúc đập. Đường nét đứt là đường bóng máy suy ra. Bên phải ghi ai phát, máy đọc chỗ đập ở đâu.</p>
-        <p class="if"><span class="k">Nếu khác:</span> máy chỉ có 3 khoảnh khắc thật (phát, chuyền, đập). Đoạn chạy giữa chúng là máy tự nối cho dễ nhìn, không phải đường chạy thật. Máy bật chế độ giảm chuyển động thì chỉ hiện 3 hình đứng yên. Nút <b>Xem pha trên YouTube</b> cần mạng.</p>
+        <p><span class="k">Sẽ thấy:</span> sân lớn với tỉ số trước pha đó. Các chấm di chuyển từ lúc phát, qua lúc chuyền, tới lúc đập. Đường nét đứt là đường bóng máy suy ra.</p>
+        <p class="if"><span class="k">Nếu khác:</span> máy chỉ có 3 khoảnh khắc thật (phát, chuyền, đập). Đoạn chạy giữa chúng là máy tự nối cho dễ nhìn, không phải đường chạy thật. Máy bật chế độ giảm chuyển động thì chỉ hiện 3 hình đứng yên.</p>
       </div>
-        <figure class="shot wide"><img src="img/s-dialog.png" alt="Sân lớn của một pha, với nút Chạy lại pha" width="800" height="649" loading="lazy" data-zoomable></figure>
-        <figure class="shot ph"><img src="img/s-dialog-play.png" alt="Sân lớn đang chạy lại pha" width="460" height="845" loading="lazy" data-zoomable><figcaption>Đang chạy lại: các chấm di chuyển giữa lúc chuyền và lúc đập.</figcaption></figure>
+      <div class="shots2">
+        <figure class="shot ph"><img src="img/s-dialog.png" alt="Sân lớn của một pha, với nút Chạy lại pha" width="780" height="1688" loading="lazy" data-zoomable></figure>
+        <figure class="shot ph"><img src="img/s-dialog-play.png" alt="Sân lớn đang chạy lại pha" width="780" height="1688" loading="lazy" data-zoomable><figcaption>Đang chạy lại: các chấm di chuyển giữa lúc chuyền và lúc đập.</figcaption></figure>
+      </div>
+    </div></li>
+    <li><div class="st ph">
+      <div>
+        <h3>Phương án AI đề xuất</h3>
+        <p><span class="k">Sẽ thấy:</span> khối <b>Đề xuất của AI — HLV quyết</b> với 3 phương án, mỗi phương án có sơ đồ nhỏ, lý do và lời dặn đội.</p>
+        <p><span class="k">Bấm:</span> <b>Mở trên bàn chiến thuật</b> để xem từng bước, sửa và lưu (mục 10).</p>
+        <p class="if"><span class="k">Nếu khác:</span> đây là đề xuất, chưa phải quyết định. HLV sửa hoặc bỏ tuỳ ý.</p>
+      </div>
+      <figure class="shot ph"><img src="img/s-plans.png" alt="Khối phương án AI đề xuất với phương án đầu tiên" width="748" height="2207" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st">
       <div>
-        <h3>Phương án AI đề xuất</h3>
-        <p><span class="k">Sẽ thấy:</span> khối <b>Đề xuất của AI — HLV quyết</b> với 3 phương án, mỗi phương án có sơ đồ nhỏ và lý do.</p>
-        <p><span class="k">Bấm:</span> <b>Mở trên bàn chiến thuật</b> để xem, sửa và lưu (mục 9).</p>
-        <p class="if"><span class="k">Nếu khác:</span> đây là đề xuất, chưa phải quyết định. HLV sửa hoặc bỏ tuỳ ý.</p>
+        <h3>Thư viện clip</h3>
+        <p><span class="k">Bấm:</span> kéo xuống khối <b>Xem lại đúng đoạn video</b>. Chọn nhóm (Tấn công, Chuyền hai, Đỡ phát &amp; phòng thủ, Phát bóng, Chắn, Nhân sự &amp; đội hình) hoặc lọc theo trận, theo cầu thủ.</p>
+        <p><span class="k">Sẽ thấy:</span> clip xếp theo nhóm, trong nhóm chia theo tag (ví dụ "Bóng khó → #36"). Mỗi thẻ ghi phút:giây, ngày và đội gặp. Dòng nhỏ đếm số mốc đang hiện trên tổng số mốc. <b>Xem thêm</b> mở các clip còn lại trong tag.</p>
+        <p><span class="k">Bấm tiếp:</span> một thẻ clip → bảng trượt lên, video phát ngay trong bảng, đúng giây (cần mạng). Dưới video là lời bình luận viên và xu hướng liên quan. Nút <b>‹</b> <b>›</b> để sang clip khác.</p>
+        <p class="if"><span class="k">Nếu khác:</span> khung video đen hoặc không phát (mất mạng, video bị chặn nhúng) thì bấm <b>Mở trên YouTube</b>.</p>
       </div>
-      <figure class="shot wide"><img src="img/s-plans.png" alt="Ba phương án AI đề xuất" width="800" height="683" loading="lazy" data-zoomable></figure>
+      <div class="shots2">
+        <figure class="shot ph"><img src="img/s-clips.png" alt="Thư viện clip: nút lọc nhóm, lọc trận, lọc cầu thủ và lưới thẻ clip" width="748" height="1800" loading="lazy" data-zoomable><figcaption>Lưới clip. Ảnh xem trước tải từ YouTube khi có mạng.</figcaption></figure>
+        <figure class="shot ph"><img src="img/s-clip-open.png" alt="Bảng phát clip với nút Mở trên YouTube và lời bình luận" width="780" height="1688" loading="lazy" data-zoomable><figcaption>Clip mở trong bảng. Khung video ở đây để trống.</figcaption></figure>
+      </div>
+    </div></li>
+    <li><div class="st ph">
+      <div>
+        <h3>Danh sách nguồn</h3>
+        <p><span class="k">Bấm:</span> cuối báo cáo, khối <b>Nguồn và cách làm</b> → lọc <b>Video</b>, <b>Báo</b>, <b>Danh sách đội</b>, hoặc theo trận.</p>
+        <p><span class="k">Sẽ thấy:</span> thẻ từng nguồn: tên, ngày, trận liên quan, trang gốc. Bấm một thẻ để mở trang gốc (cần mạng).</p>
+        <p class="if"><span class="k">Nếu khác:</span> dòng nhỏ đầu khối giải thích cách làm báo cáo: phần nào đếm từ bảng điểm, phần nào AI tóm tắt và đã đối chiếu phụ đề.</p>
+      </div>
+      <figure class="shot ph"><img src="img/s-sources.png" alt="Khối Nguồn và cách làm, đang lọc Báo" width="748" height="1574" loading="lazy" data-zoomable></figure>
     </div></li>
   </ol>
 
-  <!-- ============ 9 ============ -->
-  <h2>9 · Dùng bàn chiến thuật</h2>
-  <p>Xếp người theo xoay vòng, vẽ đường chạy, lưu phương án và trình chiếu cho đội lúc hội ý. Nên dùng trên máy tính bảng hoặc máy tính.</p>
+  <!-- ============ 10 ============ -->
+  <h2>10 · Dùng bàn chiến thuật</h2>
+  <p>Xếp người theo xoay vòng, vẽ đường chạy, lưu phương án và trình chiếu cho đội lúc hội ý. Dùng được trên điện thoại. Máy tính bảng thì sân to hơn, dễ vẽ hơn.</p>
   <ol class="st-list">
-    <li><div class="st">
+    <li><div class="st ph">
       <div>
         <h3>Mở bàn chiến thuật</h3>
-        <p><span class="k">Bấm:</span> tab <b>Chiến thuật</b>. Hoặc bấm <b>Mở trên bàn chiến thuật</b> trong báo cáo đối thủ.</p>
-        <p><span class="k">Sẽ thấy:</span> sân bên trái, thẻ <b>Tập trung VĐV</b> và khối <b>Phương án</b> bên phải. Dòng nhỏ trên sân ghi đội, pha bóng, xoay vòng và tên phương án đang mở.</p>
-        <p class="if"><span class="k">Nếu khác:</span> báo "Không tìm thấy phương án này trên máy" nghĩa là phương án chưa có trên máy này (ví dụ mở link từ máy khác). Mở lại từ báo cáo đối thủ bằng nút <b>Mở trên bàn chiến thuật</b>.</p>
+        <p><span class="k">Bấm:</span> tab <b>Chiến thuật</b>. Hoặc bấm <b>Mở trên bàn chiến thuật</b> trong báo cáo đối thủ, hoặc <b>Mở phương án</b> ở màn Hội ý.</p>
+        <p><span class="k">Sẽ thấy:</span> dòng nhỏ trên cùng ghi đội, pha bóng, xoay vòng và tên phương án đang mở. Dưới là sân, rồi thẻ <b>Tập trung VĐV</b> và khối <b>Phương án</b>.</p>
+        <p class="if"><span class="k">Nếu khác:</span> 3 phương án AI trong báo cáo có sẵn trong app, nên link tới chúng mở được trên mọi máy, kể cả máy chưa từng mở báo cáo. Các phương án này chỉ đọc; sửa rồi bấm Lưu sẽ thành bản riêng trên máy.</p>
       </div>
-      <figure class="shot wide"><img src="img/t-ai-plan-view.png" alt="Bàn chiến thuật mở phương án AI đỡ phát bóng" width="800" height="562" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/t-ai-plan-view.png" alt="Bàn chiến thuật mở phương án AI đỡ phát bóng trên điện thoại" width="780" height="2289" loading="lazy" data-zoomable></figure>
     </div></li>
-    <li><div class="st">
+    <li><div class="st ph">
       <div>
         <h3>Chọn pha bóng và xoay vòng</h3>
         <p><span class="k">Bấm:</span> một trong 4 pha: <b>Đỡ phát bóng</b>, <b>Phát bóng</b>, <b>Tấn công</b>, <b>Phòng thủ / chắn</b>. Rồi chọn xoay vòng <b>P1</b> đến <b>P6</b>.</p>
-        <p><span class="k">Sẽ thấy:</span> người trên sân tự đứng vào chỗ chuẩn. Dòng chữ dưới giải thích, ví dụ "P3 = chuyền hai đứng ở vị trí 3 lúc bắt đầu".</p>
+        <p><span class="k">Sẽ thấy:</span> người trên sân tự đứng vào chỗ chuẩn. Dòng chữ dưới giải thích, ví dụ "Xoay vòng P1 = chuyền hai đứng ở vị trí 1 lúc bắt đầu".</p>
         <p class="if"><span class="k">Nếu khác:</span> người đứng lạ chỗ thì bấm <b>Thêm ▾ → Về đội hình chuẩn</b>.</p>
       </div>
-      <figure class="shot wide"><img src="img/t-controls.png" alt="Thanh chọn pha bóng và xoay vòng P1 đến P6" width="800" height="152" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/t-controls.png" alt="Nút chọn pha bóng và xoay vòng P1 đến P6" width="708" height="458" loading="lazy" data-zoomable></figure>
     </div></li>
-    <li><div class="st">
+    <li><div class="st ph">
       <div>
         <h3>Nút Thêm: đổi cách hiển thị</h3>
-        <p><span class="k">Bấm:</span> <b>Thêm ▾</b> bên phải hàng xoay vòng.</p>
-        <p><span class="k">Sẽ thấy:</span> <b>Libero vào sân</b>, <b>Cả sân</b> hoặc <b>Nửa sân</b>, <b>Hiện đối thủ</b>. Nhóm "Sửa bảng": <b>Làm lại</b>, <b>Xoá nét vẽ</b>, <b>Về đội hình chuẩn</b>. Dưới cùng là bảng màu theo vị trí.</p>
+        <p><span class="k">Bấm:</span> <b>Thêm ▾</b> bên phải chữ Xoay vòng.</p>
+        <p><span class="k">Sẽ thấy:</span> nhóm "Hiển thị trên sân": <b>Libero vào sân</b>, <b>Cả sân</b> hoặc <b>Nửa sân</b>, <b>Hiện đối thủ</b>. Nhóm "Sửa bảng": <b>Làm lại</b>, <b>Xoá nét vẽ</b>, <b>Về đội hình chuẩn</b>. Dưới cùng là bảng màu theo vị trí.</p>
         <p class="if"><span class="k">Nếu khác:</span> không thấy nút <b>Libero vào sân</b> nghĩa là đội chưa khai libero ở tab Cầu thủ.</p>
       </div>
-      <figure class="shot wide"><img src="img/t-more.png" alt="Bảng Thêm mở ra với các nút hiển thị và sửa bảng" width="800" height="358" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/t-more.png" alt="Bảng Thêm mở ra với các nút hiển thị và sửa bảng" width="708" height="1050" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st">
       <div>
@@ -507,18 +677,18 @@
         <p class="if"><span class="k">Nếu khác:</span> dòng giữa ghi "Vẽ mũi tên chạy hoặc đường bóng để xem mô phỏng từng bước" nghĩa là phương án chưa có nét vẽ nào.</p>
       </div>
       <div class="shots2">
-        <figure class="shot wide"><img src="img/t-ai-board.png" alt="Sân ở vị trí ban đầu" width="800" height="823" loading="lazy" data-zoomable><figcaption>Vị trí ban đầu.</figcaption></figure>
-        <figure class="shot wide"><img src="img/t-ai-step1.png" alt="Sân sau khi bấm Bước sau" width="800" height="823" loading="lazy" data-zoomable><figcaption>Bước 1/2: libero và chủ công đã chạy vào chỗ.</figcaption></figure>
+        <figure class="shot ph"><img src="img/t-ai-board.png" alt="Sân ở vị trí ban đầu" width="700" height="1437" loading="lazy" data-zoomable><figcaption>Vị trí ban đầu.</figcaption></figure>
+        <figure class="shot ph"><img src="img/t-ai-step1.png" alt="Sân sau khi bấm Bước sau" width="700" height="1437" loading="lazy" data-zoomable><figcaption>Bước 1/2: libero và chủ công đã chạy vào chỗ.</figcaption></figure>
       </div>
     </div></li>
-    <li><div class="st">
+    <li><div class="st ph">
       <div>
         <h3>Xem một cầu thủ phải làm gì</h3>
-        <p><span class="k">Bấm:</span> chế độ <b>Xếp người</b> → chạm một cầu thủ trên sân. Chạm thêm người thứ hai để xem hai người phối hợp. Chạm chỗ trống để bỏ chọn.</p>
+        <p><span class="k">Bấm:</span> chế độ <b>Xếp người</b> → chạm một cầu thủ trên sân. Chạm thêm người thứ hai để xem hai người phối hợp. Chạm chỗ trống hoặc <b>Bỏ chọn</b> để bỏ.</p>
         <p><span class="k">Sẽ thấy:</span> thẻ ghi <b>Ở đâu</b>, <b>Khi nào</b>, <b>Làm gì</b>, và ô <b>Dặn riêng</b> để gõ lời dặn cho người đó.</p>
         <p class="if"><span class="k">Nếu khác:</span> muốn đổi chỗ đứng thì kéo cầu thủ tới chỗ mới.</p>
       </div>
-      <figure class="shot ph"><img src="img/t-focus.png" alt="Thẻ Tập trung VĐV cho libero số 3" width="380" height="501" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/t-focus.png" alt="Thẻ Tập trung VĐV cho cầu thủ số 5" width="748" height="882" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st">
       <div>
@@ -527,51 +697,53 @@
         <p><span class="k">Sẽ thấy:</span> nét mới hiện trên sân. Ô <b>Nét mới thuộc Bước 1</b>: bấm + để nét tiếp theo thành bước 2. Các nét cùng bước chạy cùng lúc.</p>
         <p class="if"><span class="k">Nếu khác:</span> vẽ nhầm thì bấm <b>Hoàn tác</b>. Muốn xoá hết thì <b>Thêm ▾ → Xoá nét vẽ</b>.</p>
       </div>
-      <figure class="shot wide"><img src="img/t-draw-tools.png" alt="Hàng công cụ vẽ và ô chọn bước" width="800" height="142" loading="lazy" data-zoomable></figure>
-      <figure class="shot wide"><img src="img/t-drawn.png" alt="Sân tấn công P3 có một mũi tên chạy và một đường bóng" width="800" height="823" loading="lazy" data-zoomable><figcaption>Mũi tên đen: đường chạy của cầu thủ. Nét cam đứt: đường bóng.</figcaption></figure>
+      <div class="shots2">
+        <figure class="shot ph"><img src="img/t-draw-tools.png" alt="Hàng công cụ vẽ và ô chọn bước" width="708" height="428" loading="lazy" data-zoomable></figure>
+        <figure class="shot ph"><img src="img/t-drawn.png" alt="Sân tấn công P3 có một mũi tên chạy và một đường bóng" width="700" height="1437" loading="lazy" data-zoomable><figcaption>Mũi tên đen: đường chạy của cầu thủ. Nét cam đứt: đường bóng.</figcaption></figure>
+      </div>
     </div></li>
-    <li><div class="st">
+    <li><div class="st ph">
       <div>
         <h3>Lưu phương án</h3>
         <p><span class="k">Bấm:</span> gõ <b>Tên phương án</b> và <b>Dặn chung cả đội</b> → <b>Lưu phương án</b>.</p>
-        <p><span class="k">Sẽ thấy:</span> phương án hiện trong danh sách, thẻ xanh là phương án đang mở. Phương án từ báo cáo có nhãn <b>AI</b>. Khi sửa một phương án đã lưu: <b>Lưu thay đổi</b> ghi đè, <b>Lưu thành bản mới</b> giữ bản cũ. <b>Bảng mới</b> mở sân trống.</p>
-        <p class="if"><span class="k">Nếu khác:</span> bấm <b>Xoá</b> cạnh một phương án, app đổi nút để hỏi lại; bấm lần nữa mới xoá. Mục "Mẫu có sẵn" không xoá được.</p>
+        <p><span class="k">Sẽ thấy:</span> phương án hiện trong danh sách, thẻ xanh là phương án đang mở. Khi sửa một phương án đã lưu: <b>Lưu thay đổi</b> ghi đè, <b>Lưu thành bản mới</b> giữ bản cũ. <b>Bảng mới</b> mở sân trống. Dưới cùng là <b>Mẫu có sẵn</b> và 3 phương án AI (nhãn <b>AI</b>, chỉ đọc).</p>
+        <p class="if"><span class="k">Nếu khác:</span> bấm <b>Xoá</b> cạnh một phương án, app đổi nút để hỏi lại; bấm lần nữa mới xoá. Mẫu và phương án AI không xoá được.</p>
       </div>
-      <figure class="shot ph"><img src="img/t-plans.png" alt="Khối Phương án với danh sách đã lưu" width="425" height="989" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/t-plans.png" alt="Khối Phương án với danh sách đã lưu và mẫu có sẵn" width="748" height="1849" loading="lazy" data-zoomable></figure>
     </div></li>
-    <li><div class="st">
+    <li><div class="st ph">
       <div>
         <h3>Trình chiếu cho đội</h3>
-        <p><span class="k">Bấm:</span> <b>Trình chiếu cho đội</b> góc phải trên.</p>
+        <p><span class="k">Bấm:</span> <b>Trình chiếu cho đội</b> ở đầu bàn chiến thuật.</p>
         <p><span class="k">Sẽ thấy:</span> chỉ còn sân và các nút đi từng bước. Trong lúc trình chiếu không kéo nhầm được người. Bấm <b>Thoát trình chiếu</b> để quay lại.</p>
-        <p class="if"><span class="k">Nếu khác:</span> trên điện thoại màn trình chiếu nhỏ. Nên chiếu từ máy tính bảng hoặc nối màn hình lớn.</p>
+        <p class="if"><span class="k">Nếu khác:</span> đội đông người thì chiếu từ máy tính bảng hoặc nối màn hình lớn.</p>
       </div>
-      <figure class="shot wide"><img src="img/t-present.png" alt="Chế độ trình chiếu" width="800" height="562" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/t-present.png" alt="Chế độ trình chiếu trên điện thoại" width="780" height="1688" loading="lazy" data-zoomable></figure>
     </div></li>
   </ol>
-  <div class="alert alert-warning"><span>Phương án trên bàn chiến thuật chỉ nằm trên máy đã soạn. File <b>Sao lưu toàn bộ</b> hiện chưa chứa phương án. Đổi máy thì phải soạn lại.</span></div>
+  <div class="alert alert-info"><span>Phương án đã lưu nằm trên máy đã soạn. File <b>Sao lưu toàn bộ</b> (mục 11) có chứa các phương án này, nên đổi máy chỉ cần nhập file sao lưu.</span></div>
 
-  <!-- ============ 10 ============ -->
-  <h2>10 · Sao lưu và xuất dữ liệu</h2>
+  <!-- ============ 11 ============ -->
+  <h2>11 · Sao lưu và xuất dữ liệu</h2>
   <p>Dữ liệu chỉ nằm trên máy đang dùng. Xoá dữ liệu trình duyệt hoặc đổi máy mà chưa sao lưu là mất hết. Nên sao lưu sau mỗi trận.</p>
   <ol class="st-list">
     <li><div class="st ph">
       <div>
         <h3>Sao lưu toàn bộ</h3>
         <p><span class="k">Bấm:</span> bánh răng <b>Cài đặt</b> góc trên → khối <b>Sao lưu dữ liệu</b> → <b>Sao lưu toàn bộ</b>. Hoặc nút <b>Sao lưu</b> ở khối Mở nhanh trang Trận tới.</p>
-        <p><span class="k">Sẽ thấy:</span> máy tải về file tên như <code>scout_saoluu_2026-09-27.json</code>. File có đội, ảnh cầu thủ và mọi trận.</p>
+        <p><span class="k">Sẽ thấy:</span> máy tải về file tên như <code>scout_saoluu_2026-09-29.json</code>. File có đội, ảnh cầu thủ, mọi trận và các phương án trên bàn chiến thuật.</p>
         <p class="if"><span class="k">Nếu khác:</span> gửi file qua Zalo hoặc email cho chính mình để có bản ở chỗ khác. File có ảnh nên có thể nặng.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-data-backup.png" alt="Khối Sao lưu dữ liệu trong Cài đặt" width="756" height="426" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-data-backup.png" alt="Khối Sao lưu dữ liệu trong Cài đặt" width="748" height="418" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st ph">
       <div>
         <h3>Nhập file trên máy mới</h3>
         <p><span class="k">Bấm:</span> <b>Nhập file sao lưu</b> trong Cài đặt, hoặc <b>Nhập file</b> ở trang Trận tới → chọn file .json.</p>
-        <p><span class="k">Sẽ thấy:</span> app hỏi có thay đội hiện tại bằng đội trong file không. Trận trùng thì app hỏi có ghi đè không; chọn Huỷ để chỉ nhập trận mới.</p>
+        <p><span class="k">Sẽ thấy:</span> app hỏi có thay đội hiện tại bằng đội trong file không. Trận trùng thì app hỏi có ghi đè không; chọn Huỷ để chỉ nhập trận mới. Phương án chiến thuật trong file được nhập vào bàn chiến thuật.</p>
         <p class="if"><span class="k">Nếu khác:</span> file không nhập được thì kiểm đúng file đuôi .json tải từ app, chưa bị đổi tên hay sửa.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-home-quick.png" alt="Khối Mở nhanh có nút Sao lưu và Nhập file" width="756" height="636" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-home-quick.png" alt="Khối Mở nhanh có nút Sao lưu và Nhập file" width="748" height="628" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st ph">
       <div>
@@ -580,38 +752,38 @@
         <p><span class="k">Sẽ thấy:</span> máy tải file về. CSV mở được bằng Excel, JSON dùng để nhập lại vào app.</p>
         <p class="if"><span class="k">Nếu khác:</span> trên iPhone, file tải về nằm trong ứng dụng <b>Tệp</b>, thư mục Tải về.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-summary-top.png" alt="Các nút xuất trên màn Tổng kết" width="756" height="860" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-summary-top.png" alt="Các nút xuất trên màn Tổng kết" width="748" height="846" loading="lazy" data-zoomable></figure>
     </div></li>
   </ol>
 
-  <!-- ============ 11 ============ -->
-  <h2>11 · Hỏi đáp và lỗi hay gặp</h2>
+  <!-- ============ 12 ============ -->
+  <h2>12 · Hỏi đáp và lỗi hay gặp</h2>
   <ol class="st-list">
     <li><div class="st ph">
       <div>
         <h3>Bấm nhầm một pha</h3>
         <p><span class="k">Bấm:</span> <b>Hoàn tác</b> ở thanh dưới màn ghi, ngay sau khi bấm nhầm.</p>
         <p><span class="k">Sẽ thấy:</span> thông báo "Đã hoàn tác: pha …" và tỉ số quay lại.</p>
-        <p class="if"><span class="k">Nếu khác:</span> nhầm từ lâu thì vào <b>Các pha</b>, bấm đúng pha đó để sửa hoặc xoá (mục 7). Không chắc ai đánh thì chọn "Không rõ", sửa sau.</p>
+        <p class="if"><span class="k">Nếu khác:</span> nhầm từ lâu thì vào <b>Các pha</b>, bấm đúng pha đó để sửa hoặc xoá (mục 8). Không chắc ai đánh thì chọn "Không rõ", sửa sau.</p>
       </div>
-      <figure class="shot ph"><img src="img/p-live-toast.png" alt="Thông báo Đã hoàn tác" width="414" height="136" loading="lazy" data-zoomable></figure>
+      <figure class="shot ph"><img src="img/p-live-toast.png" alt="Thông báo Đã hoàn tác" width="392" height="112" loading="lazy" data-zoomable></figure>
     </div></li>
     <li><div class="st">
       <div>
         <h3>Mất mạng giữa trận</h3>
-        <p>Cứ ghi tiếp. Mọi thứ lưu ngay trên máy sau từng chạm, không cần mạng. Chỉ video YouTube là không mở được.</p>
+        <p>Cứ ghi tiếp. Mọi thứ lưu ngay trên máy sau từng chạm, không cần mạng. Trợ lý hội ý vẫn trả lời bằng số trên máy. Chỉ video YouTube và nhận xét thêm của máy chủ AI là không có.</p>
       </div>
     </div></li>
     <li><div class="st">
       <div>
         <h3>Tải lại trang, tắt app, hết pin giữa trận</h3>
-        <p>Mở lại app. Trang Trận tới có thẻ <b>Tiếp tục ghi trận</b>. Không mất pha nào đã ghi.</p>
+        <p>Mở lại app. Trang Trận tới có thẻ <b>Tiếp tục ghi trận</b>. Không mất pha nào đã ghi. Các thẻ đã hỏi trong Trợ lý hội ý thì mất, hỏi lại là có.</p>
       </div>
     </div></li>
     <li><div class="st">
       <div>
         <h3>Đổi điện thoại mới, mất hết dữ liệu</h3>
-        <p>Dữ liệu không tự chuyển sang máy mới. Trên máy cũ: <b>Sao lưu toàn bộ</b>. Trên máy mới: <b>Nhập file sao lưu</b> (mục 10). Nếu máy cũ đã mất và chưa có file sao lưu thì không lấy lại được. Phương án trên bàn chiến thuật cũng phải soạn lại.</p>
+        <p>Dữ liệu không tự chuyển sang máy mới. Trên máy cũ: <b>Sao lưu toàn bộ</b>. Trên máy mới: <b>Nhập file sao lưu</b> (mục 11). File sao lưu có cả đội, trận và phương án chiến thuật. Nếu máy cũ đã mất và chưa có file sao lưu thì không lấy lại được.</p>
       </div>
     </div></li>
     <li><div class="st">
@@ -639,7 +811,7 @@
     </div></li>
   </ol>
 
-  <p class="text-sm opacity-70 mt-6">Hình chụp từ app trên một máy mới, dữ liệu trận là dữ liệu thử. Tỉ số và số liệu trong hình chỉ để minh hoạ.</p>
+  <p class="text-sm opacity-70 mt-6">Hình chụp từ app trên iPhone (Safari), máy mới, ngày 29/09/2026. Dữ liệu trận là dữ liệu thử, ghi bằng cách bấm qua app. Tỉ số và số liệu trong hình chỉ để minh hoạ. Khung video trong hình để trống có chủ ý.</p>
 </main>
 </body>
 </html>
