@@ -1,6 +1,6 @@
 // Service worker: lưu toàn bộ file app vào bộ nhớ đệm để chạy offline.
 // Khi sửa code: tăng VERSION để máy người dùng tải bản mới.
-const VERSION = 'vbs-v13';
+const VERSION = 'vbs-v14';
 const ASSETS = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css', 'css/scout-report.css', 'css/tactics.css', 'css/assist.css', 'css/player-panel.css',
   'js/app.js', 'js/logic.js', 'js/store.js', 'js/export.js', 'js/ai.js', 'js/video.js',

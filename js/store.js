@@ -86,6 +86,20 @@ export function deleteMatch(id) {
   set(K.idx, listMatches().filter((x) => x.id !== id));
   if (currentId() === id) setCurrent(null);
 }
+// Mọi khoá của app trong localStorage (đều bắt đầu bằng 'vbs.').
+function appKeys() {
+  const out = [];
+  try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith('vbs.')) out.push(k); } } catch (e) { lastError = e; }
+  return out;
+}
+// Bắt đầu lại (Cài đặt): xoá mọi trận đã ghi + mốc video — giữ đội, ảnh cầu thủ, phương án chiến thuật, cài đặt AI.
+export function clearMatches() {
+  appKeys().filter((k) => k === K.idx || k === K.cur || k.startsWith('vbs.match.') || k.startsWith('vbs.video.')).forEach(del);
+}
+// Xoá toàn bộ dữ liệu của app trên máy này; mở lại sẽ như lần đầu (đội LPBank có sẵn).
+export function clearAll() {
+  appKeys().forEach(del);
+}
 export const currentId = () => {
   const v = get(K.cur, null);
   return validId(v) ? v : null;

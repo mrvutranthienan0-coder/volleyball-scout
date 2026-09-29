@@ -294,6 +294,7 @@ function viewHome() {
       <div class="sc"><b>${c ? c.us : 0}</b><i>–</i><b class="them">${c ? c.them : 0}</b></div>
       <p class="muted">Set thắng ${R.winsUs}–${R.winsThem}</p>
       <div class="acts"><button class="pill-btn dark" data-act="nav" data-to="#/live" data-testid="continue">Tiếp tục ghi trận</button><button class="pill-btn" data-act="nav" data-to="#/setup" data-testid="new-match">Trận mới</button></div>
+      <button class="link-btn live-end" data-act="openSheet" data-s="liveEnd" data-testid="live-end">Kết thúc hoặc xoá trận này</button>
     </section>`;
   } else if (nm) {
     first = `<section class="t tile-sky match-tile" data-testid="next-match">
@@ -368,7 +369,34 @@ function viewData() {
       <div id="ail-settings-host"></div>
     </section>
     ${dataCard()}
+    <section class="t resetcard" data-testid="reset-card"><div class="lab">Bắt đầu lại</div>
+      <p class="muted">Xoá trận ghi thử, hoặc đưa app về như lúc mới cài. Nên sao lưu trước.</p>
+      <div class="reset-acts">
+        <button class="btn danger" data-act="resetAsk" data-kind="matches" data-testid="reset-matches">Xoá các trận đã ghi</button>
+        <button class="btn danger" data-act="resetAsk" data-kind="all" data-testid="reset-all">Xoá toàn bộ dữ liệu trên máy này</button>
+      </div>
+    </section>
   </main>`;
+}
+// Bảng xác nhận "Bắt đầu lại": nói rõ xoá gì, giữ gì, gợi ý sao lưu trước.
+function resetSheet() {
+  const all = ui.resetKind === 'all';
+  const n = store.listMatches().length;
+  const plans = savedPlans().length;
+  const what = all
+    ? `${n} trận đã ghi, danh sách ${team.players.length} cầu thủ và ảnh đã thêm, ${plans} phương án chiến thuật, cài đặt trợ lý AI.`
+    : `${n} trận đã ghi${store.listMatches().some((x) => x.status === 'live') ? ' (kể cả trận đang ghi dở)' : ''}.`;
+  const after = all
+    ? '<b>Sau đó:</b> app mở lại như lần đầu, có sẵn danh sách LPBank Ninh Bình.'
+    : '<b>Vẫn giữ:</b> danh sách cầu thủ, ảnh cầu thủ, phương án chiến thuật.';
+  return `<h3>${all ? 'Xoá toàn bộ dữ liệu trên máy này?' : 'Xoá các trận đã ghi?'}</h3>
+    <div class="reset-what" data-testid="reset-what">
+      <p><b>Sẽ xoá:</b> ${esc(what)}</p>
+      <p>${after}</p>
+      <p>Xoá rồi thì không lấy lại được. Hãy sao lưu trước.</p>
+    </div>
+    <button class="btn wide" data-act="backup" data-testid="reset-backup">${ic('download')}Sao lưu toàn bộ trước</button>
+    <div class="row2"><button class="btn" data-act="closeSheet">Huỷ</button><button class="btn danger" data-act="${all ? 'resetAll' : 'resetMatches'}" data-testid="reset-ok">${all ? 'Xoá toàn bộ' : `Xoá ${n} trận`}</button></div>`;
 }
 
 // ---------- Đối thủ (báo cáo scout) + Bàn chiến thuật: module riêng, gắn vào khung app ----------
@@ -1183,6 +1211,14 @@ function renderSheet() {
     inner = (b ? `<p class="srcnote" data-testid="opp-sheet-label"><b>${esc(DATA.opp.label)}</b></p>` + teamBrief(b, true) : '<p>Không tìm thấy hồ sơ.</p>') + '<button class="btn wide" data-act="closeSheet">Đóng</button>';
   } else if (s === 'help') {
     inner = helpSheet();
+  } else if (s === 'reset') {
+    inner = resetSheet();
+  } else if (s === 'liveEnd') {
+    inner = `<h3>Trận đang ghi</h3><p class="muted">${esc(team.name)} – ${esc(match.opponent)} · ${esc(X.fmtDate(String(match.date || '')))}</p>
+      <div class="menu">
+        <button data-act="endMatch" data-testid="le-end">Kết thúc trận (vẫn giữ để xem lại)</button>
+        <button class="danger" data-act="delMatch" data-id="${esc(match.id)}" data-testid="le-del">Xoá trận này khỏi máy</button>
+        <button data-act="closeSheet">Đóng</button></div>`;
   } else if (s === 'text') {
     inner = `<h3>Văn bản tổng kết</h3><p class="hint">Chọn tất cả rồi sao chép vào Zalo.</p><textarea readonly rows="12">${esc(ui.text)}</textarea><button class="btn" data-act="closeSheet">Đóng</button>`;
   }
@@ -1831,8 +1867,23 @@ document.addEventListener('click', (e) => {
       if (confirm('Xoá vĩnh viễn trận này khỏi máy?')) {
         store.deleteMatch(d.id);
         if (match && match.id === d.id) { match = null; R = null; }
+        closeSheet();
         render();
       }
+      break;
+    case 'resetAsk': openSheet('reset', { resetKind: d.kind }); break;
+    case 'resetMatches':
+      store.clearMatches();
+      match = null; R = null; ui.recvFor = null;
+      closeSheet();
+      toast('Đã xoá các trận đã ghi.', true);
+      go('#/');
+      break;
+    case 'resetAll':
+      store.clearAll();
+      closeSheet();
+      history.replaceState(null, '', '#/');
+      location.reload();
       break;
   }
 });
