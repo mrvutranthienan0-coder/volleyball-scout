@@ -1,0 +1,160 @@
+{
+  "team": "XMLS Thanh Hóa",
+  "teamKey": "xmls-thanh-hoa",
+  "generated": "2026-09-27",
+  "note": "Hồ sơ từng cầu thủ chỉ ghép lại những gì đã có trong báo cáo (xmls-thanh-hoa.json: ghi chú đội hình, xu hướng, chuỗi điểm đếm từ bảng điểm) và research/players-new/candidates.json cho 2 ngoại binh mới. Mỗi ý trỏ về nguồn gốc bằng 'ref' (id xu hướng, run:<số> = chuỗi điểm đã đếm, roster = ghi chú đội hình); ý nào trỏ sai thì trang tự bỏ. Không có số đo riêng từng người từ video (máy nhận số áo người phát mới đúng 54%).",
+  "oldLineup": "Dựa trên đội hình vòng 1 (tháng 3–4/2026). Đội hình cũ — có thể đã thay đổi ở giai đoạn 2.",
+  "players": [
+    {
+      "num": 36, "name": "Cai Xiaoqing", "nationality": "Trung Quốc", "foreign": true,
+      "status": "Giai đoạn 2 chưa rõ còn ở lại",
+      "stats": [
+        { "label": "Điểm ghi trận thắng Long An", "value": "22 điểm", "date": "9/4/2026", "src": "Ghi chú đội hình (theo báo) — chưa gắn link bài gốc", "conf": "thấp" }
+      ],
+      "strengths": [
+        { "text": "Điểm đến của mọi bóng giằng co; ghi 2 điểm cuối set 1 trận gặp ta (Thanh Hóa thắng set 27-25).", "ref": "t-ngoai-binh", "ev": [0, 1, 2] },
+        { "text": "Đánh được từ hàng sau (quả 33 sau), bình luận viên nhắc ở nhiều trận.", "ref": "t-ngoai-binh", "ev": [3, 4, 5] },
+        { "text": "Có điểm chắn cùng phụ công Đào Nhung.", "ref": "t-chan", "ev": [0] }
+      ],
+      "weaknesses": [
+        { "id": "w-bi-chan", "text": "Báo chí: các trận Thanh Hóa thua đều là trận cô bị chắn khoá chặt — đội phụ thuộc vào cô.", "ref": "t-ngoai-binh", "ev": [], "src": "bao", "conf": "vừa" }
+      ],
+      "exploit": [
+        { "from": "w-bi-chan", "text": "Chắn đôi kín tay khi cô ở biên 4; khi cô xuống hàng sau, phụ công đứng giữa chờ quả 33 sau.", "planId": "ai-thh-chan-cai" }
+      ],
+      "flags": ["Tin 26–27/9: Thanh Hóa ký 2 chủ công ngoại binh mới (Sasipaporn, Hoffman) — hai người này thay vai trò của Cai. Phương án chắn cô có thể phải chuyển sang người mới."]
+    },
+    {
+      "num": 10, "name": "Hoàng Thị Thảo",
+      "status": "Chấn thương, vắng trận 19/4 — chưa có tin bình phục",
+      "strengths": [
+        { "text": "Mũi công biên 4: ghi điểm bằng đập chéo giãn biên và cả dọc biên (chưa đếm được tỷ lệ).", "ref": "t-mui-cong", "ev": [0, 1, 2] },
+        { "text": "Có chuỗi điểm trong lượt phát của cô (13-8, 14-8 trận gặp Long An).", "ref": "t-phat", "ev": [3] }
+      ],
+      "weaknesses": [
+        { "id": "w-do", "text": "Chuyền một không tốt lúc bị ép (14-5 cho LPBank, trận 7/4).", "ref": "t-do-buoc-mot", "ev": [6] },
+        { "id": "w-cham-luoi", "text": "Lỗi chạm lưới ngay trận gặp ta.", "ref": "t-chan", "ev": [2] },
+        { "id": "w-dau", "text": "Hay bị đau: vắng cuối trận 7/4, đau trận 16/4, vắng trận 19/4.", "ref": "t-nhan-su", "ev": [1, 2] }
+      ],
+      "exploit": [
+        { "from": "w-do", "text": "Khi Thảo đứng đỡ phát, thử phát thẳng vào cô để ép bước một (mới thấy 1 pha có clip)." }
+      ]
+    },
+    {
+      "num": 97, "name": "Đoàn Thị Xuân",
+      "status": "Đau lưng giữa set 3 trận 7/4",
+      "strengths": [
+        { "text": "Đối chuyền 1m83 không bám biên 2 — hay di chuyển vào giữa và đánh xuyên chắn.", "ref": "t-mui-cong", "ev": [3, 4] }
+      ],
+      "weaknesses": [
+        { "id": "w-bi-nham", "text": "Hay bị phát bóng nhắm vào khi phải đỡ: đối thủ (Thông Tin) chủ động phát và đánh vào chỗ cô.", "ref": "t-do-buoc-mot", "ev": [4] },
+        { "id": "w-do", "text": "Bắt chuyền một không tốt (20-23 cho Hưng Yên, trận 16/4).", "ref": "t-do-buoc-mot", "ev": [5] },
+        { "id": "w-lung", "text": "Có dấu hiệu đau lưng giữa set 3 trận gặp ta.", "ref": "t-nhan-su", "ev": [0] }
+      ],
+      "exploit": [
+        { "from": "w-bi-nham", "text": "Phát nhắm vào số 97 khi cô ấy ở hàng sau và phải đỡ phát, ưu tiên phát sâu cuối sân.", "planId": "ai-thh-phat-sau" }
+      ]
+    },
+    {
+      "num": 12, "name": "Tôn Thị Minh Thư",
+      "strengths": [
+        { "text": "Tân binh 2026, chuyền nhanh: tốc độ tấn công của Thanh Hóa nhanh hơn mùa trước nhờ cô.", "ref": "t-chuyen-hai", "ev": [0] }
+      ],
+      "weaknesses": [
+        { "id": "w-lech-nhip", "text": "Quả lao nhanh với phụ công Đào Nhung bị chắn hoặc hỏng vì không hiểu ý 3 lần trong trận gặp ta, dồn vào cuối trận.", "ref": "t-chuyen-hai", "ev": [1, 2, 3] }
+      ],
+      "exploit": [
+        { "from": "w-lech-nhip", "text": "Cuối set, phụ công ta chờ chắn quả lao nhanh Minh Thư – Nhung thay vì bám biên sớm." }
+      ]
+    },
+    {
+      "num": 93, "name": "Đào Thị Nhung",
+      "strengths": [
+        { "text": "Chắn giữa lưới tốt, có điểm chắn (trận thắng Long An).", "ref": "t-chan", "ev": [0] },
+        { "text": "Phát bóng có ace (trận 16/4).", "ref": "t-phat", "ev": [4] }
+      ],
+      "weaknesses": [
+        { "id": "w-lech-nhip", "text": "Quả lao với chuyền hai Minh Thư hay lệch nhịp (bị chắn hoặc hỏng 3 lần trận gặp ta).", "ref": "t-chuyen-hai", "ev": [1, 2, 3] }
+      ],
+      "exploit": [
+        { "from": "w-lech-nhip", "text": "Chờ chắn quả lao của Nhung ở cuối set, khi hai người hay lệch nhịp nhất." }
+      ]
+    },
+    {
+      "num": 11, "name": "Quách Kim Luyến",
+      "strengths": [
+        { "text": "Chắn giữa lưới tốt (bình luận viên nêu tên cùng Nhung).", "ref": "t-chan", "ev": [] },
+        { "text": "Lượt phát của cô có trong chuỗi 5 điểm liền của Thanh Hóa, set 1 trận gặp ta.", "ref": "run:2" }
+      ]
+    },
+    {
+      "num": 8, "name": "Nguyễn Thị Kim Liên",
+      "stats": [
+        { "label": "Libero xuất phát", "value": "4/4 trận có giới thiệu libero", "date": "tháng 3–4/2026", "src": "Đếm từ lời giới thiệu đội hình đầu trận", "conf": "cao" }
+      ]
+    },
+    {
+      "num": 9, "name": "Quách Thị Hoài Ân",
+      "status": "Libero 14 tuổi — nhỏ tuổi nhất giải",
+      "weaknesses": [
+        { "id": "w-do", "text": "Đỡ hỏng hoặc bị ace ở 4 trận khác nhau, gồm pha 9-3 trận gặp ta.", "ref": "t-do-buoc-mot", "ev": [0, 1, 2, 3] },
+        { "id": "w-do-chuoi", "text": "Có pha đỡ hỏng trong lượt phát ăn 5 điểm liền của Nguyễn Thị Uyên (set 3, trận 7/4).", "ref": "run:0" }
+      ],
+      "exploit": [
+        { "from": "w-do", "text": "Khi Hoài Ân vào sân đỡ bước một, phát thẳng vào cô, ưu tiên phát sâu — không phát hỏng.", "planId": "ai-thh-phat-sau" }
+      ],
+      "sources": [
+        { "label": "Libero Quách Thị Hoài Ân — vhds.baothanhhoa.vn", "url": "https://vhds.baothanhhoa.vn/quach-thi-hoai-an-libero-tuoi-teen-day-trien-vong-cua-bong-chuyen-thanh-hoa-43009.htm" }
+      ]
+    },
+    {
+      "num": 7, "name": "Bùi Thị Nga",
+      "weaknesses": [
+        { "id": "w-thay", "text": "Vào thay Thảo nhưng chưa tạo được đột biến.", "ref": "t-nhan-su", "ev": [] }
+      ]
+    }
+  ],
+  "newForeign": [
+    {
+      "name": "Sasipaporn Janthawisut", "nationality": "Thái Lan", "foreign": true, "role": "Chủ công · ngoại binh Thái Lan (mới)",
+      "h": 178, "hNote": "1m78 theo Volleyball World và thethaovanhoa 27/9/2026; một bài 2024 ghi 1m75 — hai nguồn lệch nhau.",
+      "status": "Đã đạt thoả thuận, CLB chưa công bố chính thức (tin 26–27/9/2026). Chưa có số áo ở Thanh Hóa.",
+      "info": [
+        { "label": "Sinh", "value": "10/6/1997 (Wikidata ghi 1998)" },
+        { "label": "Số áo tuyển Thái Lan", "value": "11 (VNL 2026) — không phải số áo ở Thanh Hóa" },
+        { "label": "CLB gần nhất", "value": "Nakhon Ratchasima (08/2024–2026); một nguồn ghi PEA Sisaket — chưa kiểm" },
+        { "label": "Từng đá VĐQG Việt Nam", "value": "HCĐG Lào Cai (vòng 1 năm 2024), Geleximco Thái Bình (vòng 1 năm 2023)" },
+        { "label": "Thành tích", "value": "Chủ công tuyển Thái Lan khoảng 5 năm; HCV châu Á 2026 (chủ công xuất sắc), HCV SEA Games 2025" }
+      ],
+      "videos": 10,
+      "sources": [
+        { "label": "Thanh Hóa chiêu mộ chủ công hàng đầu châu Á — thethaovanhoa.vn 27/9", "url": "https://thethaovanhoa.vn/doi-bong-chuyen-nu-thanh-hoa-chieu-mo-chu-cong-hang-dau-chau-a-quyet-tao-bat-ngo-o-giai-vdqg-2026-20260927082335107.htm" },
+        { "label": "Hồ sơ VNL — volleyballworld.com", "url": "https://en.volleyballworld.com/volleyball/competitions/volleyball-nations-league/players/180383" },
+        { "label": "Hồ sơ — volleybox.net", "url": "https://women.volleybox.net/sasipapron-janthawisut-p11315" },
+        { "label": "Quá trình CLB — globalsportsarchive.com", "url": "https://globalsportsarchive.com/people/volleyball/sasipapron-janthawisut/7783139/" },
+        { "label": "Thanh Hóa ký 2 ngoại binh mới — thethao247.vn 26/9", "url": "https://thethao247.vn/503-xac-nhan-chien-than-tuyen-thai-lan-gia-nhap-giai-bong-chuyen-viet-nam-c45-d437696.html" }
+      ]
+    },
+    {
+      "name": "Claire Hoffman", "nationality": "Mỹ", "foreign": true, "role": "Chủ công · ngoại binh Mỹ (mới)",
+      "h": null, "hNote": "Chưa tìm thấy chiều cao ở nguồn nào đã kiểm.",
+      "status": "Đã đạt thoả thuận, CLB chưa công bố chính thức (tin 26/9/2026). Chưa có số áo ở Thanh Hóa.",
+      "stats": [
+        { "label": "Đập ghi điểm (kills) thời đại học", "value": "1.571 — thứ 6 lịch sử ĐH Washington", "date": "2018–2022", "src": "gohuskies.com (hồ sơ ĐH Washington)", "url": "https://gohuskies.com/sports/womens-volleyball/roster/claire-hoffman/14502", "conf": "vừa" },
+        { "label": "Ace thời đại học", "value": "151 — thứ 4 lịch sử ĐH Washington", "date": "2018–2022", "src": "gohuskies.com (hồ sơ ĐH Washington)", "url": "https://gohuskies.com/sports/womens-volleyball/roster/claire-hoffman/14502", "conf": "vừa" }
+      ],
+      "info": [
+        { "label": "Quê", "value": "Pleasant Hill, Oregon" },
+        { "label": "CLB gần nhất", "value": "LOVB Salt Lake (Mỹ, 2025–2026); Athletes Unlimited 2025 (đội trưởng, áo 21); Béziers (Pháp) 2023–24" },
+        { "label": "Đội tuyển", "value": "Nằm trong nhóm tuyển Mỹ; HCB Pan American Cup 2024, giải Đỡ bước một xuất sắc" }
+      ],
+      "videos": 10,
+      "sources": [
+        { "label": "Thanh Hóa ký 2 ngoại binh mới — thethao247.vn 26/9", "url": "https://thethao247.vn/503-xac-nhan-chien-than-tuyen-thai-lan-gia-nhap-giai-bong-chuyen-viet-nam-c45-d437696.html" },
+        { "label": "Hồ sơ LOVB Salt Lake — lovb.com", "url": "https://www.lovb.com/teams/lovb-salt-lake-volleyball/athletes/claire-hoffman" },
+        { "label": "Hồ sơ Athletes Unlimited — auprosports.com", "url": "https://auprosports.com/volleyball/athletes/claire-hoffman/" },
+        { "label": "Hồ sơ ĐH Washington — gohuskies.com", "url": "https://gohuskies.com/sports/womens-volleyball/roster/claire-hoffman/14502" }
+      ]
+    }
+  ]
+}

@@ -19,8 +19,10 @@ export function toCSV(m) {
   return '﻿' + [head, ...rows].map((row) => row.map(csvCell).join(',')).join('\r\n') + '\r\n';
 }
 
-export function backup(team, matches) {
-  return { app: 'scout-bong-chuyen', version: 1, exportedAt: new Date().toISOString(), team, matches };
+export function backup(team, matches, plans) {
+  const d = { app: 'scout-bong-chuyen', version: 1, exportedAt: new Date().toISOString(), team, matches };
+  if (Array.isArray(plans) && plans.length) d.plans = plans; // phương án bàn chiến thuật (vbs.tactics.plans)
+  return d;
 }
 
 // Chấp nhận: file sao lưu đầy đủ {team, matches} hoặc một trận {match}.
@@ -30,7 +32,8 @@ export function parseImport(text) {
     const matches = d.matches || (d.match ? [d.match] : []);
     matches.forEach(check);
     if (d.team && !(Array.isArray(d.team.players) && d.team.players.every(okPlayer))) throw new Error('Danh sách đội trong file không hợp lệ.');
-    return { team: d.team || null, matches };
+    const plans = Array.isArray(d.plans) ? d.plans.filter((p) => p && typeof p === 'object') : []; // tactics.normalizePlan lọc tiếp khi lưu
+    return { team: d.team || null, matches, plans };
   }
   throw new Error('File không phải dữ liệu của Scout Bóng Chuyền.');
 }
@@ -42,8 +45,25 @@ function check(m) {
     throw new Error('Dữ liệu trận không hợp lệ.');
   }
   m.date = String(m.date ?? '');
-  m.opponent = String(m.opponent ?? '');
+  m.opponent = String(m.opponent ?? '').slice(0, 60); // cùng giới hạn với ô nhập
+  if (m.teamName != null) m.teamName = String(m.teamName).slice(0, 60);
   m.bestOf = m.bestOf === 3 ? 3 : 5;
+  const ids = new Set(m.players.map((p) => p.id));
+  for (const e of m.events) {
+    if (e.t === 'start') {
+      const lu = e.lineup;
+      if (!Array.isArray(lu) || lu.length !== 6 || new Set(lu).size !== 6 || !lu.every((x) => ids.has(x))) {
+        throw new Error('Đội hình xuất phát trong file không hợp lệ (cần đúng 6 VĐV khác nhau có trong danh sách trận).');
+      }
+      if (e.server !== 'us' && e.server !== 'them') throw new Error('Bên phát bóng đầu set trong file không hợp lệ.');
+      if (e.libero != null && !ids.has(e.libero)) e.libero = null;
+    }
+    if (e.t === 'r') {
+      for (const k of ['rc']) if (e[k] != null && !(Number.isInteger(e[k]) && e[k] >= 0 && e[k] <= 3)) delete e[k]; // điểm đỡ chỉ 0–3
+      if (e.p != null && !ids.has(e.p)) e.p = null;
+      if (e.rp != null && !ids.has(e.rp)) delete e.rp;
+    }
+  }
   replay(m); // ném lỗi ngay nếu nhật ký hỏng, trước khi ghi bất cứ thứ gì
 }
 

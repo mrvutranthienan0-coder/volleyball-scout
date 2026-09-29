@@ -611,7 +611,6 @@ body[data-route="live"] { padding-bottom: calc(70px + var(--safe-b)); }
   border-radius: 26px 26px 0 0; padding: 22px 16px calc(16px + var(--safe-b)); max-width: 720px; margin: 0 auto; box-shadow: var(--shadow-3);
 }
 .sheet-body h3 { font-size: 19px; margin-bottom: 12px; }
-.sheet-body .ask-box { background: var(--lav); border-radius: 20px; padding: 12px 14px; margin-bottom: 8px; }
 .pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
 .pgrid.one { grid-template-columns: 1fr; }
 .pbtn { min-height: 72px; display: grid; justify-items: center; align-content: center; border: 0; border-radius: 18px; background: var(--soft); color: var(--ink); }
@@ -704,8 +703,6 @@ textarea { width: 100%; border: 0; border-radius: 14px; padding: 10px 12px; back
 .hm-main span, .hm-main small { color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
 .sets { max-width: 480px; margin: 8px 0; }
-.aisites { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.aisites .btn { color: var(--ink); padding: 8px 6px; }
 .sheet-body textarea { font-size: 13px; font-family: var(--mono); }
 .oppgrid { display: grid; gap: 10px; align-items: start; }
 .oppteam summary { display: flex; align-items: center; gap: 12px; min-height: 48px; cursor: pointer; list-style: none; }
@@ -897,6 +894,7 @@ textarea { width: 100%; border: 0; border-radius: 14px; padding: 10px 12px; back
   details.more > summary .p span { display: none; }
   .t, .card { padding: 18px; }
   .t.hl { padding: 18px; }
+  .step.t { padding-right: 74px; } /* chừa chỗ nút mũi tên 44px ở góc phải */
   .profile { padding: 12px; }
   .top-acts .live-pill { display: none; }
   .hero-name, .stitle { font-size: 26px; }

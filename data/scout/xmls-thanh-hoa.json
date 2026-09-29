@@ -1213,6 +1213,8 @@
  "clips": [
   {
    "title": "Bóng khó là chuyền cho ngoại binh Cai Xiaoqing (số 36)",
+   "tag": "Bóng khó → #36",
+   "tendency": "t-ngoai-binh",
    "items": [
     {
      "url": "https://www.youtube.com/watch?v=7Zisi-7hjJw&t=3690s",
@@ -1254,6 +1256,8 @@
   },
   {
    "title": "Đỡ bước một yếu ở libero trẻ Hoài Ân (14 tuổi) và đối chuyền Đoàn Thị Xuân",
+   "tag": "Đỡ bước 1 yếu (Hoài Ân, Xuân)",
+   "tendency": "t-do-buoc-mot",
    "items": [
     {
      "url": "https://www.youtube.com/watch?v=ZpUxkvKv-cA&t=335s",
@@ -1301,6 +1305,8 @@
   },
   {
    "title": "Bị ép phát bóng là sụp theo chuỗi",
+   "tag": "Sụp khi bị ép phát",
+   "tendency": "t-sup",
    "items": [
     {
      "url": "https://www.youtube.com/watch?v=7Zisi-7hjJw&t=4529s",
@@ -1324,6 +1330,8 @@
   },
   {
    "title": "Họ phát bóng dồn vào chủ công ngoại binh của đối thủ",
+   "tag": "Phát dồn vào ngoại binh",
+   "tendency": "t-phat",
    "items": [
     {
      "url": "https://www.youtube.com/watch?v=7Zisi-7hjJw&t=1200s",
@@ -1365,6 +1373,8 @@
   },
   {
    "title": "Chuyền hai Minh Thư (số 12) đẩy nhanh, hay đánh lao với phụ công Đào Thị Nhung",
+   "tag": "Chuyền nhanh #12 → #93",
+   "tendency": "t-chuyen-hai",
    "items": [
     {
      "url": "https://www.youtube.com/watch?v=7Zisi-7hjJw&t=835s",
@@ -1394,6 +1404,8 @@
   },
   {
    "title": "Mũi công nội",
+   "tag": "Mũi công nội",
+   "tendency": "t-mui-cong",
    "items": [
     {
      "url": "https://www.youtube.com/watch?v=7Zisi-7hjJw&t=915s",
@@ -1429,6 +1441,8 @@
   },
   {
    "title": "Chắn giữa lưới tốt (Nhung, Kim Luyến) nhưng hàng trên hay chạm lưới",
+   "tag": "Chắn giữa tốt, hay chạm lưới",
+   "tendency": "t-chan",
    "items": [
     {
      "url": "https://www.youtube.com/watch?v=ZpUxkvKv-cA&t=900s",
@@ -1452,6 +1466,8 @@
   },
   {
    "title": "Dự bị mỏng",
+   "tag": "Dự bị mỏng",
+   "tendency": "t-nhan-su",
    "items": [
     {
      "url": "https://www.youtube.com/watch?v=7Zisi-7hjJw&t=4325s",
@@ -1475,6 +1491,8 @@
   },
   {
    "title": "Đội hình ra sân (giới thiệu đầu trận)",
+   "tag": "Đội hình ra sân",
+   "area": "people",
    "items": [
     {
      "url": "https://www.youtube.com/watch?v=7Zisi-7hjJw&t=45s",

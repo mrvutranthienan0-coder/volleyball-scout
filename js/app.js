@@ -2,9 +2,11 @@
 import * as L from './logic.js';
 import * as store from './store.js';
 import * as X from './export.js';
-import * as AI from './ai.js';
 import * as V from './video.js';
 import * as AIL from './ai-live.js';
+import * as AS from './assistant.js';
+import * as AN from './analysis.js';
+import * as CH from './charts.js';
 
 const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -14,7 +16,7 @@ const sheetEl = $('#sheet');
 let team = null; // nạp lúc khởi động (cần DATA.roster cho lần mở đầu tiên)
 let match = null; // trận đang mở (đang ghi hoặc vừa xong)
 let R = null; // kết quả replay(match)
-const ui = { coachFilter: 'set', recvFor: null, sheet: null, pickHow: null, editIdx: null, chk: null, editPid: null, luSel: null };
+const ui = { coachFilter: 'set', rlFilter: 'match', recvFor: null, sheet: null, pickHow: null, editIdx: null, chk: null, editPid: null, luSel: null };
 // Dữ liệu tĩnh đi kèm app (service worker cache sẵn → dùng được khi offline).
 const DATA = { roster: null, opp: null, scout: null };
 async function loadJSON(path) {
@@ -36,6 +38,9 @@ function save() {
 }
 function push(ev) {
   ev.ts = Date.now(); // mốc thời gian: dùng để khớp video ở giai đoạn sau
+  // Trận vừa được ghi thêm ở tab / cửa sổ khác → nạp bản mới nhất trước khi ghi, không đè mất pha của tab kia.
+  const disk = store.loadMatch(match.id);
+  if (disk && disk.events.length > match.events.length) { match = disk; toast('Dữ liệu vừa đổi ở tab khác — đã tải lại.'); }
   match.events.push(ev);
   save();
 }
@@ -99,7 +104,17 @@ function go(hash) {
   if (location.hash === hash) render();
   else location.hash = hash;
 }
-window.addEventListener('hashchange', () => { closeSheet(); render(); });
+window.addEventListener('hashchange', () => { closeSheet(); AS.closeAssistant(); render(); });
+// Tab khác ghi / sửa trận hoặc đội → tải lại ngay để hai tab không ghi đè nhau.
+window.addEventListener('storage', (e) => {
+  if (!e.key || !e.key.startsWith('vbs.')) return;
+  if (e.key === 'vbs.team') { team = store.loadTeam() || team; render(); return; }
+  if (match && (e.key === 'vbs.match.' + match.id || e.key === 'vbs.current')) {
+    try { loadCurrent(); } catch { match = null; R = null; }
+    if (!ui.sheet) render();
+    toast('Dữ liệu vừa đổi ở tab khác — đã tải lại.');
+  }
+});
 
 const safeDecode = (x) => { try { return decodeURIComponent(x); } catch { return ''; } };
 function render() {
@@ -108,6 +123,7 @@ function render() {
   document.body.dataset.route = route || 'home';
   if (route === 'team' && arg) ui.selPid = safeDecode(arg);
   let html;
+  try {
   if (route === 'team') html = viewTeam();
   else if (route === 'setup') html = viewSetup();
   else if (route === 'live' && match) html = viewLive();
@@ -121,12 +137,18 @@ function render() {
   else if (route === 'scout') html = viewScout();
   else if (route === 'tactics') html = viewTactics();
   else html = viewHome();
+  } catch (e) {
+    // Dữ liệu hỏng (vd file nhập lạ): báo lỗi rõ thay vì kẹt ở "Đang tải…" hoặc màn trắng.
+    html = `${pageHead('Không mở được màn này', 'Dữ liệu trận này có chỗ hỏng nên app chưa tính được số liệu.', { back: '#/' })}
+    <main class="page"><section class="t" data-testid="view-error"><p>Mở màn khác, hoặc vào Lịch sử trận để xoá / nhập lại trận này. Các trận khác không bị ảnh hưởng.</p><p class="muted">${esc(e && e.message)}</p></section></main>`;
+  }
   const warn = store.lastError
     ? `<div class="banner" role="alert">Không lưu được vào máy (${esc(store.lastError.name)}). Hãy xuất JSON ngay để tránh mất dữ liệu.</div>` : '';
   app.innerHTML = shell(route || 'home', warn, html);
   if (route === 'team' && arg && ui.scrollTop) { window.scrollTo(0, 0); ui.scrollTop = false; }
   if (route === 'video') mountPlayer();
   mountModule(route, arg);
+  if (route === 'opp') import('./player-panel.js').then((m) => m.mountOppPlayers(app, DATA.opp)).catch(() => {}); // thẻ cầu thủ có ảnh + hồ sơ bên cạnh
   if (route === 'data') { const h = $('#ail-settings-host'); if (h) AIL.mountSettings(h, { onSave: () => {} }); }
   if (route === 'live') mountVoiceBox();
   drawLineup();
@@ -336,7 +358,12 @@ async function mountModule(route, arg) {
       node.innerHTML = '';
       mine.api = await tx.mountTactics(node);
       if (MOD !== mine) { mine.api.destroy(); return; }
-      if (arg && !mine.api.loadPlan(safeDecode(arg))) toast('Không tìm thấy phương án này trên máy.');
+      if (arg) {
+        // Link chia sẻ trên máy mới: phương án có sẵn trong báo cáo đi kèm app (chỉ đọc; sửa trên bàn = bản lưu riêng trên máy).
+        const id = safeDecode(arg);
+        const B = DATA.scout && Array.isArray(DATA.scout.plans) ? DATA.scout.plans.find((x) => x && x.plan && x.plan.id === id) : null;
+        if (!mine.api.loadPlan(id) && !(B && mine.api.loadPlan({ ...B.plan, source: 'ai' }))) toast('Không tìm thấy phương án này trên máy.');
+      }
     } else {
       const sr = await import('./scout-report.js');
       if (MOD !== mine) return;
@@ -841,7 +868,12 @@ function oppInfo(name) {
   const lt = leagueTeams().find((t) => t.name === name);
   if (!lt) return '';
   const b = lt.id ? briefById(lt.id) : null;
-  if (!b) return '<p class="hint">Chưa có hồ sơ cho đội này.</p>';
+  // Đội đã có báo cáo đối thủ đầy đủ (data/scout/*.json) → tóm tắt + nút mở báo cáo.
+  const sc = DATA.scout && (norm(DATA.scout.team || '') === norm(name) || norm((DATA.scout.match || {}).opponent || '') === norm(name)) ? DATA.scout : null;
+  const rep = sc ? `<div class="oppinfo" data-testid="opp-report">${sc.summary && sc.summary.sentence ? `<div>${hl(sc.summary.sentence)}</div>` : ''}${sc.summary && sc.summary.bottomLine ? `<div class="muted">${esc(sc.summary.bottomLine)}</div>` : ''}
+    <button type="button" class="btn-sm" data-act="nav" data-to="#/scout" data-testid="opp-report-btn">Xem báo cáo đối thủ</button></div>` : '';
+  if (!b) return rep || '<p class="hint">Chưa có hồ sơ cho đội này.</p>';
+  if (rep) return rep;
   const ps = b.players.slice(0, 5).map((p) => `${p.num != null ? '#' + p.num + ' ' : ''}${esc(p.name)}${p.pos ? ' (' + esc(p.pos) + ')' : ''}`).join(' · ');
   return `<div class="oppinfo"><div>${b.coach ? `HLV ${esc(b.coach)}` : ''}${ps ? `${b.coach ? ' · ' : ''}Cầu thủ có nguồn: ${ps}` : ''}</div>
     <button type="button" class="btn-sm" data-act="oppSheet" data-id="${esc(b.id)}" data-testid="opp-brief">Xem hồ sơ đối thủ (${b.tendencies.length} nhận xét)</button></div>`;
@@ -1092,8 +1124,6 @@ function renderSheet() {
         <div class="row2"><button class="btn primary" type="submit" data-testid="set-ok">Bắt đầu</button><button class="btn" type="button" data-act="closeSheet">Huỷ</button></div></form>`;
   } else if (s === 'edit') {
     inner = editSheet();
-  } else if (s === 'ai') {
-    inner = aiSheet();
   } else if (s === 'player') {
     inner = playerSheet();
   } else if (s === 'teamName') {
@@ -1107,8 +1137,6 @@ function renderSheet() {
   }
   sheetEl.innerHTML = `<div class="sheet-bg" data-act="closeSheet"></div><div class="sheet-body" role="dialog" aria-modal="true">${inner}</div>`;
   sheetEl.hidden = false;
-  const ah = $('#ail-ask-host');
-  if (ah) { const m = byId(ui.aiId), n = ui.aiSet; AIL.mountAsk(ah, { getStats: () => AI.aiData(m, n) }); }
   if (s === 'startSet') drawLineup();
 }
 
@@ -1126,8 +1154,8 @@ function editSheet() {
     <div class="row2"><button class="btn danger" data-act="delEvent" data-testid="del-rally">Xoá pha này</button><button class="btn primary" data-act="closeSheet">Xong</button></div>`;
 }
 
-// ---------- Danh sách pha ----------
-function viewRallies() {
+// ---------- Các pha: trang phân tích nhiều phần, tính lại sau mỗi pha; danh sách pha (sửa / xoá) ở cuối ----------
+function rallyList() {
   const rows = R.rallies.slice().reverse().map((r) => `
     <button class="rrow ${r.win ? 'w' : 'l'}" data-act="edit" data-i="${r.i}" data-testid="rally-${r.set}-${r.no}">
       <span class="rs">S${r.set} #${r.no}</span><span class="rsc">${r.usA}–${r.themA}</span>
@@ -1138,9 +1166,49 @@ function viewRallies() {
     const ev = match.events[i];
     return `<button class="rrow ign" data-act="${ev.t === 'r' ? 'edit' : 'delIgnored'}" data-i="${i}">Bị bỏ qua: ${ev.t === 'r' ? L.HOW[ev.how].label : esc(ev.t)} — bấm để ${ev.t === 'r' ? 'sửa/xoá' : 'xoá'}</button>`;
   }).join('');
+  return `${ign}<div class="rlist">${rows || '<p class="empty">Chưa có pha nào.</p>'}</div>`;
+}
+function playersCard(pl) {
+  const rows = pl.filter((p) => p.pts + p.err + p.srv + p.rn > 0).map((p) => `<tr data-testid="an-pl-${p.pid}"><th>${pname(p.pid)}</th><td data-c="pts">${p.pts}</td><td data-c="err">${p.err}</td><td data-c="srv">${p.ace}/${p.se}</td><td data-c="recv">${p.rn ? L.dec(p.ravg) + '<small>' + p.rn + '</small>' : '–'}</td></tr>`).join('');
+  return `<section class="card wide"><h2>Theo cầu thủ</h2>${rows ? `<table class="tbl"><thead><tr><th>Cầu thủ</th><th>Điểm</th><th>Lỗi</th><th>Ace / hỏng phát</th><th>Đỡ TB /3</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="empty">Chưa có pha nào ghi rõ cầu thủ.</p>'}
+    <p class="hint">Điểm = tấn công + chắn + ace. Lỗi = tấn công hỏng, bị chắn, phát hỏng, đỡ hỏng, lỗi khác. Số nhỏ cạnh điểm đỡ = số lần chấm.</p></section>`;
+}
+function runsCard(rs) {
+  const lost = AN.runsOf(rs, false), won = AN.runsOf(rs, true);
+  const all = [...lost.map((x) => ({ ...x, side: 'them' })), ...won.map((x) => ({ ...x, side: 'us' }))].sort((a, b) => b.rs[0].i - a.rs[0].i).slice(0, 8);
+  const cur = L.currentRun(rs.length ? rs.filter((r) => r.set === rs[rs.length - 1].set) : []);
+  const row = (x) => `<tr><th>${x.side === 'us' ? 'Ta' : 'Đối thủ'}</th><td>S${x.rs[0].set}</td><td>${x.rs[0].usB}–${x.rs[0].themB}</td><td>${x.rs.length}</td><td>${esc([...new Set(x.rs.map((r) => r.rot))].join(', '))}</td></tr>`;
+  return `<section class="card wide" data-testid="an-runs"><div class="card-h"><div><h2>Chuỗi điểm</h2><p class="sub">Các đoạn một bên ghi liền từ 3 điểm trở lên, mới nhất trước</p></div></div>
+    ${CH.artChart({ type: 'seq', rallies: rs.slice(-60).map((r) => ({ w: r.win, set: r.set })) })}
+    <p class="big-num">Chuỗi hiện tại <b class="num ${cur.side === 'us' ? 'c-win' : cur.side ? 'c-lose' : ''}">${cur.len ? (cur.side === 'us' ? 'Ta ' : 'Đối thủ ') + cur.len : '–'}</b></p>
+    ${all.length ? `<table class="tbl"><thead><tr><th>Bên</th><th>Set</th><th>Từ tỉ số</th><th>Liền</th><th>Vòng</th></tr></thead><tbody>${all.map(row).join('')}</tbody></table>` : '<p class="empty">Chưa có chuỗi nào từ 3 điểm trở lên.</p>'}</section>`;
+}
+function viewRallies() {
+  const c = R.cur || R.sets[R.sets.length - 1];
+  let setN = ui.rlFilter === 'set' && c ? c.n : null;
+  if (setN && setN > 1 && !R.rallies.some((r) => r.set === setN)) setN -= 1; // set mới chưa có pha → set vừa xong
+  const rs = AN.rsOf(R, setN);
+  const st = L.stats(match, R, setN);
+  const td = AN.trendData(match, R, setN);
+  const pl = AN.playerRows(match, R, setN);
+  const inv = pl.reduce((a, p) => a + p.pts + p.err, 0);
+  const rotMax = Math.max(0, ...st.rot.map((x) => x.n));
+  const sec = (id, title, nText, cert, body, cls = '') => `<section class="asec" id="${id}" data-testid="${id}"><div class="sec-h"><h2>${title}</h2>${CH.metaLine(nText, cert)}</div><div class="agrid ${cls}">${body}</div></section>`;
+  const SECS = [['an-now', 'Kết luận'], ['an-flow', 'Diễn biến'], ['an-how', 'Ghi / mất'], ['an-rot', 'Xoay vòng'], ['an-pl', 'Cầu thủ'], ['an-sr', 'Phát & đỡ'], ['an-run', 'Chuỗi điểm'], ['an-list', 'Danh sách pha']];
+  const chip = (f, l) => `<button data-act="rlFilter" data-f="${f}" class="fchip ${ui.rlFilter === f ? 'on' : ''}" aria-pressed="${ui.rlFilter === f}" data-testid="an-f-${f}">${l}</button>`;
   return `
-  ${pageHead(`Các pha (${R.rallies.length})`, 'Bấm một pha để sửa hoặc xoá nếu lúc nãy ghi nhầm.', { back: '#/live' })}
-  <main class="page"><p class="hint">Bấm vào một pha để sửa hoặc xoá. Tỉ số, xoay vòng và thống kê tự tính lại.</p>${ign}<div class="rlist">${rows || '<p>Chưa có pha nào.</p>'}</div></main>`;
+  ${pageHead(`Các pha (${R.rallies.length})`, 'Số liệu tự tính lại sau mỗi pha ghi, sửa hoặc xoá. Danh sách pha để sửa nằm ở cuối trang.', { back: '#/live' })}
+  <main class="page analytics">
+    <nav class="anav" aria-label="Các phần" data-testid="an-nav">${c ? chip('set', `Set ${c.n}`) : ''}${chip('match', 'Cả trận')}<span class="vsep" style="align-self:center;margin:0 4px"></span>${SECS.map(([id, l]) => `<button class="fchip" data-act="jump" data-to="${id}">${l}</button>`).join('')}</nav>
+    <section class="asec" id="an-now">${CH.nowBlock(match, R, setN, { testid: 'an-concl' })}</section>
+    ${sec('an-flow', 'Diễn biến tỉ số', `${rs.length} pha`, AN.FACT, CH.trScore(td) + CH.trMargin(td))}
+    ${sec('an-how', 'Ghi điểm / mất điểm', `${st.n} pha`, AN.cert(st.n), srcCard(st) + CH.trChunks(td))}
+    ${sec('an-rot', 'Theo xoay vòng P1–P6', `${rotMax} pha ở vòng nhiều nhất`, AN.cert(rotMax), rotCard(st) + CH.trRot(td))}
+    ${sec('an-pl', 'Theo cầu thủ', `${inv} pha có tên cầu thủ`, AN.cert(inv), playersCard(pl) + atkCard(st) + CH.trTop(td, match))}
+    ${sec('an-sr', 'Phát bóng và đỡ bước 1', `${st.bpN} lượt ta phát · ${st.soN} lượt đối thủ phát`, AN.cert(Math.min(st.bpN, st.soN)), `<section class="kpis wide">${kpiCells(st, null)}</section>` + srvCard(st) + passCard(st) + CH.trServe(td) + CH.trRolling(td))}
+    ${sec('an-run', 'Chuỗi điểm', `${rs.length} pha`, AN.cert(rs.length), runsCard(rs))}
+    <section class="asec" id="an-list" data-testid="an-list"><div class="sec-h"><h2>Danh sách pha</h2><p class="hint">Tất cả ${R.rallies.length} pha, mới nhất trước. Bấm một pha để sửa hoặc xoá; mọi số phía trên tự tính lại.</p></div>${rallyList()}</section>
+  </main>`;
 }
 
 // ---------- Màn HLV ----------
@@ -1169,8 +1237,8 @@ function insightsCard(st, setN, isCur) {
   const ins = L.insights(match, st, isCur);
   return `<section class="t insights" data-testid="insights"><div class="lab-row"><div class="lab">Số liệu nói gì · tự tính từ các pha đã ghi, ${setN ? 'set ' + setN : 'cả trận'}</div></div><ol>${ins.map((x) => `<li>${esc(x.text)}</li>`).join('')}</ol>${vsBars(st.src)}</section>`;
 }
-function coachBlocks(setN, isCur, run, heroKpis = false, noIns = false) {
-  const st = L.stats(match, R, setN);
+// Các thẻ số liệu (kiểu mẫu C) — dùng ở chi tiết Hội ý, Tổng kết trận và màn Các pha.
+function rotCard(st) {
   const rotBy = Object.fromEntries(st.rot.map((x) => [x.k, x]));
   const cell = (k) => {
     const x = rotBy[k];
@@ -1180,29 +1248,45 @@ function coachBlocks(setN, isCur, run, heroKpis = false, noIns = false) {
       <span class="hz-r">Đỡ phát <span class="num" data-c="so">${L.pct(x.soW, x.soN)}<small>${x.soN ? ` ${x.soW}/${x.soN}` : ''}</small></span></span>
       <span class="hz-r">Ta phát <span class="num" data-c="bp">${L.pct(x.bpW, x.bpN)}<small>${x.bpN ? ` ${x.bpW}/${x.bpN}` : ''}</small></span></span></div>`;
   };
-  const passRows = st.passers.map((q) => `<tr data-testid="pass-${q.pid}"><th>${pname(q.pid)}</th><td data-c="avg">${L.dec(q.avg)}</td><td data-c="n">${q.n}</td></tr>`).join('');
-  const atk = st.players.filter((p) => p.k + p.e > 0).map((p) => `<tr data-testid="atk-${p.pid}"><th>${pname(p.pid)}</th><td data-c="k">${p.k}</td><td data-c="e">${p.e}</td><td data-c="eff">${p.eff == null ? '–' : L.dec(p.eff, 2)}</td><td data-c="b">${p.b}</td></tr>`).join('');
-  const srv = st.players.filter((p) => p.ace + p.se > 0).map((p) => `<tr data-testid="srv-${p.pid}"><th>${pname(p.pid)}</th><td data-c="ace">${p.ace}</td><td data-c="se">${p.se}</td></tr>`).join('');
+  return `<section class="card rotcard"><div class="card-h"><div><h2>Điểm theo xoay vòng</h2><p class="sub">Hiệu số điểm theo vị trí chuyền hai</p></div></div>
+    <div class="heat" data-testid="rot-grid"><div class="net">Lưới</div>${['P4', 'P3', 'P2', 'P5', 'P6', 'P1'].map(cell).join('')}</div>
+    <p class="hint">Xoay vòng = vị trí của chuyền hai (P1–P6). Số lớn = hiệu số điểm. Viền cam = vòng kém nhất. "Đỡ phát" = khi đối thủ phát, ta giành được bao nhiêu pha; "Ta phát" = lượt ta phát ăn bao nhiêu điểm.</p></section>`;
+}
+function srcCard(st) {
   const s = st.src;
   const bars = (keys, cls) => {
     const mx = Math.max(1, ...keys.map(([k]) => s[k]));
     return keys.map(([k, lbl]) => `<li><span class="bl">${lbl}</span><span class="bar ${cls}"><i style="width:${((s[k] / mx) * 100).toFixed(1)}%"></i></span><b class="num" data-testid="src-${k}">${s[k]}</b></li>`).join('');
   };
+  return `<section class="card srccard"><div class="card-h"><div><h2>Nguồn điểm</h2><p class="sub">Ta ghi và mất điểm bằng cách nào</p></div></div><div class="src">
+    <div class="for"><p class="src-h">Ta ghi <b class="num" data-testid="won">${st.won}</b></p><ul>${bars([['atk', 'Tấn công'], ['blk', 'Chắn bóng'], ['ace', 'Phát bóng ăn điểm'], ['oer', 'Đối thủ lỗi'], ...(s.uw ? [['uw', 'Không rõ cách']] : [])], 'win')}</ul></div>
+    <div class="against"><p class="src-h">Ta mất <b class="num" data-testid="lost">${st.lost}</b></p><ul>${bars([['aer', 'Lỗi tấn công'], ['bkd', 'Bị chắn'], ['ser', 'Lỗi phát bóng'], ['rer', 'Đỡ hỏng / bị ace'], ['xer', 'Lỗi khác'], ['oat', 'Đối thủ tấn công'], ...(s.ul ? [['ul', 'Không rõ cách']] : [])], 'lose')}</ul></div>
+  </div></section>`;
+}
+function atkCard(st) {
+  const atk = st.players.filter((p) => p.k + p.e > 0).map((p) => `<tr data-testid="atk-${p.pid}"><th>${pname(p.pid)}</th><td data-c="k">${p.k}</td><td data-c="e">${p.e}</td><td data-c="eff">${p.eff == null ? '–' : L.dec(p.eff, 2)}</td><td data-c="b">${p.b}</td></tr>`).join('');
+  return `<section class="card"><h2>Tấn công</h2>${atk ? `<table class="tbl"><thead><tr><th>Cầu thủ</th><th>Ghi</th><th>Hỏng</th><th>Ghi trừ hỏng</th><th>Chắn</th></tr></thead><tbody>${atk}</tbody></table>` : '<p class="empty">Chưa có pha tấn công kết thúc.</p>'}
+    <p class="hint">Hỏng = đánh hỏng + bị chắn. "Ghi trừ hỏng" chia cho số lần tấn công kết thúc pha: càng gần 1 càng tốt, âm là hỏng nhiều hơn ghi.</p></section>`;
+}
+function passCard(st) {
+  const passRows = st.passers.map((q) => `<tr data-testid="pass-${q.pid}"><th>${pname(q.pid)}</th><td data-c="avg">${L.dec(q.avg)}</td><td data-c="n">${q.n}</td></tr>`).join('');
+  return `<section class="card"><h2>Đỡ bước 1 theo người</h2>${passRows ? `<table class="tbl"><thead><tr><th>Cầu thủ</th><th>Trung bình /3</th><th>Lần</th></tr></thead><tbody>${passRows}</tbody></table>` : '<p class="empty">Chưa chấm đỡ bước 1 theo người.</p>'}</section>`;
+}
+function srvCard(st) {
+  const srv = st.players.filter((p) => p.ace + p.se > 0).map((p) => `<tr data-testid="srv-${p.pid}"><th>${pname(p.pid)}</th><td data-c="ace">${p.ace}</td><td data-c="se">${p.se}</td></tr>`).join('');
+  return `<section class="card"><h2>Phát bóng</h2><p class="big-num">Ăn điểm <b class="num" data-testid="ace">${st.ace}</b><span class="sep"></span>Hỏng <b class="num" data-testid="se">${st.se}</b></p>
+    ${srv ? `<table class="tbl"><thead><tr><th>Cầu thủ</th><th>Ăn điểm</th><th>Hỏng</th></tr></thead><tbody>${srv}</tbody></table>` : ''}</section>`;
+}
+function coachBlocks(setN, isCur, run, heroKpis = false, noIns = false) {
+  const st = L.stats(match, R, setN);
   return `
   ${heroKpis ? '' : `<section class="kpis">${kpiCells(st, run)}</section>`}
   ${noIns ? '' : insightsCard(st, setN, isCur)}
-  <section class="card rotcard"><div class="card-h"><div><h2>Điểm theo xoay vòng</h2><p class="sub">Hiệu số điểm theo vị trí chuyền hai</p></div></div>
-    <div class="heat" data-testid="rot-grid"><div class="net">Lưới</div>${['P4', 'P3', 'P2', 'P5', 'P6', 'P1'].map(cell).join('')}</div>
-    <p class="hint">Xoay vòng = vị trí của chuyền hai (P1–P6). Số lớn = hiệu số điểm. Viền cam = vòng kém nhất. "Đỡ phát" = khi đối thủ phát, ta giành được bao nhiêu pha; "Ta phát" = lượt ta phát ăn bao nhiêu điểm.</p></section>
-  <section class="card srccard"><div class="card-h"><div><h2>Nguồn điểm</h2><p class="sub">Ta ghi và mất điểm bằng cách nào</p></div></div><div class="src">
-    <div class="for"><p class="src-h">Ta ghi <b class="num" data-testid="won">${st.won}</b></p><ul>${bars([['atk', 'Tấn công'], ['blk', 'Chắn bóng'], ['ace', 'Phát bóng ăn điểm'], ['oer', 'Đối thủ lỗi'], ...(s.uw ? [['uw', 'Không rõ cách']] : [])], 'win')}</ul></div>
-    <div class="against"><p class="src-h">Ta mất <b class="num" data-testid="lost">${st.lost}</b></p><ul>${bars([['aer', 'Lỗi tấn công'], ['bkd', 'Bị chắn'], ['ser', 'Lỗi phát bóng'], ['rer', 'Đỡ hỏng / bị ace'], ['xer', 'Lỗi khác'], ['oat', 'Đối thủ tấn công'], ...(s.ul ? [['ul', 'Không rõ cách']] : [])], 'lose')}</ul></div>
-  </div></section>
-  <section class="card"><h2>Tấn công</h2>${atk ? `<table class="tbl"><thead><tr><th>Cầu thủ</th><th>Ghi</th><th>Hỏng</th><th>Ghi trừ hỏng</th><th>Chắn</th></tr></thead><tbody>${atk}</tbody></table>` : '<p class="empty">Chưa có pha tấn công kết thúc.</p>'}
-    <p class="hint">Hỏng = đánh hỏng + bị chắn. "Ghi trừ hỏng" chia cho số lần tấn công kết thúc pha: càng gần 1 càng tốt, âm là hỏng nhiều hơn ghi.</p></section>
-  <section class="card"><h2>Đỡ bước 1 theo người</h2>${passRows ? `<table class="tbl"><thead><tr><th>Cầu thủ</th><th>Trung bình /3</th><th>Lần</th></tr></thead><tbody>${passRows}</tbody></table>` : '<p class="empty">Chưa chấm đỡ bước 1 theo người.</p>'}</section>
-  <section class="card"><h2>Phát bóng</h2><p class="big-num">Ăn điểm <b class="num" data-testid="ace">${st.ace}</b><span class="sep"></span>Hỏng <b class="num" data-testid="se">${st.se}</b></p>
-    ${srv ? `<table class="tbl"><thead><tr><th>Cầu thủ</th><th>Ăn điểm</th><th>Hỏng</th></tr></thead><tbody>${srv}</tbody></table>` : ''}</section>`;
+  ${rotCard(st)}
+  ${srcCard(st)}
+  ${atkCard(st)}
+  ${passCard(st)}
+  ${srvCard(st)}`;
 }
 
 // ---------- Hội ý: 1 câu kết luận + tối đa 3 thẻ (Đang yếu ở / Đang mạnh ở / Nên thử), chi tiết thu gọn ----------
@@ -1215,45 +1299,52 @@ function scoutPlanFor(m) {
   const P = sm && m && norm(sm.opponent) === norm(m.opponent) && Array.isArray(DATA.scout.plans) && DATA.scout.plans[0];
   return P && P.plan && typeof P.plan.id === 'string' ? P.plan.id : null;
 }
-function coachCards(st) {
+// Thẻ Hội ý dùng CÙNG cổng lời khuyên với Kết luận hiện tại / Các pha / Trợ lý (analysis.signals):
+// "nên…" chỉ khi mẫu ≥8 và chênh lệch vượt sai số; dưới cổng chỉ kể sự việc + "chưa đủ chắc để kết luận".
+function coachCards(st, setN) {
   if (st.n < 6) return [];
   const s = st.src;
   const out = [];
-  // Đang yếu ở: chọn vấn đề nặng nhất (cùng thang ưu tiên với phần nhận định tự động).
-  const weak = [];
-  let bad = null;
-  for (const p of st.players) if (p.e >= 3 && p.e > p.k && (!bad || p.e - p.k > bad.e - bad.k)) bad = p;
-  if (bad) weak.push([6 + (bad.e - bad.k) * 2, { n: bad.e, d: bad.k + bad.e, title: `${numOf(bad.pid).replace(/^s/, 'S')} tấn công hỏng ${bad.e}/${bad.k + bad.e} lần`, text: `Nên hạn chế chuyền cho ${numOf(bad.pid)} lúc này.`, tip: `Bớt chuyền cho ${numOf(bad.pid)}.` }]);
-  const w = st.worst;
-  if (w && w.n >= 4 && w.diff <= -2) weak.push([10 + (w.lost - w.won) * 2, { n: w.lost, d: w.n, title: `Xoay vòng ${w.k}: mất ${w.lost}/${w.n} pha`, text: `Khi chuyền hai đứng ở vị trí ${w.k.slice(1)}, ta mất điểm nhiều nhất. Cân nhắc thay người hoặc đổi cách đỡ phát ở vòng này.`, tip: `Để ý xoay vòng ${w.k}.` }]);
-  let wp = null;
-  for (const p of st.passers) if (p.n >= 4 && p.avg < 1.5 && (!wp || p.avg < wp.avg)) wp = p;
-  if (wp) weak.push([7 + Math.round((1.5 - wp.avg) * 10), { n: Math.round(wp.avg * 10) / 10, d: 3, label: `${L.dec(wp.avg)}/3`, title: `${numOf(wp.pid).replace(/^s/, 'S')} đỡ bước 1 chỉ ${L.dec(wp.avg)} trên thang 3`, text: 'Cho libero ôm rộng sang phía người này khi đối thủ phát.', tip: `Kèm đỡ phát cho ${numOf(wp.pid)}.` }]);
-  if (st.se >= 3 && st.se > st.ace * 2) weak.push([6 + st.se - st.ace, { n: st.se, d: st.bpN, title: `Phát bóng hỏng ${st.se}/${st.bpN} lượt`, text: 'Phát an toàn hơn, nhất là khi đang sát điểm.', tip: 'Phát an toàn hơn.' }]);
-  const own = s.aer + s.ser + s.xer;
-  if (st.lost >= 6 && own / st.lost >= 0.5) weak.push([4 + own, { n: own, d: st.lost, title: `Ta tự hỏng ${own}/${st.lost} điểm mất`, text: 'Đối thủ chưa phải ép nhiều — bớt đánh mạo hiểm.', tip: 'Bớt tự hỏng.' }]);
-  weak.sort((a, b) => b[0] - a[0]);
-  if (weak[0]) out.push({ tone: 'peach', k: 'Đang yếu ở', ...weak[0][1] });
-  // Đang mạnh ở: cách ghi điểm nhiều nhất + người góp nhiều nhất.
-  const top = WIN_SRC.filter(([k]) => s[k] > 0).sort((a, b) => s[b[0]] - s[a[0]])[0];
+  const sg = AN.signals(match, R, setN);
+  const top = sg.weak[0];
+  const pl = (pid) => numOf(pid).replace(/^s/, 'S');
   if (top) {
-    const f = { atk: 'k', blk: 'b', ace: 'ace' }[top[0]];
-    const star = f ? st.players.filter((p) => p[f] > 0).sort((a, b) => b[f] - a[f])[0] : null;
-    const title = { atk: `Tấn công: ta ghi ${s.atk} điểm`, blk: `Chắn bóng: ta ăn ${s.blk} điểm`, ace: `Phát bóng ăn trực tiếp ${s.ace} điểm`, oer: `Đối thủ tự hỏng ${s.oer} điểm` }[top[0]];
-    out.push({ tone: 'mint', k: 'Đang mạnh ở', n: s[top[0]], d: st.won, title, text: star ? `Riêng ${numOf(star.pid)} góp ${star[f]} trong ${s[top[0]]} điểm đó. Giữ ${numOf(star.pid)} trên sân.` : `${s[top[0]]} trong ${st.won} điểm ta ghi.` });
+    const W = {
+      rot: () => { const x = sg.rot.flag; return { n: x.lost, d: x.n, title: `Xoay vòng ${x.k}: mất ${x.lost}/${x.n} pha`, text: `Khi chuyền hai đứng ở vị trí ${x.k.slice(1)}, ta mất điểm rõ nhất (vượt sai số). Cân nhắc thay người hoặc đổi cách đỡ phát ở vòng này.`, tip: `Để ý xoay vòng ${x.k}.` }; },
+      atk: () => { const x = sg.atk.flag; const e = x.ae + x.bd; return { n: e, d: x.att, title: `${pl(x.pid)} tấn công hỏng ${e}/${x.att} lần`, text: `Kém rõ so với cả đội (vượt sai số). Nên hạn chế chuyền cho ${numOf(x.pid)} lúc này.`, tip: `Bớt chuyền cho ${numOf(x.pid)}.` }; },
+      pass: () => { const x = sg.pass.flag; return { n: Math.round(x.avg * 10) / 10, d: 3, label: `${L.dec(x.avg)}/3`, title: `${pl(x.pid)} đỡ bước 1 chỉ ${L.dec(x.avg)} trên thang 3`, text: `Thấp rõ so với cả đội sau ${x.n} lần. Cho libero ôm rộng sang phía người này khi đối thủ phát.`, tip: `Kèm đỡ phát cho ${numOf(x.pid)}.` }; },
+      serve: () => ({ n: st.se, d: st.bpN, title: `Phát bóng hỏng ${st.se}/${st.bpN} lượt`, text: 'Hỏng nhiều hơn ace rõ rệt. Phát an toàn hơn, nhất là khi đang sát điểm.', tip: 'Phát an toàn hơn.' }),
+      own: () => ({ n: sg.own, d: st.lost, title: `Ta tự hỏng ${sg.own}/${st.lost} điểm mất`, text: 'Đối thủ chưa phải ép nhiều — bớt đánh mạo hiểm.', tip: 'Bớt tự hỏng.' }),
+      recv: () => ({ n: st.recv.badW, d: st.recv.badN, title: `Bóng đỡ xấu: chỉ giành ${st.recv.badW}/${st.recv.badN}`, text: `Bóng đỡ ≥2 giành ${st.recv.goodW}/${st.recv.goodN}. Ưu tiên đỡ an toàn vào giữa.`, tip: 'Ưu tiên đỡ bước 1 an toàn.' }),
+    }[top.k]();
+    out.push({ tone: 'peach', k: 'Đang yếu ở', ...W });
+  } else {
+    const w = sg.rot.worst;
+    const f = AN.rotFact(sg.rot);
+    if (w && f) out.push({ tone: 'peach', k: 'Đang yếu ở', n: w.lost, d: w.n, title: `Xoay vòng ${w.k}: mất ${w.lost}/${w.n} pha`, text: `${w.k} đang thua nhiều nhất nhưng ${w.n < AN.N_MIN ? `mới ${w.n} pha` : 'chênh với các vòng khác còn trong sai số'} — chưa đủ chắc để kết luận.`, tip: f });
   }
-  // Nên thử: người đang tấn công tốt (không trùng người đang yếu), hoặc xoay vòng đang thắng, hoặc phương án soạn trước trận.
-  const hot = st.players.filter((p) => p.k >= 3 && p.eff != null && p.eff >= 0.3 && (!bad || p.pid !== bad.pid)).sort((a, b) => b.k - a.k)[0];
-  const bestR = st.rot.filter((x) => x.n >= 4 && x.diff >= 2).sort((a, b) => b.diff - a.diff)[0];
+  // Đang mạnh ở: cách ghi điểm nhiều nhất (sự việc); "giữ trên sân" chỉ khi người đó qua cổng.
+  const topSrc = WIN_SRC.filter(([k]) => s[k] > 0).sort((a, b) => s[b[0]] - s[a[0]])[0];
+  if (topSrc) {
+    const f = { atk: 'k', blk: 'b', ace: 'ace' }[topSrc[0]];
+    const star = f ? st.players.filter((p) => p[f] > 0).sort((a, b) => b[f] - a[f])[0] : null;
+    const title = { atk: `Tấn công: ta ghi ${s.atk} điểm`, blk: `Chắn bóng: ta ăn ${s.blk} điểm`, ace: `Phát bóng ăn trực tiếp ${s.ace} điểm`, oer: `Đối thủ tự hỏng ${s.oer} điểm` }[topSrc[0]];
+    const keep = star && sg.atk.hot && sg.atk.hot.pid === star.pid;
+    out.push({ tone: 'mint', k: 'Đang mạnh ở', n: s[topSrc[0]], d: st.won, title, text: star ? `Riêng ${numOf(star.pid)} góp ${star[f]} trong ${s[topSrc[0]]} điểm đó.${keep ? ` Giữ ${numOf(star.pid)} trên sân.` : ''}` : `${s[topSrc[0]]} trong ${st.won} điểm ta ghi.` });
+  }
+  // Nên thử: chỉ tín hiệu qua cổng (người tấn công tốt rõ, xoay vòng tốt rõ) hoặc phương án soạn trước trận.
+  const hot = sg.atk.hot && (!top || top.k !== 'atk' || top.id !== sg.atk.hot.pid) ? sg.atk.hot : null;
+  const bestR = sg.rot.best;
   const pid = scoutPlanFor(match);
   const plan = pid && DATA.scout.plans[0].plan;
-  if (hot) out.push({ tone: 'lav', k: 'Nên thử', n: hot.k, d: hot.k + hot.e, title: `Chuyền nhiều hơn cho ${numOf(hot.pid)}`, text: `${numOf(hot.pid).replace(/^s/, 'S')} tấn công ghi ${hot.k}/${hot.k + hot.e} lần kết thúc pha.` });
-  else if (bestR) out.push({ tone: 'lav', k: 'Nên thử', n: bestR.won, d: bestR.n, title: `Giữ đội hình như ở xoay vòng ${bestR.k}`, text: `Ta thắng ${bestR.won}/${bestR.n} pha ở vòng này — cách đỡ phát ở đây đang chạy tốt.` });
+  if (hot) out.push({ tone: 'lav', k: 'Nên thử', n: hot.k, d: hot.att, title: `Chuyền nhiều hơn cho ${numOf(hot.pid)}`, text: `${pl(hot.pid)} tấn công ghi ${hot.k}/${hot.att} lần kết thúc pha — tốt rõ so với cả đội.` });
+  else if (bestR) out.push({ tone: 'lav', k: 'Nên thử', n: bestR.won, d: bestR.n, title: `Giữ đội hình như ở xoay vòng ${bestR.k}`, text: `Ta thắng ${bestR.won}/${bestR.n} pha ở vòng này — tốt rõ so với các vòng khác.` });
   else if (plan) out.push({ tone: 'lav', k: 'Nên thử', plan: plan.id, title: plan.name, text: 'Phương án AI soạn trước trận — HLV quyết. Bấm Mở phương án để xem trên sân.' });
   return out.slice(0, 3);
 }
 function coachSentence(st, cards) {
-  if (st.n < 6) return `Mới có ${st.n} pha — chưa đủ để kết luận. Cứ ghi tiếp, từ pha thứ 6 sẽ có nhận xét.`;
+  if (!st.n) return 'Chưa có pha nào — ghi pha đầu tiên là có số ngay.';
+  if (st.n < 6) return `Mới ${st.n} pha, ta ${st.won}–${st.lost}. Số đã có ở phần Kết luận hiện tại; nhận định tự động bắt đầu từ pha thứ 6.`;
   const s = st.src, d = st.won - st.lost;
   const win = WIN_SRC.filter(([k]) => s[k] > 0).sort((a, b) => s[b[0]] - s[a[0]])[0];
   const lose = LOSE_SRC.filter(([k]) => s[k] > 0).sort((a, b) => s[b[0]] - s[a[0]])[0];
@@ -1274,14 +1365,17 @@ function worm(rs) {
 }
 function viewCoach() {
   const c = R.cur;
-  const setN = ui.coachFilter === 'set' && c ? c.n : null;
+  let setN = ui.coachFilter === 'set' && c ? c.n : null;
+  // Giữa hai set (set mới chưa có pha): "Set này" hiện set vừa xong thay vì màn trống.
+  const idle = setN && setN > 1 && !R.rallies.some((r) => r.set === setN);
+  if (idle) setN -= 1;
   const run = L.currentRun(R.rallies.filter((r) => !c || r.set === c.n));
   const st = L.stats(match, R, setN);
-  const cards = coachCards(st);
+  const cards = coachCards(st, setN);
   const setRs = R.rallies.filter((r) => !c || r.set === c.n);
   const streak = run && run.len >= 2 ? `${run.side === 'us' ? 'Ta' : 'Đối thủ'} vừa ghi ${run.len} điểm liên tiếp` : setRs.length ? `${setRs.length} pha trong set này` : 'Chưa có pha nào';
   const card = (x) => `<section class="t act tile-${x.tone}"><div class="hd"><span class="k">${x.k}</span>${x.plan ? `<span class="ic-b">${ic('target')}</span>` : ring(x.n, x.d, x.tone, 92, x.label || null)}</div><h3>${esc(x.title)}</h3><p>${esc(x.text)}</p></section>`;
-  const scope = setN ? `set ${setN}` : 'cả trận';
+  const scope = setN ? `set ${setN}${idle ? ` vừa xong (set ${c.n} chưa có pha)` : ''}` : 'cả trận';
   return `
   ${pageHead('Hội ý', 'Đọc trong 30 giây: đang yếu ở đâu, đang mạnh ở đâu, nên thử gì.', { back: '#/live', backId: 'coach-back', backText: 'Ghi trận', backLabel: 'Quay lại ghi trận',
     actions: `<span class="live-pill"><i class="livedot"></i>Đang hội ý · Set ${c ? c.n : 1}</span>` })}
@@ -1303,13 +1397,15 @@ function viewCoach() {
       <div class="chips-s"><span>Lượt ta phát: ăn ${st.bpW}/${st.bpN} điểm</span><span>Khi đối thủ phát: giành ${st.soW}/${st.soN} pha</span></div>
       <div class="acts"><button class="pill-btn dark" data-act="ai" data-id="${match.id}" data-set="${setN || ''}" data-testid="ai-coach">Hỏi AI</button><button class="pill-btn" data-act="openPlan" data-id="${esc(scoutPlanFor(match) || '')}" data-testid="open-plan">Mở phương án</button></div>
     </section>
+    ${CH.nowBlock(match, R, setN, { testid: 'coach-now', compact: true })}
     ${cards.map(card).join('')}
-    ${insightsCard(st, setN, setN != null && c && !c.over)}
+    ${st.n ? CH.coachTrends(match, R, setN) : ''}
+    ${insightsCard(st, setN, !idle && setN != null && c && !c.over)}
     <details class="t more">
       <summary>Xem chi tiết ${scope}<span class="p"><span>số liệu đầy đủ</span><i>${ic('chevron-down')}</i></span></summary>
       <div class="more-in">
         <section class="kpis">${kpiCells(st, run)}</section>
-        ${coachBlocks(setN, setN != null && c && !c.over, run, true, true)}
+        ${coachBlocks(setN, !idle && setN != null && c && !c.over, run, true, true)}
       </div>
     </details>
   </main>`;
@@ -1320,7 +1416,9 @@ function viewSummary(id) {
   const m = id === (match && match.id) ? match : store.loadMatch(id);
   if (!m) return pageHead('Không tìm thấy trận', 'Trận này không còn trên máy.', { back: '#/history' });
   const keepM = match, keepR = R;
-  match = m; R = L.replay(m);
+  match = m;
+  try {
+  R = L.replay(m);
   const sets = R.sets.map((s) => `<td>${s.us}–${s.them}</td>`).join('');
   const html = `
   ${pageHead('Tổng kết trận', 'Kết quả, số liệu cả trận; in, chia sẻ hoặc xuất file cho người phân tích.', { back: '#/history', cls: 'noprint' })}
@@ -1344,8 +1442,8 @@ function viewSummary(id) {
     </section>
     <div class="cgrid">${coachBlocks(null, false)}</div>
   </main>`;
-  match = keepM; R = keepR;
   return html;
+  } finally { match = keepM; R = keepR; }
 }
 function viewHistory() {
   const list = store.listMatches().slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
@@ -1364,34 +1462,6 @@ function viewHistory() {
     </section>
     <section class="card hlist"><div class="card-h"><div><h2>Tất cả trận</h2><p class="sub">Mới nhất trước</p></div></div>${rows || '<p class="hint">Chưa có trận nào.</p>'}</section>
   </main>`;
-}
-
-// ---------- Hỏi AI (không gọi API: sao chép rồi dán vào trang AI) ----------
-function aiSheet() {
-  const m = byId(ui.aiId);
-  if (!m) return '<p>Không tìm thấy trận.</p><button class="btn" data-act="closeSheet">Đóng</button>';
-  const R2 = L.replay(m);
-  if (ui.aiSet && !R2.sets[ui.aiSet - 1]) ui.aiSet = null;
-  ui.aiText = AI.aiPrompt(m, ui.aiSet);
-  const opts = [['', 'Cả trận'], ...R2.sets.map((s) => [String(s.n), `Set ${s.n} (${s.us}–${s.them})`])];
-  return `<h3>Hỏi AI về ${ui.aiSet ? 'set ' + ui.aiSet : 'cả trận'}</h3>
-    ${AIL.isConfigured() ? `<div class="ask-box"><p class="hint">Hỏi thẳng trợ lý AI của đội (cần mạng). Câu trả lời chỉ để tham khảo — HLV quyết.</p><div id="ail-ask-host"></div></div><p class="hint"><b>Hoặc</b> sao chép số liệu để dán vào trang AI khác:</p>` : ''}
-    <p class="hint">App không gửi dữ liệu đi đâu. Bấm <b>Sao chép</b>, mở một trang AI bên dưới rồi dán vào ô chat. Kết quả AI chỉ để tham khảo — đối chiếu với màn HLV.</p>
-    <label class="field">Phạm vi<select data-ai="scope" data-testid="ai-scope">${opts.map(([v, l]) => `<option value="${v}" ${String(ui.aiSet || '') === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
-    <textarea readonly rows="9" data-testid="ai-prompt">${esc(ui.aiText)}</textarea>
-    <p class="hint" data-testid="ai-len">${ui.aiText.length.toLocaleString('vi-VN')} ký tự</p>
-    <div class="row2"><button class="btn primary" data-act="aiCopy" data-testid="ai-copy">Sao chép</button><button class="btn" data-act="closeSheet">Đóng</button></div>
-    <div class="aisites">${AI.AI_SITES.map(([n, u]) => `<a class="btn" href="${u}" target="_blank" rel="noopener noreferrer" data-testid="ai-open-${n.toLowerCase()}">Mở ${n}</a>`).join('')}</div>`;
-}
-async function aiCopy() {
-  try {
-    await navigator.clipboard.writeText(ui.aiText);
-  } catch {
-    const ta = $('[data-testid=ai-prompt]');
-    ta.select();
-    if (!document.execCommand('copy')) return toast('Không sao chép được — giữ ngón tay trên ô chữ để chọn và sao chép.');
-  }
-  toast('Đã sao chép — mở trang AI rồi dán.');
 }
 
 // ---------- Hồ sơ đối thủ (dữ liệu tĩnh data/opponents.json) ----------
@@ -1583,7 +1653,10 @@ function importFile() {
       list.forEach((m) => store.saveMatch(m, L.replay(m)));
       if (match && list.some((m) => m.id === match.id)) loadCurrent();
       if (d.team && confirm('File có danh sách đội. Thay đội hiện tại bằng đội trong file?')) { team = d.team; store.saveTeam(team); }
-      toast(`Đã nhập ${list.length} trận.`);
+      // Phương án bàn chiến thuật (file sao lưu từ bản vbs-v10): gộp theo id; file cũ không có mục này vẫn nhập được.
+      let nPlan = 0;
+      if (d.plans.length) { const tx = await import('./tactics.js'); d.plans.forEach((p) => { if (tx.savePlan(p)) nPlan++; }); }
+      toast(`Đã nhập ${list.length} trận${nPlan ? `, ${nPlan} phương án chiến thuật` : ''}.`);
       render();
     } catch (e) {
       alert('Không nhập được: ' + e.message);
@@ -1597,14 +1670,14 @@ const byId = (id) => (match && match.id === id ? match : store.loadMatch(id));
 
 function doBackup() {
   const all = store.listMatches().map((x) => store.loadMatch(x.id)).filter(Boolean);
-  X.download(`scout_saoluu_${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(X.backup(team, all), null, 1), 'application/json');
+  X.download(`scout_saoluu_${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(X.backup(team, all, savedPlans()), null, 1), 'application/json');
 }
 
 // ---------- sự kiện ----------
 document.addEventListener('click', (e) => {
   // Nút của module (bàn chiến thuật, báo cáo, trợ lý AI) do module tự xử lý — kể cả khi module đã vẽ lại nút đó
   // trước khi sự kiện tới đây (nút đã rời trang), nên xét đường đi của sự kiện chứ không xét vị trí hiện tại.
-  if (e.composedPath().some((n) => n.id && /^(mod-host|voice-host|ail-settings-host|ail-ask-host)$/.test(n.id))) return;
+  if (e.composedPath().some((n) => n.id && /^(mod-host|voice-host|ail-settings-host)$/.test(n.id))) return;
   const el = e.target.closest('[data-act]');
   if (!el || el.disabled) return;
   const a = el.dataset.act;
@@ -1680,8 +1753,9 @@ document.addEventListener('click', (e) => {
     }
     case 'luTap': luTap(d); break;
     case 'oppSheet': openSheet('opp', { oppId: d.id }); break;
-    case 'ai': openSheet('ai', { aiId: d.id, aiSet: d.set ? +d.set : null }); break;
-    case 'aiCopy': aiCopy(); break;
+    case 'ai': AS.openAssistant({ getMatch: () => byId(d.id), id: d.id, setN: d.set ? +d.set : null, toast }); break;
+    case 'jump': { const t = document.getElementById(d.to); if (t) t.scrollIntoView({ block: 'start' }); break; }
+    case 'rlFilter': ui.rlFilter = d.f; render(); break;
     case 'vSeek': vSeek(+d.i); break;
     case 'vNow': vNow(); break;
     case 'print': window.print(); break;
@@ -1745,8 +1819,7 @@ document.addEventListener('change', (e) => {
   if (el.name === 'oppPick') {
     $('#oppOther').hidden = el.value !== '__other';
     $('#oppInfo').innerHTML = oppInfo(el.value);
-  } else if (el.dataset.ai === 'scope') { ui.aiSet = el.value ? +el.value : null; renderSheet(); }
-  else if (el.dataset.vf) vFilter(el.dataset.vf, el.value);
+  } else if (el.dataset.vf) vFilter(el.dataset.vf, el.value);
   else if (el.dataset.testid === 'v-file') vOpenFile(el.files && el.files[0]);
   else if (el.dataset.testid === 'pf-photo') { pfPhoto(el.files && el.files[0]); el.value = ''; }
   else if (el.dataset.top === 'match' && el.value) go('#/summary/' + el.value);
